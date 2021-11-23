@@ -49,13 +49,28 @@
 
     \Function{packPlane}{$plane$, $toPack$, $W$, $H$, $D$}
         \State $packed \gets \emptyset$;
-
+        \Repeat
+            \State $bestScore \gets 0$;
+            \State $bestPacking \gets null$;
+            \For{$item \in toPack: plane.z + item.z \le H$}
+                \State $packing \gets \Call{2DBPPwithObstacles}{item, packed, plane, W, H, D}$;
+                \State $score \gets \Call{scorePacking}{packed \cup packing, W, H, D}$;
+                \If{$score > bestScore$}
+                    \State $bestScore \gets score$;
+                    \State $bestPacking \gets packing$;
+                \EndIf
+            \EndFor
+            \State $packed \gets packed \cup bestPacking$;
+            \State $toPack \gets toPack \setminus bestPacking$;
+        \Until{$toPack = \emptyset \vee bestPacking = null$};
         \State \Return $packed$;
     \EndFunction
+    \vspace{1cm}
 
     \Function{scorePacking}{$packed$, $W$, $H$, $D$}
         \State $A \gets \Call{sumArea}{packed}$;
         \State $V \gets \Call{sumVolume}{packed}$;
+        \State \Return $A + V$;
     \EndFunction
 \end{algorithmic}
 
