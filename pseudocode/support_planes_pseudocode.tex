@@ -1,0 +1,29 @@
+\documentclass{article}
+\usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
+\begin{document}
+
+\begin{algorithmic}
+    \Function{3DBPP}{$items$, W, H, D}
+        \State $bins \gets \emptyset$;
+        \State $items \gets items \cup $ \Call{generateSuperItems}{$items$};
+        \Repeat
+            \State $packedItems \gets $ \Call{packBin}{$items$, W, H, D};
+            \State $bins \gets bins \cup $ \Call{createBin}{$packedItems$, W, H, D};
+            \State $items \gets items \setminus packedItems$;
+        \Until{$|items| = 0$};
+        \State \Return $bins$;
+    \EndFunction
+    \vspace{1cm}
+
+    \Function{packBin}{items, W, H, D}
+        \State $packed \gets \emptyset$;
+        \State $planes \gets \{ 0 \}$;
+        \Repeat
+            \State \Call{sort}{planes}; \Comment Sorts the current planes in ascending order
+            \State $p \gets $ \Call{poll}{$planes$} \Comment Polls the first element from the set
+        \Until{$|planes| = 0 \vee |items| = 0$};
+    \EndFunction
+\end{algorithmic}
+
+
+\end{document}
