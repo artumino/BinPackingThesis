@@ -3,25 +3,59 @@
 \begin{document}
 
 \begin{algorithmic}
-    \Function{3DBPP}{$items$, W, H, D}
+    \Function{3DBPP}{$items$, $W$, $H$, $D$}
         \State $bins \gets \emptyset$;
-        \State $items \gets items \cup $ \Call{generateSuperItems}{$items$};
+        \State $items \gets items \cup \Call{generateSuperItems}{items}$;
         \Repeat
-            \State $packedItems \gets $ \Call{packBin}{$items$, W, H, D};
-            \State $bins \gets bins \cup $ \Call{createBin}{$packedItems$, W, H, D};
+            \State $packedItems \gets \Call{packBin}{items, W, H, D}$ ;
+            \State $bin \gets \Call{completeBin}{packedItems, W, H, D}$;
+            \State $bins \gets bins \cup bin$; 
             \State $items \gets items \setminus packedItems$;
-        \Until{$|items| = 0$};
+        \Until{$items = \emptyset$};
         \State \Return $bins$;
     \EndFunction
     \vspace{1cm}
 
-    \Function{packBin}{items, W, H, D}
+    \Function{packBin}{$items$, $W$, $H$, $D$}
         \State $packed \gets \emptyset$;
-        \State $planes \gets \{ 0 \}$;
+        \State $currentPacking \gets \emptyset$;
+        \State $toPack \gets items$;
+        \State $planes \gets \{ (0, \emptyset, \emptyset) \}$; \Comment PriorityQueue, (z, supportItems, upperItems)
         \Repeat
-            \State \Call{sort}{planes}; \Comment Sorts the current planes in ascending order
-            \State $p \gets $ \Call{poll}{$planes$} \Comment Polls the first element from the set
-        \Until{$|planes| = 0 \vee |items| = 0$};
+            \State $p \gets $ \Call{dequeue}{$planes$}; \Comment Polls the lowest plane from the set
+            \State $currentPacking \gets \Call{packPlane}{p, toPack, W, H, D}$;
+            \State $packed \gets packed \cup currentPacking$;
+            \State $toPack \gets toPack \setminus packed$;
+            \State $\Call{updatePlanes}{planes, currentPacking, 5}$;
+        \Until{$planes = \emptyset \vee toPack = \emptyset \vee currentPacking = \emptyset$};
+        \State \Return $packed$;
+    \EndFunction
+    \vspace{1cm}
+
+    \Procedure{updatePlanes}{$planes$, $packed$, $tolerance$}
+        \For{$item$ in $packed$}
+            \If{$\not\exists p \in planes: |p.z - item.z| \le tolerance$}
+                \State $planes \gets planes \cup (item.z, \emptyset, \emptyset)$;
+            \EndIf
+            \For{$p \in planes: 0 \le p.z - (item.z + item.w) \le tolerance$}
+                \State $p.supportItems \gets p.supportItems \cup item$;
+            \EndFor
+            \For{$p \in planes: p.z < (item.z + item.w)$}
+                \State $p.upperItems \gets p.upperItems \cup item$;
+            \EndFor
+        \EndFor
+    \EndProcedure
+    \newpage
+
+    \Function{packPlane}{$plane$, $toPack$, $W$, $H$, $D$}
+        \State $packed \gets \emptyset$;
+
+        \State \Return $packed$;
+    \EndFunction
+
+    \Function{scorePacking}{$packed$, $W$, $H$, $D$}
+        \State $A \gets \Call{sumArea}{packed}$;
+        \State $V \gets \Call{sumVolume}{packed}$;
     \EndFunction
 \end{algorithmic}
 
