@@ -2,7 +2,7 @@
 \usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
 \begin{document}
 
-\begin{algorithmic}
+\begin{algorithmic}[1]
     \Function{3DBPP}{$items$, $W$, $H$, $D$}
         \State $bins \gets \emptyset$;
         \State $items \gets items \cup \Call{generateSuperItems}{items}$;
@@ -54,6 +54,7 @@
             \State $bestPacking \gets null$;
             \For{$item \in toPack: plane.z + item.z \le H$}
                 \State $packing \gets \Call{2DBPPwithObstacles}{item, packed, plane, W, H, D}$;
+                \State $\Call{removeInfeasibilities}{packing}$;
                 \State $score \gets \Call{scorePacking}{packed \cup packing, W, H, D}$;
                 \If{$score > bestScore$}
                     \State $bestScore \gets score$;
