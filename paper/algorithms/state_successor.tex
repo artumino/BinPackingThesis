@@ -1,0 +1,31 @@
+\begin{algorithm}[ht] \label{algo:state_successor}
+    \DontPrintSemicolon
+    \SetAlgoLined
+    \SetKwInOut{Input}{input}
+    \SetKwInOut{Output}{output}
+    \Input{$S$}
+    \Output{$S_{new}$}
+    \ForAll{$s \in S$}{
+        $S_{new} \leftarrow \emptyset$\;
+        $I_{family} \leftarrow GroupByFamily(s.Unpacked)$\;
+        %$minPlacement \leftarrow \{(b, 0) | \forall b \in s.Bins \}$\;
+        $placed \leftarrow false$\;
+        \ForAll{$(family, I) \in I_{family}$}{
+            \ForAll{$bin \in s.Bins$}{
+                $placement \leftarrow SPBestInsertion(s, bin, I)$ (Algorithm \ref{algo:sp_bestinsertion})\;
+                \If{$placement \neq \emptyset$}{
+                    $placed \leftarrow true$\;
+                    %$minPlacement(bin) \leftarrow min(minPlacement(bin), placement.z)$\;
+                    %TODO abuso di notazione
+                    $S_{new} \leftarrow S_{new} \cup Next(s, placement)$\;
+                }
+            }
+        }
+        \If{$placed = false$}{
+            $S_{new} \leftarrow S_{new} \cup OpenNewBin(s)$\;
+        }
+        %TODO Filter?
+    }
+    \Return{$S_{new}$}
+    \caption{Expand}
+\end{algorithm}

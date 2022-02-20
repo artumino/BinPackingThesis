@@ -1,0 +1,74 @@
+\documentclass[11pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{placeins}
+
+% Eventual math formulas
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Graphic elements
+\usepackage{graphicx}
+\usepackage{tikz}
+
+% Citations
+\usepackage{csquotes}
+\usepackage[english]{babel}
+\usepackage[minbibnames=1, maxbibnames=99]{biblatex}
+
+% Algorithms
+\usepackage[ruled,vlined]{algorithm2e}
+
+% Links on the table of contents
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\usetikzlibrary{shapes.geometric}
+
+\addbibresource{literature.bib}
+
+\begin{document}
+    \input{frontpage}
+
+    \newpage\null\thispagestyle{empty}\newpage
+
+    %Dedications go here
+
+    \newpage\null\thispagestyle{empty}\newpage
+
+    \input{acknowledgements}
+
+    \newpage\null\thispagestyle{empty}\newpage
+
+    \input{abstract}
+
+    \newpage
+
+    %Keywords?
+
+    \tableofcontents
+
+    \listoffigures
+
+    \listoftables
+
+    \input{introduction}
+
+    \input{literature}
+
+    \input{problem}
+
+    \input{heuristics}
+
+    \input{experiments}
+
+    \input{conclusions}
+\end{document}
