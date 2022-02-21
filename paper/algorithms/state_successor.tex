@@ -1,4 +1,4 @@
-\begin{algorithm}[ht] \label{algo:state_successor}
+\begin{algorithm}[H] \label{algo:state_successor}
     \DontPrintSemicolon
     \SetAlgoLined
     \SetKwInOut{Input}{input}
@@ -16,7 +16,7 @@
                 \If{$placement \neq \emptyset$}{
                     $placed \leftarrow true$\;
                     %$minPlacement(bin) \leftarrow min(minPlacement(bin), placement.z)$\;
-                    %TODO abuso di notazione
+                    %TODO: abuso di notazione
                     $S_{new} \leftarrow S_{new} \cup Next(s, placement)$\;
                 }
             }
@@ -24,7 +24,7 @@
         \If{$placed = false$}{
             $S_{new} \leftarrow S_{new} \cup OpenNewBin(s)$\;
         }
-        %TODO Filter?
+        %TODO: Filter?
     }
     \Return{$S_{new}$}
     \caption{Expand}

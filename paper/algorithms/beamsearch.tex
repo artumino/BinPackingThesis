@@ -1,4 +1,4 @@
-\begin{algorithm}[ht] \label{algo:beamsearch}
+\begin{algorithm}[H] \label{algo:beamsearch}
     \DontPrintSemicolon
     \SetAlgoLined
     \SetKwInOut{Input}{input}
@@ -12,7 +12,7 @@
         $S_{final} \leftarrow S_{final} \cup \{s_i \in S_{new} | IsFinal(s_i) \}$\;
         $S_{new} \leftarrow S_{new} \setminus S_{final}$\;
         $S_{new} \leftarrow Sort(S_{new})$\;
-        $S \leftarrow \{s_i \in S_{new} | i \in \mathbb{Z}^+ \land i \le k \}$\;
+        $S \leftarrow \{Commit(s_i) \in S_{new} | i \in \mathbb{Z}^+ \land i \le k \}$\;
     }
     $S_{final} \leftarrow Sort(S_{final})$\;
     \Return{$s_0 \in S_{final}$}

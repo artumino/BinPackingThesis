@@ -4,27 +4,38 @@ Beam Search (BS) %TODO: maybe add info on literature
 is an heuristic graph search algorithm designed for systems with limited memory where expanding every possible node is unfeasible.
 The idea behind BS is to conduct a iterative truncated breadth-first search where, at each iteration, expanded nodes are ranked based on an heuristic and only the best ones are further explored.
 To perform BS one must define the node structure, an expansion function to generate new nodes from an existing one, an evaluation function to compare nodes between eachother and a function to determine if a node is a solution to the problem.
-Let $s_i$ be a node in the graph of possible solutions of the 3DBPP, %TODO 3DBPP o 3DSPP?
+Let $s_i$ be a node in the graph of possible solutions of the 3DBPP, %TODO: 3DBPP o 3DSPP?
 $s_i$ can be seen as an instance of the problem where a sequence of placements has taken place.
 An expansion of a node $s_i$ generates a new node $s_j$ where a placement has occured for a given set of items.
-Since the expansion function would generate a combinatorial number of nodes, each node will be expanded based on an expansion heuristic designed for the problem.
+Since evaluating possible expansions can be computationally easier than computing new node data structures, %TODO: Explain better
+a $Commit$ function is defined which applies a pre-computed expansion by updating the supporting data structures in its node.
+%TODO: Explain Commit
 The described procedure is rappresented by algorithm \ref{algo:beamsearch}.
 
 \input{algorithms/beamsearch}
 
+Given a set of nodes the $Expand$ function computes new nodes that equate to possible placements that can be made starting from a given packing.
+Each node contains a number of supporting data structures that are updated across iterations by the $Commit$ function.
+%TODO: Describe some structures like s.Unpacked, s.Bins
+Let $s.Bins$ be the set of opened bines in the packing instance rapresented by node $s$ and $s.Unpacked$ be the set of items that needs to be packed.
+Let $GroupBtFamily(I)$ be a function which operates on a set of items and outputs a set of tuple $(family, I)$ where $family$ is the family of the set $I$ of items. %TODO: Explain better
+A new set of nodes can be computed by using an underlying 3DSPP heuristic which evaluates the best move for each family of items for each currently opened bin.
+The described procedure is detailed in algorithm \ref{algo:state_successor}  
 
 \input{algorithms/state_successor}
 
 \subsection{Scoring States}\label{chapter:heuristics:beamsearch:scoring}
 In order to sort nodes, a scoring function needs to be defined over the nodes. 
-To allow the BS to explore better solutions the scoring function can't be as flat as the objective function defined in the mathematical formulation of the problem. %TODO aggiungere ref
+To allow the BS to explore better solutions the scoring function can't be as flat as the objective function defined in the mathematical formulation of the problem. %TODO: aggiungere ref
 
 \section{Support Plane}\label{chapter:heuristics:supportplane}
 Support Plane (SP) is an heuristic introduced in this thesis based on an underlying 2DBPP heuristic which is used to evaluate feasible expansions of a given node in the BS.
 The proposed heuristic ensures that the constraint of support isn't violated.
 The idea at the base of SP is to build a solution to the 3DSPP by filling 2D planes called support planes.
-Each support plane can be characterized by the triple $S_z = (z, I_{support}, I_{upper})$ where $z$ is the height of the plane, $I_{support}$ is the set of the items that can offer support to items placed on the plane %TODO link to support
+Each support plane can be characterized by the triple $S_z = (z, I_{support}, I_{upper})$ where $z$ is the height of the plane, $I_{support}$ is the set of the items that can offer support to items placed on the plane %TODO: link to support
 and $I_{upper}$ is the set of items that will be obstacles to potential new items placed on it.
+
+\input{algorithms/supportplane}
 
 \section{AABB Tree}\label{chapter:heuristics:aabbtree}
 
