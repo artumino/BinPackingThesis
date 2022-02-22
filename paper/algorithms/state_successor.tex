@@ -7,12 +7,12 @@
     \Output{$S_{new}$}
     \ForAll{$s \in S$}{
         $S_{new} \leftarrow \emptyset$\;
-        $I_{family} \leftarrow GroupByFamily(s.Unpacked)$\;
+        $I_{family} \leftarrow GroupByFamily(unpacked)$\;
         %$minPlacement \leftarrow \{(b, 0) | \forall b \in s.Bins \}$\;
         $placed \leftarrow false$\;
         \ForAll{$(family, I) \in I_{family}$}{
-            \ForAll{$bin \in s.Bins$}{
-                $placement \leftarrow SPBestInsertion(s, bin, I)$ (Algorithm \ref{algo:sp_bestinsertion})\;
+            \ForAll{$bin \in bins$}{
+                $placement \leftarrow SPBestInsertion(s_b, I)$ (Algorithm \ref{algo:sp_bestinsertion})\;
                 \If{$placement \neq \emptyset$}{
                     $placed \leftarrow true$\;
                     %$minPlacement(bin) \leftarrow min(minPlacement(bin), placement.z)$\;

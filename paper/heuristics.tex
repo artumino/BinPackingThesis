@@ -14,10 +14,15 @@ The described procedure is rappresented by algorithm \ref{algo:beamsearch}.
 
 \input{algorithms/beamsearch}
 
-Given a set of nodes the $Expand$ function computes new nodes that equate to possible placements that can be made starting from a given packing.
+The $Expand$ function computes new nodes which rappresent possible placements that can be made starting from a given packing.
 Each node contains a number of supporting data structures that are updated across iterations by the $Commit$ function.
 %TODO: Describe some structures like s.Unpacked, s.Bins
-Let $s.Bins$ be the set of opened bines in the packing instance rapresented by node $s$ and $s.Unpacked$ be the set of items that needs to be packed.
+Let $S$ be the set of nodes that need to be expanded, each node $s$ is rappresented by a structure which contains
+\begin{itemize}
+    \item[--] $bins$: the set of open bins
+    \item[--] $unpacked$: the set of items that aren't assigned to any bin
+    \item[--] $s_b$: a substructure which cointains informations about a bin $b$
+\end{itemize}
 Let $GroupBtFamily(I)$ be a function which operates on a set of items and outputs a set of tuple $(family, I)$ where $family$ is the family of the set $I$ of items. %TODO: Explain better
 A new set of nodes can be computed by using an underlying 3DSPP heuristic which evaluates the best move for each family of items for each currently opened bin.
 The described procedure is detailed in algorithm \ref{algo:state_successor}  
@@ -32,11 +37,33 @@ To allow the BS to explore better solutions the scoring function can't be as fla
 Support Plane (SP) is an heuristic introduced in this thesis based on an underlying 2DBPP heuristic which is used to evaluate feasible expansions of a given node in the BS.
 The proposed heuristic ensures that the constraint of support isn't violated.
 The idea at the base of SP is to build a solution to the 3DSPP by filling 2D planes called support planes.
-Each support plane can be characterized by the triple $S_z = (z, I_{support}, I_{upper})$ where $z$ is the height of the plane, $I_{support}$ is the set of the items that can offer support to items placed on the plane %TODO: link to support
-and $I_{upper}$ is the set of items that will be obstacles to potential new items placed on it.
+Each support plane can be characterized by the triple $S_z = (z, I_{support}, I_{upper})$ where
+\begin{itemize}
+    \item[--] $z$: the height of the plane 
+    \item[--] $I_{support}$: the set of the items that can offer support to items placed on the plane
+    \item[--] $I_{upper}$: the set of items that will be obstacles to potential new items placed on the plane 
+\end{itemize}%TODO: link to support
+Let $s_b$ be a data structure containing
+%TODO: Weight? Forbidden Cuts?
+\begin{itemize}
+    \item[--] $planes$: the set of tiples $S_z$ of currently open support planes, ordered in ascending $z$ order %TODO: define "open"
+    \item[--] $aabb$: the AABB Tree of the items placed in the evaluated bin
+    \item[--] $(W_{b}, D_{b}, H_{b})$: the dimensions of the bin
+\end{itemize}
+Let $coords$ be the set of possible coordinate changes which allow for the problem to evaluate placements starting from different corners of the bin. %TODO: leave this here?
+%TODO: Maybe explicit rotation?
+Given a function $IsFeasible(i, bin, I_{support}, I_{upper}, aabb)$ which evaluates if a packing of item $i$ in bin $bin$ is feasible,
+and the function $ComparePacking(p, p^\prime)$ which defines a ranking over placements in the same plane.
+The SP algorithm can be written as algorithm \ref{algo:sp_bestinsertion}.
+%TODO: Too many "let"?
 
 \input{algorithms/supportplane}
 
 \section{AABB Tree}\label{chapter:heuristics:aabbtree}
+
+In order to check the feasibility of a given insertion,
+a way of checking for intersections is needed.
+Since every box in a solution is axis aligned and defined by a static bounding box an Axis Aligned Bounding Box Tree (AABB Tree) is constructed and updated throughout the various nodes of the search.
+AABB Trees are an accelleration structure which allows the computation of intersections given a bounding box with a time complexity of $O(\log{n})$ where $n$ is the number of items placed.
 
 \section{Max Rects}\label{chapter:heuristics:maxrects}
