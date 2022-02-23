@@ -5,7 +5,7 @@ is an heuristic graph search algorithm designed for systems with limited memory 
 The idea behind BS is to conduct a iterative truncated breadth-first search where, at each iteration, expanded nodes are ranked based on an heuristic and only the best ones are further explored.
 To perform BS one must define the node structure, an expansion function to generate new nodes from an existing one, an evaluation function to compare nodes between eachother and a function to determine if a node is a solution to the problem.
 
-Let $s_i$ be a node in the graph of possible solutions of the 3DBPP, %TODO: 3DBPP o 3DSPP?
+Let $s_i$ be a node in the graph of possible solutions of the 3DBPP,
 $s_i$ can be seen as an instance of the problem where a sequence of placements has taken place.
 An expansion of a node $s_i$ generates a new node $s_j$ where a placement has occured for a given set of items.
 Since evaluating possible expansions can be computationally easier than computing new node data structures, %TODO: Explain better
@@ -17,7 +17,7 @@ Given $S_{init}$ the set of initial nodes to start from and $k$ the number of be
 
 The $Expand$ function computes new nodes which rappresent possible placements that can be made starting from a given packing.
 Each node contains a number of supporting data structures that are updated across iterations by the $Commit$ function.
-%TODO: Describe some structures like s.Unpacked, s.Bins
+
 Let $S$ be the set of nodes that need to be expanded, each node $s$ is rappresented by a structure which contains
 \begin{itemize}
     \item[--] $bins$: the set of open bins

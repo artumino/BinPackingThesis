@@ -7,7 +7,7 @@
     \Input{$s_b, I, z, z_{min}, t$}
     \Output{$s^\prime_b$}
     \CommentSty{//Filter bad planes}\;
-    $P^\prime \leftarrow planes \setminus \{ \forall S_z \in planes : z \le z_{min} \}$\;
+    $P^\prime \leftarrow planes \setminus \{ S_z \in planes : z \le z_{min} \}$\;
     \CommentSty{//Apply insertion}\;
     $B \leftarrow placed \cup I$\;
     $U \leftarrow unpacked \setminus I$\;
