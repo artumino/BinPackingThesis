@@ -59,11 +59,22 @@ The SP algorithm can be written as algorithm \ref{algo:sp_bestinsertion}.
 
 \input{algorithms/supportplane}
 
-\section{AABB Tree}\label{chapter:heuristics:aabbtree}
+Once the $k$ best nodes are selected the placements evaluated for each node are applied and the $Commit$ function updates every datastructure in $S$, including the ones used by SP.
+Given the instance that generated one of the placements selected and $p$ the current set of support planes, $z_{min}$ the minimum $z$ coordinate for which a placement was made in the related bin starting from the current state, $I$ the set of items placed, $U$ the set of items unpacked.
+Since placements are evaluated in order starting from the lower $z$ possible, if no placement was made in an open support plane with $z$ lower than $z_{min}$, the plane can be pruned to avoid further evaluations.
+The algorithm which updates the structures for a given SP instance is rappresent by algorithm \ref{algo:sp_commit}.
+
+\input{algorithms/sp_commit}
+
+\subsection{Scoring Insertions}
+
+\section{Max Rects}\label{chapter:heuristics:maxrects}
+
+\section{Feasibility}\label{chapter:heuristics:feasibility}
+
+\subsection{AABB Tree}\label{chapter:heuristics:aabbtree}
 
 In order to check the feasibility of a given insertion,
 a way of checking for intersections is needed.
 Since every box in a solution is axis aligned and defined by a static bounding box an Axis Aligned Bounding Box Tree (AABB Tree) is constructed and updated throughout the various nodes of the search.
-AABB Trees are an accelleration structure which allows the computation of intersections given a bounding box with a time complexity of $O(\log{n})$ where $n$ is the number of items placed.
-
-\section{Max Rects}\label{chapter:heuristics:maxrects}
+AABB Trees are accelleration structures which allow the computation of intersections given a bounding box with a time complexity of $O(\log{n})$ where $n$ is the number of items placed.

@@ -1,0 +1,36 @@
+\begin{algorithm}[H] \label{algo:sp_commit}
+    \DontPrintSemicolon
+    \SetAlgoLined
+    \SetKwInOut{Input}{input}
+    \SetKwInOut{Output}{output}
+    \SetSideCommentRight
+    \Input{$s_b, I, z, z_{min}, t$}
+    \Output{$s^\prime_b$}
+    \CommentSty{//Filter bad planes}\;
+    $P^\prime \leftarrow planes \setminus \{ \forall S_z \in planes : z \le z_{min} \}$\;
+    \CommentSty{//Apply insertion}\;
+    $B \leftarrow placed \cup I$\;
+    $U \leftarrow unpacked \setminus I$\;
+    $T \leftarrow aabb$\;
+    \ForAll{$i \in I$}{
+        $T \leftarrow InsertAABB(i, T)$ \CommentSty{//If balanced $O(log(n))$}\; %TODO: specify balanced
+        $generate \leftarrow true$\;
+        % O(|P'|)
+        \ForAll{$S^\prime_z \in P^\prime$}{ %TODO: specify balanced
+            \CommentSty{//Based on the distance from the top of the item}\;
+            $dz \leftarrow S^\prime_z.z - i.z_{max}$\;
+            \If{$0 \le dz \le t$}{
+                $generate \leftarrow false$\;
+                $S^\prime_z.I_{support} \leftarrow S^\prime_z.I_{support} \cup i$\;
+            } \ElseIf{$dz < 0$}{
+                $S^\prime_z.I_{upper} \leftarrow S^\prime_z.I_{upper} \cup i$\;
+            }
+        }
+
+        \If{$generate$}{
+            $P^\prime \leftarrow P^\prime \cup (i.z_{max}, \{i\}, \emptyset)$\;
+        }
+    }
+    \Return{$Update(s_b, P^\prime, B, U, T)$}
+    \caption{SP Apply and Filter}
+\end{algorithm}
