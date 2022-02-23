@@ -11,7 +11,7 @@
         \ForAll{$change \in coords$}{
             $I^\prime_{upper} \leftarrow CoordinateChange(change, I_{upper})$\;
             $I^\prime_{p} \leftarrow CoordinateChange(change, I_{p})$\;
-            $p^\prime \leftarrow MaxRectsBP(W_b, D_b, I^\prime_{upper}, I^\prime_{p})$\;
+            $p^\prime \leftarrow SPRectanglePackingWithObstacles(W_b, D_b, I^\prime_{upper}, I^\prime_{p})$\;
             $p \leftarrow CoordinateChange(change, p^\prime)$\;
         
             $p \leftarrow \{\forall i \in p : IsFeasible(i, bin, I_{support}, I_{upper}, aabb)\}$\;
