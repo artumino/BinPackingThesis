@@ -7,10 +7,10 @@
     \Output{$S_{new}$}
     \ForAll{$s \in S$}{
         $S_{new} \leftarrow \emptyset$\;
-        $I_{family} \leftarrow GroupByFamily(unpacked)$\;
+        $I_{h} \leftarrow GroupByHeight(s.unpacked)$\;
         $placed \leftarrow false$\;
-        \ForAll{$(family, I) \in I_{family}$}{
-            \ForAll{$bin \in bins$}{
+        \ForAll{$(h, I) \in I_{h}$}{
+            \ForAll{$b \in bins$}{
                 $placement \leftarrow SPBestInsertion(s_b, I)$ (Algorithm \ref{algo:sp_bestinsertion})\;
                 \If{$placement \neq \emptyset$}{
                     $placed \leftarrow true$\;

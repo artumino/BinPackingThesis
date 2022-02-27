@@ -1,11 +1,12 @@
-\chapter{Solution algorithms}\label{chapter:heuristics}
 \section{Beam Search}\label{chapter:heuristics:beamsearch}
-Beam Search (BS) %TODO: maybe add info on literature
+Beam Search (BS) %TODO: maybe add info on literature, define indices
 is an heuristic graph search algorithm designed for systems with limited memory where expanding every possible node is unfeasible.
 The idea behind BS is to conduct a iterative truncated breadth-first search where, at each iteration, expanded nodes are ranked based on an heuristic and only the best ones are further explored.
 To perform BS one must define the node structure, an expansion function to generate new nodes from an existing one, an evaluation function to compare nodes between eachother and a function to determine if a node is a solution to the problem.
 
-Let $s_i$ be a node in the graph of possible solutions of the 3DBPP,
+%TODO
+
+Let $s_i$ be a node in the graph of possible solutions of the 3DBPP, %todo change to group by height
 $s_i$ can be seen as an instance of the problem where a sequence of placements has taken place.
 An expansion of a node $s_i$ generates a new node $s_j$ where a placement has occured for a given set of items.
 Since evaluating possible expansions can be computationally easier than computing new node data structures, %TODO: Explain better
@@ -24,7 +25,8 @@ Let $S$ be the set of nodes that need to be expanded, each node $s$ is rappresen
     \item[--] $unpacked$: the set of items that aren't assigned to any bin
     \item[--] $s_b$: a substructure which cointains informations about a bin $b$
 \end{itemize}
-Let $GroupByFamily(I)$ be a function which operates on a set of items and outputs a set of tuples $(family, I)$ where $family$ is the family of the set $I$ of items. %TODO: Explain better
+%TODO: espandere GroupByHeight
+Let $GroupByHeight(I)$ be a function which operates on a set of items and outputs a set of tuples $(t, I)$ where $t$ is the family of the set $I$ of items. %TODO: Explain better
 A new set of nodes can be computed by using an underlying 3DSPP heuristic which evaluates the best move for each family of items for each currently opened bin.
 The described procedure is detailed in algorithm \ref{algo:state_successor}  
 
@@ -35,7 +37,8 @@ In order to sort nodes, a scoring function needs to be defined over the nodes.
 To allow the BS to explore better solutions the scoring function can't be as flat as the objective function defined in the mathematical formulation of the problem. %TODO: aggiungere ref
 
 \section{Support Plane}\label{chapter:heuristics:supportplane}
-Support Plane (SP) is an heuristic introduced in this thesis based on an underlying 2DBPP heuristic which is used to evaluate feasible expansions of a given node in the BS.
+%TODO far scorrere meglio
+We introduce Support Plane (SP) which is an heuristic introduced in this thesis based on an underlying 2DBPP heuristic which is used to evaluate feasible expansions of a given node in the BS.
 The proposed heuristic ensures that the constraint of support isn't violated.
 The idea at the base of SP is to build a solution to the 3DSPP by filling 2D planes called support planes.
 
