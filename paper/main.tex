@@ -99,6 +99,10 @@
 %----------------------------------------------------------------------------
 %	ADD YOUR DEFINITIONS AND COMMANDS (be careful of existing commands)
 %----------------------------------------------------------------------------
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{observation}
+\newtheorem{observation}{Observation}[section]
 
 %----------------------------------------------------------------------------
 %	BEGIN OF YOUR DOCUMENT
@@ -162,23 +166,23 @@
     \label{chapter:introduction}%
     \input{introduction}
 
-    \chapter*{Literature review}
+    \chapter{Literature review}
     \label{chapter:literature}%
     \input{literature}
 
-    \chapter*{Problem description and mathematical formulation}
+    \chapter{Problem description and mathematical formulation}
     \label{chapter:problem}%
     \input{problem}
 
-    \chapter*{Solution algorithms}
+    \chapter{Solution algorithms}
     \label{chapter:heuristics}%
     \input{heuristics}
 
-    \chapter*{Computational experiments}
+    \chapter{Computational experiments}
     \label{chapther:experiments}%
     \input{experiments}
 
-    \chapter*{Conclusions and future developments}
+    \chapter{Conclusions and future developments}
     \label{chapther:conclusions}%
     \input{conclusions}
     %FIXME: Remove

@@ -1,4 +1,60 @@
-\section{Beam Search}\label{chapter:heuristics:beamsearch}
+In this chapter we describe a solution to the 3D bin packing problem with static stability.
+A solution candidate to the problem can be found by conducting a search over the graph of possible packings or states given an approriate rappresentation which is described in section \ref{sec:problem_state}.
+Since an exaustive search isn't feasible, an heuristic search is conducted by combining a beam search algorithm described in section \ref{sec:beamsearch} and constructive heuristic described in section \ref{sec:support_planes}.
+The proposed algorithm takes in input an initial feasible state (as defined in section \ref{sec:problem_state:feasibility}) usually rappresented by the empty state (\ref{def:empty_state}) and outputs the best scoring state based on an ordering function defined in section \ref{ssec:scoring_states}.
+
+\section{State}
+\label{sec:problem_state}%
+States or packings are partial solutions to the 3DBPP. Given the formal definition of the problem (\ref{sec:milp}) a few new definitions are introduced to facilitate the algorithm's definition.
+\begin{definition}[Unpacked item]
+    Given an item $i \in I$ we define it as unpacked \textbf{iff}
+    \begin{equation*}
+        \sum_{b \in B} u_{ib} = 0
+    \end{equation*}
+\end{definition}
+A state $s$ can then be defined as follows
+\begin{itemize}
+    \item $U$: the set of unpacked items
+    \item $B$: the set of bins
+    \item $(s_1, s_2,.., s_b)$: the set of supporting structures for each bin $b \in B$
+\end{itemize}
+
+\begin{observation}
+    Given two states $s$ and $s^\prime$ we can have that $|s.B| \neq |s^\prime.B|$ since the number of bins is also a variable in the proposed heuristic
+\end{observation}
+
+Each bin $b$ has additional data used to facilitate the execution of the algorithm that is contained in $s_b$. 
+Let us introduce the concept of placement inside a bin:
+\begin{definition}[Packed item]
+    Given a state $s$ and a bin $b \in s.B$, we say that item $i \in I$ is packed in $b$ \textbf{iff} 
+    
+    \begin{equation*}
+        \left\{ 
+            \begin{aligned}
+                u_{ib} & = 1, \\
+                \sum_{j \in s.B, j \neq b}{u_{ij}} & = 0
+            \end{aligned}
+        \right.
+    \end{equation*}
+\end{definition}
+\subsection{Feasibility}
+\label{sec:problem_state:feasibility}%
+
+\begin{observation}
+    \label{def:empty_state}
+    We can always define the empty state $s_e$ where \begin{equation*}
+        \left\{ 
+            \begin{aligned}
+            s_e.U & = I \\
+            s_e.B & = \emptyset
+            \end{aligned}
+        \right.
+    \end{equation*}
+    and it is always feasible
+\end{observation}
+
+\section{Beam Search}
+\label{sec:beamsearch}%
 Beam Search (BS) %TODO: maybe add info on literature, define indices
 is an heuristic graph search algorithm designed for systems with limited memory where expanding every possible node is unfeasible.
 The idea behind BS is to conduct a iterative truncated breadth-first search where, at each iteration, expanded nodes are ranked based on an heuristic and only the best ones are further explored.
@@ -32,13 +88,15 @@ The described procedure is detailed in algorithm \ref{algo:state_successor}
 
 \input{algorithms/state_successor}
 
-\subsection{Scoring States}\label{chapter:heuristics:beamsearch:scoring}
+\subsection{Scoring States}
+\label{ssec:scoring_states}%
 In order to sort nodes, a scoring function needs to be defined over the nodes. 
 To allow the BS to explore better solutions the scoring function can't be as flat as the objective function defined in the mathematical formulation of the problem. %TODO: aggiungere ref
 
-\section{Support Plane}\label{chapter:heuristics:supportplane}
+\section{Support Planes}
+\label{sec:support_planes}%
 %TODO far scorrere meglio
-We introduce Support Plane (SP) which is an heuristic introduced in this thesis based on an underlying 2DBPP heuristic which is used to evaluate feasible expansions of a given node in the BS.
+We introduce Support Planes (SP) which is an heuristic introduced in this thesis based on an underlying 2DBPP heuristic which is used to evaluate feasible expansions of a given node in the BS.
 The proposed heuristic ensures that the constraint of support isn't violated.
 The idea at the base of SP is to build a solution to the 3DSPP by filling 2D planes called support planes.
 
@@ -86,9 +144,7 @@ The algorithm which updates the structures for a given SP instance is rappresent
 
 \section{Max Rects}\label{chapter:heuristics:maxrects}
 
-\section{Feasibility}\label{chapter:heuristics:feasibility}
-
-\subsection{AABB Tree}\label{chapter:heuristics:aabbtree}
+\subsection{AABB Tree}\label{sec:aabbtree}
 
 In order to check the feasibility of a given insertion,
 a way of checking for intersections is needed.
