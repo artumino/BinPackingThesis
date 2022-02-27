@@ -1,1 +1,71 @@
 \section{3D Bin Packing Problem}
+
+\section{Support} %TODO: Here or in introduction?
+
+\section{MILP Formulation}
+\label{sec:milp}%
+\subsection*{Conceptual model}
+A conceptual model of the problem we are trying to solve would be:
+
+%TODO: Cage Ratio?
+\begin{align*}
+    \textbf{minimize} \hspace{.5cm}   & \text{unused volume in used bins} \\
+    \textbf{subject to} \hspace{.5cm} & \text{all items assigned to one and only one bin} \\
+                                      & \text{all items within the bin dimensions} \\
+                                      & \text{no overlaps between items in the same bin} \\
+                                      & \text{all items with support} \\
+\end{align*}
+
+We can now provide the formal definition of the 3DBPP by formulating a mixed integer linear programming problem model.
+
+\subsection*{Formal model}
+Let us consider now the standard 3DBPP problem definition and define a formal model which we'll expand with additional constraints in the following sections.
+
+We start by defining the known sets and parameters of the problem.
+\paragraph*{Sets}
+\begin{align*}
+    I = \{1,\dots, n \}: \hspace{.5cm}& \text{set of items} \\
+    B = \{1,\dots, m \}: \hspace{.5cm}& \text{set of bins} 
+\end{align*}
+\paragraph*{Parameters}
+\begin{align}
+          W \times D \times H  \hspace{.5cm}& \text{width $\times$ depth $\times$ height of a bin} \notag \\
+                            V  \hspace{.5cm}& \text{bin volume} \notag \\
+    w_i \times d_i \times h_i  \hspace{.5cm}& \text{width $\times$ depth $\times$ height of item $i$} & \forall i \in I \label{par:item_dim}
+\end{align}
+
+\paragraph*{Variables} We can now introduce the following sets of integer variables
+\begin{align}
+              (x_i,y_i,z_i) \hspace{.5cm}& \text{bottom front left corner of an item} & \forall i \in I \label{var:item_pos} \\
+    (x^\prime_i,y^\prime_i) \hspace{.5cm}& \text{back right corner of an item} & \forall i \in I \label{var:item_back_pos} \\
+                        r_i \hspace{.5cm}& \begin{cases}
+                                            1, \text{if item $i$ is rotated 90° over its z-axis} \\ 
+                                            0, \text{otherwise}
+                                        \end{cases} & \forall i \in I \label{var:item_rot} \\
+                    u_{ib} \hspace{.5cm}& \begin{cases}
+                                            1, \text{if item $i$ is placed in bin $b$} \\ 
+                                            0, \text{otherwise}
+                                        \end{cases} & \forall i \in I, \forall b \in B \notag \\
+                    x^p_{ij} \hspace{.5cm}& \begin{cases}
+                                            1, \text{if $x_i \le x^\prime_j$} \\ 
+                                            0, \text{otherwise}
+                                        \end{cases} & \forall i,j \in I \notag \\
+                    y^p_{ij} \hspace{.5cm}& \begin{cases}
+                                            1, \text{if $y_i \le y^\prime_j$} \\ 
+                                            0, \text{otherwise}
+                                        \end{cases} & \forall i,j \in I \notag \\
+                    z^p_{ij} \hspace{.5cm}& \begin{cases}
+                                            1, \text{if $z_i \le z_j + h_j$} \\ 
+                                            0, \text{otherwise}
+                                        \end{cases} & \forall i,j \in I \notag \\
+            z_b^\text{max} \hspace{.5cm}& \text{maximum height of bin $b$} & \forall b \in B \notag
+\end{align}
+
+Given a coordinate system, each item $i$ can be rappresented univocally in 3D space by \cref{par:item_dim,var:item_pos,var:item_back_pos,var:item_rot} as seen in figure \ref{fig:coordinate_system}
+\begin{figure}
+    \scalebox{0.65}{%
+    \input{Images/coordinate_system}
+    }
+    \caption{Coordinate system rappresentation for a generic item $i$ given its rotation $r_i$ 
+    \label{fig:coordinate_system}}
+\end{figure}
