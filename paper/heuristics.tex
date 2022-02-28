@@ -1,5 +1,5 @@
 In this chapter we describe a solution to the 3D bin packing problem with static stability.
-A solution candidate to the problem can be found by conducting a search over the graph of possible packings or states given an approriate rappresentation which is described in section \ref{sec:problem_state}.
+A solution candidate to the problem can be found by conducting a search over the tree of possible packings or states. In section \ref{sec:problem_state} we describe what a state or packing is and its rappresentation.
 Since an exaustive search isn't feasible, an heuristic search is conducted by combining a beam search algorithm described in section \ref{sec:beamsearch} and constructive heuristic described in section \ref{sec:support_planes}.
 The proposed algorithm takes in input an initial feasible state (as defined in section \ref{sec:problem_state:feasibility}) usually rappresented by the empty state (\ref{def:empty_state}) and outputs the best scoring state based on an ordering function defined in section \ref{ssec:scoring_states}.
 
@@ -23,22 +23,89 @@ A state $s$ can then be defined as follows
     Given two states $s$ and $s^\prime$ we can have that $|s.B| \neq |s^\prime.B|$ since the number of bins is also a variable in the proposed heuristic
 \end{observation}
 
-Each bin $b$ has additional data used to facilitate the execution of the algorithm that is contained in $s_b$. 
-Let us introduce the concept of placement inside a bin:
-\begin{definition}[Packed item]
-    Given a state $s$ and a bin $b \in s.B$, we say that item $i \in I$ is packed in $b$ \textbf{iff} 
-    
-    \begin{equation*}
-        \left\{ 
-            \begin{aligned}
-                u_{ib} & = 1, \\
-                \sum_{j \in s.B, j \neq b}{u_{ij}} & = 0
-            \end{aligned}
+We can also trivially define a function which determines if a state is a final state
+\begin{definition}
+    A state $s$ is final if there are no more items to pack
+    \begin{equation}
+        \label{algo:state_final}%
+        IsFinal(s) = \left\{\begin{aligned}
+            1,\hspace{0.5cm}& s.U = \emptyset \\
+            0,\hspace{0.5cm}& \text{otherwhise}
+        \end{aligned}
         \right.
+    \end{equation}
+\end{definition}
+
+Each bin $b$ has additional data that is contained in a structure $s_b$ used to facilitate the execution of the algorithm. 
+
+Let us introduce the concept of packed items inside a bin:
+\begin{definition}[Packed item]
+    Given a state $s$ and a bin $b \in s.B$, we say that item
+    \begin{equation*}
+        \begin{aligned}
+            i \in I \hspace{.2cm}\text{is packed in} \hspace{.2cm}b \hspace{.2cm}& \textbf{iff} \hspace{.2cm}& \left\{ 
+                \begin{aligned}
+                    u_{ib} & = 1, \\
+                    \sum_{j \in s.B, j \neq b}{u_{ij}} & = 0
+                \end{aligned}
+            \right.
+        \end{aligned}
     \end{equation*}
 \end{definition}
+
+Given a bin $b \in s.B$ we can then define his supporting structure $s_b$ as follows
+\begin{itemize}
+    \item $J$: the set of items that are packed inside $b$
+    \item $Z$: the set of planes inside $b$ (section \ref{sec:support_planes})
+    \item $T$: the AABB Tree (section \ref{sec:problem_state:aabbtree}) rappresenting the items inside $b$
+\end{itemize}
+
+Notice that two separate sets are present inside $s_b$ since adding and accessing items in $s_b.J$ has time complexity of $O(1)$ given an underlying implementation as hashset while mantaining $s_b.T$ usually has a time complexity of $O(log(|s_b.J|))$.
+
+The reason to include an AABB Tree inside this structure is further explained in sections \ref{sec:problem_state:feasibility} and \ref{ssec:scoring_insertions}
+
+\subsection{AABB Tree}
+\label{sec:problem_state:aabbtree}%
+
+In order to determine the feasibility of a given state, a way of checking for overlaps with items already placed is needed.
+Since our formulation of the problem only allows for $90\deg$ rotations over the z-axis. Every item in a solution, by the problem formulation (\ref{fig:coordinate_system}), is contained inside a bounding box and this box is axis-aligned.
+An adequate structure to compute overlaps is then an Axis-Aligned Bounding Box Tree (AABB Tree) \cite{bergen1997efficient}.
+
+AABB Trees are a bounding volume hierarchies tipically used for fast collision detection and they usually offer a few operations:
+\begin{itemize}
+    \item $AABBInsert(i)$: which allows to insert an axis-aligned box $i$ in the tree
+    \item $AABBOverlaps(i)$: which allows to determine if an axis-aligned box $i$ overlaps an element in the tree
+    \item $AABBClosest(i, d)$: which given an axis-aligned box $i$ and a direction $d \in \{ XP, XN, YP, YN, ZP, ZN \}$ along an axis, returns the closest element inside the tree following that direction starting from the box $i$
+    %TODO: Check this
+\end{itemize}
+
+If the tree is properly balanced each operation on avarage has a time complexity of $O(log(n))$ where $n$ is the number of elements in the tree.
+
+Mantaining an AABB Tree in the state allows us to do checks for feasibility during the construction of a solution (as detailed in \ref{ssec:scoring_insertions} ) and feasibility checks on the final states to allow for error detection.
+
 \subsection{Feasibility}
 \label{sec:problem_state:feasibility}%
+A state $s$ is said to be feasible if the currently packed items for every bin $b \in s.B$ respects the constraints defined in the problem formulation (\ref{sec:milp})
+
+Since the proposed heuristic is constructive it is more convenient to define the concept of feasibility relative to a change in the state.
+
+\begin{definition}[Insertion]
+    Given a state $s$ and a tollerance $\beta_s$ we define an insertion or placement $P$ a tuple $(b, I^\prime)$ where $b$ is a bin and $I^\prime$ is a set of items that are going to be packed in $b$ such that, $I^\prime \subseteq s.U \land \exists (z \in \mathbb{Z} : \forall i \in I^\prime |z_i - z| \le \beta_s)$
+\end{definition}
+
+\begin{observation}
+    Given $s$ and $P = (b, \emptyset)$ where $b \notin s.B$, $P$ is insertion which will open bin $b$ in $s$.
+\end{observation}
+
+%TODO: Continue with definition of feasibility for sets already made and feasibility of an insertion
+
+%TODO: Give a brief description on how to use the AABB to computer the feasibility of a given state instead
+
+%TODO: Define commit
+
+\begin{proposition}
+    A state $s^\prime$ derived by committing a feasible insertion $P$ to state $s$, is feasible.
+\end{proposition}
 
 \begin{observation}
     \label{def:empty_state}
@@ -58,9 +125,10 @@ Let us introduce the concept of placement inside a bin:
 Beam Search (BS) %TODO: maybe add info on literature, define indices
 is an heuristic graph search algorithm designed for systems with limited memory where expanding every possible node is unfeasible.
 The idea behind BS is to conduct a iterative truncated breadth-first search where, at each iteration, expanded nodes are ranked based on an heuristic and only the best ones are further explored.
-To perform BS one must define the node structure, an expansion function to generate new nodes from an existing one, an evaluation function to compare nodes between eachother and a function to determine if a node is a solution to the problem.
+To perform BS one must define the node structure, an expansion function to generate new nodes from existing ones, a ranking between nodes and a function to determine if a node is final.
 
-%TODO
+By using as node structure the state defined in \ref{sec:problem_state} and function \ref{algo:state_final} to define if a node is final we can define the next state $s^\prime$ starting from state $s$ as a new state .
+
 
 Let $s_i$ be a node in the graph of possible solutions of the 3DBPP, %todo change to group by height
 $s_i$ can be seen as an instance of the problem where a sequence of placements has taken place.
@@ -141,12 +209,4 @@ The algorithm which updates the structures for a given SP instance is rappresent
 \input{algorithms/sp_commit}
 
 \subsection{Scoring Insertions}
-
-\section{Max Rects}\label{chapter:heuristics:maxrects}
-
-\subsection{AABB Tree}\label{sec:aabbtree}
-
-In order to check the feasibility of a given insertion,
-a way of checking for intersections is needed.
-Since every box in a solution is axis aligned and defined by a static bounding box an Axis Aligned Bounding Box Tree (AABB Tree) is constructed and updated throughout the various nodes of the search.
-AABB Trees are accelleration structures which allow the computation of intersections given a bounding box with a time complexity of $O(\log{n})$ where $n$ is the number of items placed.
+\label{ssec:scoring_insertions}%
