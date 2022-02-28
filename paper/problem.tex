@@ -19,6 +19,7 @@ A conceptual model of the problem we are trying to solve would be:
 We can now provide the formal definition of the 3DBPP by formulating a mixed integer linear programming problem model.
 
 \subsection*{Formal model}
+\label{ssec:formal_model}
 We'll now introduce a MILP model for the standard 3DBPP problem definition and then we'll expand it to address the stability constraint afterwards.
 
 We start by defining the known sets and parameters of the problem.
@@ -69,3 +70,13 @@ Given a coordinate system, each item $i$ can be rappresented univocally in 3D sp
     \caption{Coordinate system rappresentation for a generic item $i$ given its rotation $r_i$ 
     \label{fig:coordinate_system}}
 \end{figure}
+
+\subsection*{Introducing static stability}
+
+We now extend the model introduced in \cref{ssec:formal_model} to introduce constraint addressing static stability.
+
+\paragraph*{Additional Parameters}
+\begin{align*}
+    \alpha_s  :\hspace{.5cm}& \text{support area threshold} \\
+    \beta_s  :\hspace{.5cm}& \text{support height tollerance} 
+\end{align*}
