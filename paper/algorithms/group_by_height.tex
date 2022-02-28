@@ -1,0 +1,24 @@
+\begin{algorithm}[H] \label{algo:group_by_height}
+    \DontPrintSemicolon
+    \SetAlgoLined
+    \SetKwInOut{Input}{input}
+    \SetKwInOut{Output}{output}
+    \Input{$I, \beta_s$}
+    \Output{$G$}
+    $G \gets \emptyset$\;
+    \ForAll{$i \in I$}{
+        $generate \gets \text{true}$\;
+        \ForAll{$(h, I^\prime) \in G$}{
+            \If{$|h_i - h| \le \beta_s$}{
+                $generate \gets \text{false}$\;
+                $I^\prime \gets I^\prime \cup i$\;
+                break\;
+            }
+        }
+        \If{$generate = \text{true}$}{
+            $G \gets G \cup (h_i, \{ i \})$\;
+        }
+    }
+    \Return{$G$}
+    \caption{Group By Height}
+\end{algorithm}
