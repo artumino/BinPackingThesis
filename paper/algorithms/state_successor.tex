@@ -7,22 +7,24 @@
     \Output{$S_{new}$}
     \ForAll{$s \in S$}{
         $S_{new} \leftarrow \emptyset$\;
-        $I_{h} \leftarrow GroupByHeight(s.unpacked)$\;
+        $G \leftarrow GroupByHeight(s.U)$ (algo. \ref{algo:group_by_height})\;
         $placed \leftarrow false$\;
-        \ForAll{$(h, I) \in I_{h}$}{
-            \ForAll{$b \in bins$}{
-                $placement \leftarrow SPBestInsertion(s_b, I)$ (Algorithm \ref{algo:sp_bestinsertion})\;
-                \If{$placement \neq \emptyset$}{
+        \ForAll{$(h, I) \in G$}{
+            \ForAll{$b \in s.B$}{
+                $P \leftarrow SPBestInsertion(s_b, I)$ (algo. \ref{algo:sp_bestinsertion})\;
+                \If{$P \neq \emptyset$}{
                     $placed \leftarrow true$\;
                     %TODO: abuso di notazione
-                    $S_{new} \leftarrow S_{new} \cup Next(s, placement)$\;
+                    \ForAll{$p \in P$}{
+                        $S_{new} \leftarrow S_{new} \cup Next(s, p)$ (def. \ref{def:state_next})\;
+                    }
                 }
             }
         }
         \If{$placed = false$}{
-            $S_{new} \leftarrow S_{new} \cup OpenNewBin(s)$\;
+            \CommentSty{Open a new bin with index $|s.B|$ (oss. \ref{oss:state_bin_open})}\;
+            $S_{new} \leftarrow S_{new} \cup Next(s, (|s.B|, \emptyset))$\;
         }
-        %TODO: Filter?
     }
     \Return{$S_{new}$}
     \caption{Expand}

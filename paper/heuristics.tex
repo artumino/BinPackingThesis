@@ -104,6 +104,7 @@ Given a state $s$ and $b \in s.B$, an insertion of items is a set of items that 
 \end{definition}
 
 \begin{observation}
+    \label{oss:state_bin_open}
     Given $s$ and $p = (b, \emptyset)$ where $b \notin s.B$, $p$ is an insertion which will open bin $b$ in $s$.
 \end{observation}
 
@@ -176,24 +177,34 @@ An expansion of a state $s$ can be seen as a new set of nodes $S_{new}$ that is 
 In order to determine these insertion an underlying heuristic is used (described in \cref{sec:support_planes}).
 
 %TODO: Citation needed? Maybe search in martello, vigo
+%TODO: We can call this greedy
 The main idea in this phase of the algorithm is to find feasible insertions in all the bins for items that still need to be packed and that are of the same height.
 With this approach the solutions given by the algorithm will start by trying to fill layers with items of the same height if possible.
 
-The underlying heuristic introduced will also use a scoring mechanism to select the best instertions for a given class of heights in order to avoid having too many states.
+The underlying heuristic will also use a scoring mechanism to select the best instertions for a given class of heights in order to avoid having too many states.
 
 Given a set of items $I$ and a tollerance $\beta_s$ we can introduce an algorithm to group them by height and produce a set $G$ of tuples $(h, I^\prime)$ where $h$ is the height of the group and $I^\prime$ is the set of items grouped as \cref{algo:group_by_height}.
 
 \input{algorithms/group_by_height}
 
-The described procedure is detailed in algorithm \ref{algo:state_successor}  
+Once items are grouped by height the best insertion foreach class of items can be computed for each open bin. If no insertion is possible in any bin, then the only viable expansion is the bin opening insertion (\cref{oss:state_bin_open}).
+The described procedure is detailed in \cref{algo:state_successor}.
 
 \input{algorithms/state_successor}
 
 \subsection{Scoring States}
 \label{ssec:scoring_states}%
 In order to sort states, a scoring function needs to be defined over them.
-By observing the differences between states we note that we can  
-To allow the BS to explore better solutions the scoring function can't be as flat as the objective function defined in the mathematical formulation of the problem. %TODO: aggiungere ref
+Since the scoring of the states is what will influence the final solution the most, parameters that are directly related to minimizing the objective function are selected.
+
+In the proposed solution to handle multiple objective functions a lexicographic ordering is used.
+\begin{definition}
+    %TODO: Citation needed for the BRKGA-MP-IPR paper
+    \label{def:lexicographic_ordering}
+    Let $f_1(s), f_2(s), f_i(s), \dots, f_n(s)$ be objective functions ordered by precedence based on index $i$, then $s < s^\prime$ \textbf{iff} $f_1(s) < f_1(s^\prime)$ or $f_1(s) = f_1(s^\prime), \dots, f_i(s) = f_i(s^\prime) \land f_{i+1}(s) < f_{i+1}(s^\prime)$
+\end{definition}
+
+%TODO: Introduce scoring
 
 \section{Support Planes}
 \label{sec:support_planes}%
