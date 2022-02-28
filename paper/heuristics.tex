@@ -20,7 +20,7 @@ A state $s$ can then be defined as follows
     \item $U$: the set of unpacked items
     \item $B$: the set of bins
     \item $(s_1, s_2,\dots, s_b)$: the set of supporting structures for each bin $b \in B$
-    \item $P$: the set of insertions pending on this state (described by def. \ref{def:insertion})
+    \item $p$: the insertion pending on this state (described by def. \ref{def:insertion})
 \end{itemize}
 
 \begin{observation}
@@ -29,6 +29,7 @@ A state $s$ can then be defined as follows
 
 We can also trivially define a function which determines if a state is a final state
 \begin{definition}
+    \label{def:state_final}
     A state $s$ is final if there are no more items to pack
     \begin{equation}
         \label{algo:state_final}%
@@ -108,7 +109,7 @@ Given a state $s$ and $b \in s.B$, an insertion of items is a set of items that 
 
 \begin{definition}[Next]
     \label{def:state_next}%
-    Let $p$ be an insertion over a state $s$ we can then define $s^\prime = Next(s, p)$ as the "copy" of state $s$ with $s^\prime.P = s.P \cup p$. $p$ is then pending on $s^\prime$.
+    Let $p$ be an insertion over a state $s$ we can then define $s^\prime = Next(s, p)$ as the "copy" of state $s$ with $s^\prime.p = p$. And $p$ is then pending on $s^\prime$.
 \end{definition}
 
 In this way we can evaluate the changes to the score of a state based on its pending insertion without having to update all the structures for every evaluated state. This property will become apparent in section \ref{sec:beamsearch}. 
@@ -119,14 +120,20 @@ The proposed algorithm is shown in \ref{algo:state_commit}.
 \input{algorithms/state_commit}
 
 \paragraph*{Insertion feasibility}
+Describe insertion feasibility givine the sets defined\\
+\input{algorithms/insertion_feasible}
 %TODO: Continue with definition of feasibility for sets already made and feasibility of an insertion
 
 \paragraph*{State feasibility}
+Describe how to compute the sets efficiently to use the insertion feasibility logic\\
+\input{algorithms/state_feasible}
 %TODO: Give a brief description on how to use the AABB to computer the feasibility of a given state instead
 
 \begin{proposition}
-    A state $s^\prime$ derived by committing a feasible insertion $P$ to a feasible state $s$ is feasible.
+    \label{prop:feasible_expansion}
+    A state $s^\prime$ derived by committing a feasible insertion $p$ to a feasible state $s$ is feasible.
 \end{proposition}
+%TODO: Do I need to demonstrate this?
 
 \begin{observation}
     \label{def:empty_state}
@@ -143,21 +150,23 @@ The proposed algorithm is shown in \ref{algo:state_commit}.
 
 \section{Beam Search}
 \label{sec:beamsearch}%
-Beam Search (BS) %TODO: maybe add info on literature, define indices
-is an heuristic graph search algorithm designed for systems with limited memory where expanding every possible node is unfeasible.
-The idea behind BS is to conduct a iterative truncated breadth-first search where, at each iteration, expanded nodes are ranked based on an heuristic and only the best ones are further explored.
+Beam Search (BS) %TODO: maybe add info on literature
+is an heuristic tree search algorithm designed for systems with limited memory where expanding every possible node is unfeasible.
+The idea behind BS is to conduct an iterative truncated breadth-first search where, at each iteration, only a limited number $k$ of nodes is expanded.
+After the expansion every new node needs to be evaluated and sorted in order to prune the number of nodes down to the $k$ best ones. The algorithm keeps exploring until no further node can be expanded.
+
 To perform BS one must define the node structure, an expansion function to generate new nodes from existing ones, a ranking between nodes and a function to determine if a node is final.
 
-By using as node structure the state defined in \ref{sec:problem_state} and function \ref{algo:state_final} to define if a node is final we can define the next state $s^\prime$ starting from state $s$ as a new state .
+By using as a node the state in \cref{sec:problem_state} and \cref{algo:state_final} to define if a node is final we know that a new state $s^\prime$ derived by $s$ by applying a feasible insertion $p$ can be computed as in \cref{def:state_next}.
+This node expansion procedure, with the exception of empty insertions, will generate new nodes in our tree which we can score and will add a strictly positive number of bins or packed items to the solution so eventually it will generate a final state.
 
+Furthermore, if the starting state for the search is feasible every new state generated will be feasible and if a final state is found it will be feasible ( \cref{prop:feasible_expansion}).
 
-Let $s_i$ be a node in the graph of possible solutions of the 3DBPP, %todo change to group by height
-$s_i$ can be seen as an instance of the problem where a sequence of placements has taken place.
-An expansion of a node $s_i$ generates a new node $s_j$ where a placement has occured for a given set of items.
-Since evaluating possible expansions can be computationally easier than computing new node data structures, %TODO: Explain better
-a $Commit$ function is defined which applies a pre-computed expansion by updating the supporting data structures in its node.
+We also note that starting from node $s$ the time complexity to compute feasible insertions can be lower than the complexity required to update the structures that will be used for further expansions (AABB Tree insertion and balancing, memory cloning, etc.) so we modified the standard BS algorithm to separate the expansion phase from the commit phase.
 
-Given $S_{init}$ the set of initial nodes to start from and $k$ the number of best nodes to expand at each iteration, the described procedure is rappresented by algorithm \ref{algo:beamsearch}.
+Given $S^0$ the set of initial states to start from and $k$ the number of best nodes to expand at each iteration, the described procedure is rappresented by algorithm \ref{algo:beamsearch}.
+
+As observed in \cref{def:empty_state} it's possible to start the search from $S^0 = \{ s_e \}$.
 
 \input{algorithms/beamsearch}
 

@@ -5,17 +5,16 @@
     \SetKwInOut{Output}{output}
     \Input{$s$}
     \Output{$s$}
-    \ForAll{$(b, I) \in s.P$}{
-        \If{$b \in s.B$}{
-            $s.s_b.J \gets s.s_b.J \cup I$\;
-            $s.U \gets s.U \setminus I$\;
-        }
-        \Else(Open a new bin){
-            $s.B \gets s.B \cup b$\;
-            $s.s_b \gets OpenBin(b)$\;
-        }
+    $(b, I) \gets s.p$\;
+    \If{$b \in s.B$}{
+        $s.s_b.J \gets s.s_b.J \cup I$\;
+        $s.U \gets s.U \setminus I$\;
     }
-    $s.P \gets \emptyset$\;
+    \Else(Open a new bin){
+        $s.B \gets s.B \cup b$\;
+        $s.s_b \gets OpenBin(b)$\;
+    }
+    $s.p \gets \emptyset$\;
     \Return{$s$}
     \caption{Commit}
 \end{algorithm}
