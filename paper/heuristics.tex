@@ -12,11 +12,15 @@ States or packings are partial solutions to the 3DBPP. Given the formal definiti
         \sum_{b \in B} u_{ib} = 0
     \end{equation*}
 \end{definition}
+
+It is also assumed that variables identifing an item are independent between states.
+
 A state $s$ can then be defined as follows
 \begin{itemize}
     \item $U$: the set of unpacked items
     \item $B$: the set of bins
     \item $(s_1, s_2,\dots, s_b)$: the set of supporting structures for each bin $b \in B$
+    \item $P$: the set of insertions pending on this state (described by def. \ref{def:insertion})
 \end{itemize}
 
 \begin{observation}
@@ -53,14 +57,14 @@ Let us introduce the concept of packed items inside a bin:
     \end{equation*}
 \end{definition}
 
-Given a bin $b \in s.B$ we can then define his supporting structure $s_b$ as follows
+Given a bin $b \in s.B$ we can then define structure $s_b$ as follows
 \begin{itemize}
     \item $J$: the set of items that are packed inside $b$
     \item $Z$: the set of planes inside $b$ (section \ref{sec:support_planes})
     \item $T$: the AABB Tree (section \ref{sec:problem_state:aabbtree}) rappresenting the items inside $b$
 \end{itemize}
 
-Notice that two separate sets are present inside $s_b$ since adding and accessing items in $s_b.J$ has time complexity of $O(1)$ given an underlying implementation as hashset while mantaining $s_b.T$ usually has a time complexity of $O(log(|s_b.J|))$.
+Notice that two separate sets containing the items packed in $b$ are present inside $s_b$ but adding and accessing items in $s_b.J$ has time complexity of $O(1)$ given an underlying implementation as hashset while mantaining $s_b.T$ usually has a time complexity of $O(log(|s_b.J|))$.
 
 The reason to include an AABB Tree inside this structure is further explained in sections \ref{sec:problem_state:feasibility} and \ref{ssec:scoring_insertions}
 
@@ -89,22 +93,39 @@ A state $s$ is said to be feasible if the currently packed items for every bin $
 
 Since the proposed heuristic is constructive it is more convenient to define the concept of feasibility relative to a change in the state.
 
+\paragraph*{Insertions}
+
+Given a state $s$ and $b \in s.B$, an insertion of items is a set of items that are placed in $b$ and have their $z_i$ within tollerance of a certain $z$.
+
 \begin{definition}[Insertion]
-    Given a state $s$ and a tollerance $\beta_s$ we define an insertion or placement $P$ a tuple $(b, I^\prime)$ where $b$ is a bin and $I^\prime$ is a set of items that are going to be packed in $b$ such that, $I^\prime \subseteq s.U \land \exists (z \in \mathbb{Z} : \forall i \in I^\prime |z_i - z| \le \beta_s)$
+    \label{def:insertion}%
+    Given a state $s$ and a tollerance $\beta_s$ we define an insertion or placement $p$ a tuple $(b, I)$ where $b$ is a bin and $I$ is a set of items that are going to be packed in $b$ such that, $I \subseteq s.U \land \exists z (z \in \mathbb{Z} \land \forall i ( i \in I \land |z_i - z| \le \beta_s))$
 \end{definition}
 
 \begin{observation}
-    Given $s$ and $P = (b, \emptyset)$ where $b \notin s.B$, $P$ is insertion which will open bin $b$ in $s$.
+    Given $s$ and $p = (b, \emptyset)$ where $b \notin s.B$, $p$ is an insertion which will open bin $b$ in $s$.
 \end{observation}
 
+\begin{definition}[Next]
+    \label{def:state_next}%
+    Let $p$ be an insertion over a state $s$ we can then define $s^\prime = Next(s, p)$ as the "copy" of state $s$ with $s^\prime.P = s.P \cup p$. $p$ is then pending on $s^\prime$.
+\end{definition}
+
+In this way we can evaluate the changes to the score of a state based on its pending insertion without having to update all the structures for every evaluated state. This property will become apparent in section \ref{sec:beamsearch}. 
+
+We can then define an algorithm that applies insertions to a given state $s$ with pending insertions with the help of a function $OpenBin(b)$ which initializes a new structure $s_b$ with every element at its empty value.
+The proposed algorithm is shown in \ref{algo:state_commit}.
+
+\input{algorithms/state_commit}
+
+\paragraph*{Insertion feasibility}
 %TODO: Continue with definition of feasibility for sets already made and feasibility of an insertion
 
+\paragraph*{State feasibility}
 %TODO: Give a brief description on how to use the AABB to computer the feasibility of a given state instead
 
-%TODO: Define commit
-
 \begin{proposition}
-    A state $s^\prime$ derived by committing a feasible insertion $P$ to state $s$, is feasible.
+    A state $s^\prime$ derived by committing a feasible insertion $P$ to a feasible state $s$ is feasible.
 \end{proposition}
 
 \begin{observation}
