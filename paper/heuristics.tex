@@ -76,7 +76,7 @@ In order to determine the feasibility of a given state, a way of checking for ov
 Since our formulation of the problem only allows for $90\deg$ rotations over the z-axis. Every item in a solution, by the problem formulation (\ref{fig:coordinate_system}), is contained inside a bounding box and this box is axis-aligned.
 An adequate structure to compute overlaps is then an Axis-Aligned Bounding Box Tree (AABB Tree) \cite{bergen1997efficient}.
 
-AABB Trees are a bounding volume hierarchies tipically used for fast collision detection and they usually offer a few operations:
+AABB Trees are bounding volume hierarchies tipically used for fast collision detection and they usually offer a few operations:
 \begin{itemize}
     \item $AABBInsert(i)$: which allows to insert an axis-aligned box $i$ in the tree
     \item $AABBOverlaps(i)$: which allows to determine if an axis-aligned box $i$ overlaps an element in the tree
