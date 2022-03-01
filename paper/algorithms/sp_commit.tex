@@ -8,7 +8,7 @@
     \Output{$s$}
     $b \gets p.b$\;
     \CommentSty{//Filter bad planes}\;
-    $s.s_b.Z \leftarrow s.s_b.Z \setminus \{ (z^\prime, I_{support}, I_{upper}) \in s.s_b.Z : z^\prime \le z_{min} \}$\;
+    $s.s_b.Z \leftarrow s.s_b.Z \setminus \{ (z^\prime, I_{support}, I_{upper}) \in s.s_b.Z : z^\prime < z_{min} \}$\;
     \CommentSty{//Apply insertion}\;
     \ForAll{$i \in p.I$}{
         $s.s_b.T \leftarrow InsertAABB(i, s.s_b.T)$ \CommentSty{//If balanced $O(log(n))$}\; %TODO: specify balanced
