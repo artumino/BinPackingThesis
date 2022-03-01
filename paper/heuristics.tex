@@ -13,7 +13,7 @@ States or packings are partial solutions to the 3DBPP. Given the formal definiti
     \end{equation*}
 \end{definition}
 
-It is also assumed that variables identifing an item are independent between states.
+It is also assumed that variables identifing an item's position, and rotation are independent between states (changes to their values in state $s$ won't affect state $s^\prime$).
 
 A state $s$ can then be defined as follows
 \begin{itemize}
@@ -173,7 +173,7 @@ As observed in \cref{def:empty_state} it's possible to start the search from $S^
 
 \paragraph*{Node Expansion}
 
-An expansion of a state $s$ can be seen as a new set of nodes $S_{new}$ that is computed by a set of feasible insertions.
+An expansion of a state $s$ can be seen as a new set of nodes $S_{new}$ by evaluating a set of feasible insertions.
 In order to determine these insertion an underlying heuristic is used (described in \cref{sec:support_planes}).
 
 %TODO: Citation needed? Maybe search in martello, vigo
@@ -204,7 +204,14 @@ In the proposed solution to handle multiple objective functions a lexicographic 
     Let $f_1(s), f_2(s), f_i(s), \dots, f_n(s)$ be objective functions ordered by precedence based on index $i$, then $s < s^\prime$ \textbf{iff} $f_1(s) < f_1(s^\prime)$ or $f_1(s) = f_1(s^\prime), \dots, f_i(s) = f_i(s^\prime) \land f_{i+1}(s) < f_{i+1}(s^\prime)$
 \end{definition}
 
-%TODO: Introduce scoring
+Scoring metrics for each state $s$ that we want to evaluate can than be computed in the $Next$ algorithm by considering the contents of the pending insertions and updating each parameter differentially.
+
+The defined ordering utilized is the following:
+\begin{itemize}
+    \item $f_1(s) = -|s.B|$: we prefer states that opened less bins.
+    \item $f_2(s) = \text{avgvol}(s)$: we prefer states that have packed more avarage volume between bins.
+    \item $f_3(s) = \text{avgcageratio}(s)$: we prefer states that have better avarage cage ratio (def. \ref{def:cage_ratio}) between bins.
+\end{itemize}
 
 \section{Support Planes}
 \label{sec:support_planes}%
@@ -246,10 +253,21 @@ Given the dimensions of the 2D bin $(W_b, D_b)$, the set of obstacles $I_{o}$ an
 
 \input{algorithms/sp_rectpack}
 
-Once the $k$ best nodes are selected the placements evaluated for each node are applied and the $Commit$ function updates every datastructure in $S$, including the ones used by SP.
-Given the instance that generated one of the placements selected and $p$ the current set of support planes, $z_{min}$ the minimum $z$ coordinate for which a placement was made in the related bin starting from the current state, $I$ the set of items placed, $U$ the set of items unpacked.
-Since placements are evaluated in order starting from the lower $z$ possible, if no placement was made in an open support plane with $z$ lower than $z_{min}$, the plane can be pruned to avoid further evaluations.
-The algorithm which updates the structures for a given SP instance is rappresent by algorithm \ref{algo:sp_commit}.
+\paragraph*{Commit Extension}
+We now describe an extension to $Commit$ (algo. \ref{algo:state_commit}) to update the structures needed by SP.
+
+When a plane is filled, new insertions become less likely to be feasible. 
+To avoid evaluating planes where no insertion is possible a mechanism to prune dead planes can be introduced.
+
+Since best insertions for a bin are always evaluated by considering lower planes first, if all the insertions in $Expand$ (algo. \ref{algo:state_successor}) happened over a $z_{min}$ then we can safetly remove the opened planes with $z < z_{min}$ for that bin.
+We can easily introduce a $z_{min}$ variable carried over in each $s_b$ for each bin which is updated during the $Expand$ phase with the minimum $z$ of the planes that generated an insertion on bin $b$.
+
+Once the best states are computed and $Commit$ is called we can then use that value to prune planes in each $s_b$.
+Other operations are also necessary in the $Commit$ to allow for SP to update its data structures accordingly to the insertion.
+
+Given a state $s$ and an insertion $p$ where each packed item $i \in p.I$ in bin $b$ has $z_i$ within tollerance of $z$ and the minimum height for the considered bin $s_b.z_{min}$.
+The algorithm which updates the structures for a given bin $b$ is rappresent by algorithm \ref{algo:sp_commit}.
+This new algorithm can be used as last step of the $Commit$ algorihm for each $b \in s^\prime.B$.
 
 \input{algorithms/sp_commit}
 

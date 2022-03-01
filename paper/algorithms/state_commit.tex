@@ -4,17 +4,18 @@
     \SetKwInOut{Input}{input}
     \SetKwInOut{Output}{output}
     \Input{$s$}
-    \Output{$s$}
+    \Output{$s^\prime$}
     $(b, I) \gets s.p$\;
-    \If{$b \in s.B$}{
-        $s.s_b.J \gets s.s_b.J \cup I$\;
-        $s.U \gets s.U \setminus I$\;
+    $s^\prime \gets Clone(s)$\CommentSty{ //Memory clone of $s$}\;
+    \If{$b \in s^\prime.B$}{
+        $s^\prime.s_b.J \gets s^\prime.s_b.J \cup I$\;
+        $s^\prime.U \gets s^\prime.U \setminus I$\;
     }
     \Else(Open a new bin){
-        $s.B \gets s.B \cup b$\;
-        $s.s_b \gets OpenBin(b)$\;
+        $s^\prime.B \gets s^\prime.B \cup b$\;
+        $s^\prime.s_b \gets OpenBin(b)$\;
     }
-    $s.p \gets \emptyset$\;
-    \Return{$s$}
+    $s^\prime.p \gets \emptyset$\;
+    \Return{$s^\prime$}
     \caption{Commit}
 \end{algorithm}
