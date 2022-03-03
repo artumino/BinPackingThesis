@@ -153,28 +153,26 @@ Describe how to compute the sets efficiently to use the insertion feasibility lo
 \label{sec:beamsearch}%
 Beam Search (BS) %TODO: maybe add info on literature
 is an heuristic tree search algorithm designed for systems with limited memory where expanding every possible node is unfeasible.
-The idea behind BS is to conduct an iterative truncated breadth-first search where, at each iteration, only a limited number $k$ of nodes is expanded.
+The idea behind BS is to conduct an iterative truncated breadth-first search where, at each iteration, only a limited number of $k$ nodes is expanded.
 After the expansion every new node needs to be evaluated and sorted in order to prune the number of nodes down to the $k$ best ones. The algorithm keeps exploring until no further node can be expanded.
 
 To perform BS one must define the node structure, an expansion function to generate new nodes from existing ones, a ranking between nodes and a function to determine if a node is final.
 
-By using as a node the state in \cref{sec:problem_state} and \cref{algo:state_final} to define if a node is final we know that a new state $s^\prime$ derived by $s$ by applying a feasible insertion $p$ can be computed as in \cref{def:state_next}.
-This node expansion procedure, with the exception of empty insertions, will generate new nodes in our tree which we can score and will add a strictly positive number of bins or packed items to the solution so eventually it will generate a final state.
+A node in the tree can be rappresented as the state in \cref{sec:problem_state} and \cref{algo:state_final} can be used to determine if a state is final. We also know that a new state $s^\prime$ derived by $s$ by applying a feasible insertion $p$ can be computed as in \cref{def:state_next}.
+This state expansion procedure, with the exception of empty insertions, will generate new states in our tree which will add a positive number of bins or packed items to the solution so, eventually, it will generate a final state.
 
-Furthermore, if the starting state for the search is feasible every new state generated will be feasible and if a final state is found it will be feasible ( \cref{prop:feasible_expansion}).
+If the starting state for the search is feasible every new state generated will be feasible and if a final state is found it will be feasible ( \cref{prop:feasible_expansion}).
+We also note that starting from state $s$ the time complexity to compute feasible insertions can be lower than the complexity required to update the structures that will be used for further expansions (AABB Tree insertion and balancing, memory cloning, etc.) so we modified the standard BS algorithm to separate the expansion phase from the commit phase.
 
-We also note that starting from node $s$ the time complexity to compute feasible insertions can be lower than the complexity required to update the structures that will be used for further expansions (AABB Tree insertion and balancing, memory cloning, etc.) so we modified the standard BS algorithm to separate the expansion phase from the commit phase.
-
-Given $S^0$ the set of initial states to start from and $k$ the number of best nodes to expand at each iteration, the described procedure is rappresented by algorithm \ref{algo:beamsearch}.
-
+Given $S^0$ the set of initial states and $k$ the number of best states to expand at each iteration, the described procedure is rappresented by algorithm \ref{algo:beamsearch}.
 As observed in \cref{def:empty_state} it's possible to start the search from $S^0 = \{ s_e \}$.
 
 \input{algorithms/beamsearch}
 
-\paragraph*{Node Expansion}
+\paragraph*{State Expansion}
 
-An expansion of a state $s$ can be seen as a new set of nodes $S_{new}$ by evaluating a set of feasible insertions.
-In order to determine these insertion an underlying heuristic is used (described in \cref{sec:support_planes}).
+An expansion of a state $s$ can be seen as a new set of states $S_{new}$ derived by a set of feasible insertions.
+In order to determine these insertions an underlying heuristic is used (described in \cref{sec:support_planes}).
 
 %TODO: Citation needed? Maybe search in martello, vigo
 %TODO: We can call this greedy
