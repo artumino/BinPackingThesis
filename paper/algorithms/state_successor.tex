@@ -10,11 +10,10 @@
         $G \leftarrow GroupByHeight(s.U)$ (algo. \ref{algo:group_by_height})\;
         $placed \leftarrow false$\;
         \ForAll{$(h, I) \in G$}{
-            \ForAll{$b \in s.B$}{
-                $P \leftarrow SPBestInsertion(s_b, I)$ (algo. \ref{algo:sp_bestinsertion})\;
+            \ForAll{$q_b \in s.Q$}{
+                $P \leftarrow SPBestInsertion(q_b, I)$ (algo. \ref{algo:sp_bestinsertion})\;
                 \If{$P \neq \emptyset$}{
                     $placed \leftarrow true$\;
-                    %TODO: abuso di notazione
                     \ForAll{$p \in P$}{
                         $S_{new} \leftarrow S_{new} \cup Next(s, p)$ (def. \ref{def:state_next})\;
                     }

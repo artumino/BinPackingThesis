@@ -1,13 +1,13 @@
 In this chapter we describe a solution to the 3D bin packing problem with static stability.
 A solution candidate to the problem can be found by conducting a search over the tree of possible packings or states. In section \ref{sec:problem_state} we describe what a state or packing is and its rappresentation.
-Since an exaustive search isn't feasible, an heuristic search is conducted by combining a beam search algorithm described in section \ref{sec:beamsearch} and constructive heuristic described in section \ref{sec:support_planes}.
+Since an exaustive search isn't feasible, an heuristic search is conducted by combining a beam search algorithm described in section \ref{sec:beamsearch} and a constructive heuristic described in section \ref{sec:support_planes}.
 The proposed algorithm takes in input an initial feasible state (as defined in section \ref{sec:problem_state:feasibility}) usually rappresented by the empty state (\ref{def:empty_state}) and outputs the best scoring state based on an ordering function defined in section \ref{ssec:scoring_states}.
 
 \section{State}
 \label{sec:problem_state}%
 States or packings are partial solutions to the 3DBPP. Given the formal definition of the problem (\ref{sec:milp}) a few new definitions are introduced to facilitate the algorithm's definition.
 \begin{definition}[Unpacked item]
-    Given an item $i \in I$ we define it as unpacked \textbf{iff}
+    An item $i \in I$ is unpacked \textbf{iff}
     \begin{equation*}
         \sum_{b \in B} u_{ib} = 0
     \end{equation*}
@@ -19,7 +19,7 @@ A state $s$ can then be defined as follows
 \begin{itemize}
     \item $U$: the set of unpacked items
     \item $B$: the set of bins
-    \item $(s_1, s_2,\dots, s_b)$: the set of supporting structures for each bin $b \in B$
+    \item $Q = (q_1, q_2,\dots, q_b)$: the set of supporting structures for each bin $b \in B$
     \item $p$: the insertion pending on this state (described by def. \ref{def:insertion})
 \end{itemize}
 
@@ -41,31 +41,26 @@ We can also trivially define a function which determines if a state is a final s
     \end{equation}
 \end{definition}
 
-Each bin $b$ has additional data that is contained in a structure $s_b$ used to facilitate the execution of the algorithm. 
+Each bin $b$ has additional data that is contained in a structure $q_b \in s.Q$ used to facilitate the execution of the algorithm. 
 
 Let us introduce the concept of packed items inside a bin:
 \begin{definition}[Packed item]
     Given a state $s$ and a bin $b \in s.B$, we say that item
     \begin{equation*}
         \begin{aligned}
-            i \in I \hspace{.2cm}\text{is packed in} \hspace{.2cm}b \hspace{.2cm}& \textbf{iff} \hspace{.2cm}& \left\{ 
-                \begin{aligned}
-                    u_{ib} & = 1, \\
-                    \sum_{j \in s.B, j \neq b}{u_{ij}} & = 0
-                \end{aligned}
-            \right.
+            i \in I \hspace{.2cm}\text{is packed in} \hspace{.2cm}b \hspace{.2cm}& \textbf{iff} \hspace{.2cm}& u_{ib} = 1
         \end{aligned}
     \end{equation*}
 \end{definition}
 
-Given a bin $b \in s.B$ we can then define structure $s_b$ as follows
+Given a bin $b \in s.B$ we can then define structure $q_b$ as follows
 \begin{itemize}
     \item $J$: the set of items that are packed inside $b$
     \item $Z$: the set of planes inside $b$ (section \ref{sec:support_planes})
     \item $T$: the AABB Tree (section \ref{sec:problem_state:aabbtree}) rappresenting the items inside $b$
 \end{itemize}
 
-Notice that two separate sets containing the items packed in $b$ are present inside $s_b$ but adding and accessing items in $s_b.J$ has time complexity of $O(1)$ given an underlying implementation as hashset while mantaining $s_b.T$ usually has a time complexity of $O(log(|s_b.J|))$.
+Notice that two separate sets containing the items packed in $b$ are present inside $q_b$ but adding and accessing items in $q_b.J$ has time complexity of $O(1)$ given an underlying implementation as hashset while mantaining $q_b.T$ usually has a time complexity of $O(log(|q_b.J|))$.
 
 The reason to include an AABB Tree inside this structure is further explained in sections \ref{sec:problem_state:feasibility} and \ref{ssec:scoring_insertions}
 
@@ -115,7 +110,7 @@ Given a state $s$ and $b \in s.B$, an insertion of items is a set of items that 
 
 In this way we can evaluate the changes to the score of a state based on its pending insertion without having to update all the structures for every evaluated state. This property will become apparent in section \ref{sec:beamsearch}. 
 
-We can then define an algorithm that applies insertions to a given state $s$ with pending insertions with the help of a function $OpenBin(b)$ which initializes a new structure $s_b$ with every element at its empty value.
+We can then define an algorithm that applies insertions to a given state $s$ with pending insertions with the help of a function $OpenBin(b)$ which initializes a new structure $q_b$ with every element at its empty value.
 The proposed algorithm is shown in \ref{algo:state_commit}.
 
 \input{algorithms/state_commit}
@@ -142,6 +137,7 @@ Describe how to compute the sets efficiently to use the insertion feasibility lo
         \left\{ 
             \begin{aligned}
             s_e.U & = I \\
+            s_e.Q & = \emptyset \\
             s_e.B & = \emptyset
             \end{aligned}
         \right.
@@ -177,18 +173,17 @@ In order to determine these insertions an underlying heuristic is used (describe
 %TODO: Citation needed? Maybe search in martello, vigo
 %TODO: We can call this greedy
 The main idea in this phase of the algorithm is to find feasible insertions in all the bins for items that still need to be packed and that are of the same height.
-With this approach the solutions given by the algorithm will start by trying to fill layers with items of the same height if possible.
+With this approach the solutions given by the algorithm will start by trying to fill lower layers with items of the same height if possible and they'll become more heterogeneous in upper layers where the classes of height will start to mix up.
+The underlying heuristic will also use a scoring mechanism to select the best instertions for a given class of heights in order to avoid having too many states to sort.
 
-The underlying heuristic will also use a scoring mechanism to select the best instertions for a given class of heights in order to avoid having too many states.
+Given a set of items $I$ and a tollerance $\beta_s$ we can introduce an algorithm to group them by height and produce a set $G$ of tuples $(h, I^\prime)$ where $h$ is the height of the group and $I^\prime$ is the set of items grouped as in algo. \ref{algo:group_by_height}.
 
-Given a set of items $I$ and a tollerance $\beta_s$ we can introduce an algorithm to group them by height and produce a set $G$ of tuples $(h, I^\prime)$ where $h$ is the height of the group and $I^\prime$ is the set of items grouped as \cref{algo:group_by_height}.
-
-\input{algorithms/group_by_height}
-
-Once items are grouped by height the best insertion foreach class of items can be computed for each open bin. If no insertion is possible in any bin, then the only viable expansion is the bin opening insertion (\cref{oss:state_bin_open}).
-The described procedure is detailed in \cref{algo:state_successor}.
+Once items are grouped by height the best insertion for each class of items can be computed for each open bin. If no insertion is possible in any bin, then the only viable insertion is the bin opening insertion (\cref{oss:state_bin_open}).
+The described procedure is detailed in algo. \ref{algo:state_successor}.
 
 \input{algorithms/state_successor}
+\input{algorithms/group_by_height}
+
 
 \subsection{Scoring States}
 \label{ssec:scoring_states}%
@@ -199,7 +194,15 @@ In the proposed solution to handle multiple objective functions a lexicographic 
 \begin{definition}
     %TODO: Citation needed for the BRKGA-MP-IPR paper
     \label{def:lexicographic_ordering}
-    Let $f_1(s), f_2(s), f_i(s), \dots, f_n(s)$ be objective functions ordered by precedence based on index $i$, then $s < s^\prime$ \textbf{iff} $f_1(s) < f_1(s^\prime)$ or $f_1(s) = f_1(s^\prime), \dots, f_i(s) = f_i(s^\prime) \land f_{i+1}(s) < f_{i+1}(s^\prime)$
+    Let $f_1(s), f_2(s), f_i(s), \dots, f_n(s)$ be objective functions ordered by precedence based on index $i$, then 
+    \begin{equation*}
+        s < s^\prime \hspace{.2cm} \textbf{iff} \hspace{.2cm} \exists j \in \mathbb{Z} : \left\{
+            \begin{aligned}
+                f_j(s) < f_j(s^\prime) & \\
+                f_k(s) = f_k(s^\prime) &,\hspace{.5cm} \forall k \in \mathbb{Z} : 0 \le k < j 
+            \end{aligned}
+        \right.
+    \end{equation*}
 \end{definition}
 
 Scoring metrics for each state $s$ that we want to evaluate can than be computed in the $Next$ algorithm by considering the contents of the pending insertions and updating each parameter differentially.
@@ -224,14 +227,6 @@ Each support plane can be characterized by the triple $S_z = (z, I_{support}, I_
     \item[--] $I_{support}$: the set of the items that can offer support to items placed on the plane
     \item[--] $I_{upper}$: the set of items that will be obstacles to potential new items placed on the plane %TODO: change explaination to be more faithfull to the algorithm
 \end{itemize}%TODO: link to support
-
-Let $s_b$ be a data structure containing
-%TODO: Weight? Forbidden Cuts?
-\begin{itemize}
-    \item[--] $planes$: the set of triples $S_z$ of support planes to evaluate, ordered in ascending $z$ order
-    \item[--] $aabb$: the AABB Tree of the items placed in the evaluated bin
-    \item[--] $(W_{b}, D_{b}, H_{b})$: the dimensions of the bin
-\end{itemize}
 
 Let $coords$ be the set of possible coordinate changes which allow for the problem to evaluate placements starting from different corners of the bin. %TODO: leave this here?
 %TODO: Maybe explicit rotation?
@@ -258,12 +253,11 @@ When a plane is filled, new insertions become less likely to be feasible.
 To avoid evaluating planes where no insertion is possible a mechanism to prune dead planes can be introduced.
 
 Since best insertions for a bin are always evaluated by considering lower planes first, if all the insertions in $Expand$ (algo. \ref{algo:state_successor}) happened over a $z_{min}$ then we can safetly remove the opened planes with $z < z_{min}$ for that bin.
-We can easily introduce a $z_{min}$ variable carried over in each $s_b$ for each bin which is updated during the $Expand$ phase with the minimum $z$ of the planes that generated an insertion on bin $b$.
-
-Once the best states are computed and $Commit$ is called we can then use that value to prune planes in each $s_b$.
+Let us introduce a $z_{min}$ variable carried over in $q_b$ for each bin, which is updated during the $Expand$ phase with the minimum $z$ of all the insertions on bin $b$.
+Once the best states are computed and $Commit$ is called we can then use its value to prune planes in each $q_b$.
 Other operations are also necessary in the $Commit$ to allow for SP to update its data structures accordingly to the insertion.
 
-Given a state $s$ and an insertion $p$ where each packed item $i \in p.I$ in bin $b$ has $z_i$ within tollerance of $z$ and the minimum height for the considered bin $s_b.z_{min}$.
+Given a state $s$ and an insertion $p$ where each packed item $i \in p.I$ in bin $b$ has $z_i$ within tollerance of $z$ and the minimum height for the considered bin $q_b.z_{min}$.
 The algorithm which updates the structures for a given bin $b$ is rappresent by algorithm \ref{algo:sp_commit}.
 This new algorithm can be used as last step of the $Commit$ algorihm for each $b \in s^\prime.B$.
 

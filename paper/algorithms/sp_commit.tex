@@ -6,15 +6,15 @@
     \SetSideCommentRight
     \Input{$s, p, z, z_{min}, \beta_s$}
     \Output{$s$}
-    $b \gets p.b$\;
+    $q_b \gets (q_i \in s.Q: i = p.b)$\;
     \CommentSty{//Filter bad planes}\;
-    $s.s_b.Z \leftarrow s.s_b.Z \setminus \{ (z^\prime, I_{support}, I_{upper}) \in s.s_b.Z : z^\prime < z_{min} \}$\;
+    $q_b.Z \leftarrow q_b.Z \setminus \{ (z^\prime, I_{support}, I_{upper}) \in q_b.Z : z^\prime < z_{min} \}$\;
     \CommentSty{//Apply insertion}\;
     \ForAll{$i \in p.I$}{
-        $s.s_b.T \leftarrow InsertAABB(i, s.s_b.T)$ \CommentSty{//If balanced $O(log(n))$}\; %TODO: specify balanced
+        $q_b.T \leftarrow InsertAABB(i, q_b.T)$ \CommentSty{//If balanced $O(log(n))$}\; %TODO: specify balanced
         $generate \leftarrow true$\;
         % O(|P'|)
-        \ForAll{$(z^\prime, I_{support}, I_{upper}) \in s.s_b.Z$}{ %TODO: specify balanced
+        \ForAll{$(z^\prime, I_{support}, I_{upper}) \in q_b.Z$}{ %TODO: specify balanced
             \CommentSty{//Based on the distance from the top of the item}\;
             $dz \leftarrow z^\prime - (z_i + h_i)$\;
             \If{$0 \le dz \le \beta_s$}{
@@ -26,7 +26,7 @@
         }
 
         \If{$generate$}{
-            $s.s_b.Z \leftarrow s.s_b.Z \cup (z_i + h_i, \{i\}, \emptyset)$\;
+            $q_b.Z \leftarrow q_b.Z \cup (z_i + h_i, \{i\}, \emptyset)$\;
         }
     }
     \Return{$s$}
