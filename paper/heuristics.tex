@@ -217,9 +217,9 @@ The defined ordering utilized is the following:
 \label{sec:support_planes}%
 %FIXME: [G1-BEGIN] correct grammar from now on
 %TODO far scorrere meglio
-We introduce Support Planes (SP) which is a heuristic introduced in this thesis based on an underlying 2DBPP heuristic which is used to evaluate feasible expansions of a given node in the BS.
-The proposed heuristic ensures that the constraint of support isn't violated.
-The idea at the base of SP is to build a solution to the 3DSPP by filling 2D planes called support planes.
+Support Planes (SP) is a heuristic detailed in the following section based on an underlying 2DBPP heuristic which is used to evaluate feasible insertions starting from a given state.
+Since the insertions must be feasible SP mantains an internal structure to facilitate the check for feasibility.
+The idea at the base of SP is to build a solution to the 3DBPP by filling 2D planes called \textit{support planes}.
 
 Each support plane can be characterized by the triple $S_z = (z, I_{support}, I_{upper})$ where
 \begin{itemize}
