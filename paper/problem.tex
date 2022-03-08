@@ -38,31 +38,35 @@ We start by defining the known sets and parameters of the problem.
 \paragraph*{Variables} We can now introduce the following sets of integer variables
 \begin{align}
               (x_i,y_i,z_i) \hspace{.5cm}& \text{bottom front left corner of an item} & \forall i \in I \label{var:item_pos} \\
+                    v_{b} \hspace{.5cm}& \begin{cases}
+                                            1, \text{if bin $b$ is used} \\ 
+                                            0, \text{otherwise}
+                                        \end{cases} & \forall i \in I, \forall b \in B \notag \\
                     u_{ib} \hspace{.5cm}& \begin{cases}
                                             1, \text{if item $i$ is placed in bin $b$} \\ 
                                             0, \text{otherwise}
                                         \end{cases} & \forall i \in I, \forall b \in B \notag \\
                     x^p_{ij} \hspace{.5cm}& \begin{cases}
-                                            1, \text{if $x_i \le x_j + w_j$} \\ 
+                                            1, \text{if $x_i + w_i \le x_j$} \\ 
                                             0, \text{otherwise}
                                         \end{cases} & \forall i,j \in I \notag \\
                     y^p_{ij} \hspace{.5cm}& \begin{cases}
-                                            1, \text{if $y_i \le y_j + d_j$} \\ 
+                                            1, \text{if $y_i + d_i \le y_j$} \\ 
                                             0, \text{otherwise}
                                         \end{cases} & \forall i,j \in I \notag \\
                     z^p_{ij} \hspace{.5cm}& \begin{cases}
-                                            1, \text{if $z_i \le z_j + h_j$} \\ 
+                                            1, \text{if $z_i + h_i \le z_j$} \\ 
                                             0, \text{otherwise}
                                         \end{cases} & \forall i,j \in I \notag \\
             z_b^\text{max} \hspace{.5cm}& \text{maximum height of bin $b$} & \forall b \in B \notag
 \end{align}
 
-Given a coordinate system, each item $i$ can be represented univocally in 3D space by \cref{par:item_dim,var:item_pos,var:item_back_pos,var:item_rot} as seen in figure \ref{fig:coordinate_system}
+Given a coordinate system, each item $i$ can be represented univocally in 3D space by \cref{par:item_dim,var:item_pos} as seen in figure \ref{fig:coordinate_system}
 \begin{figure}
     \scalebox{0.65}{%
     \input{Images/coordinate_system}
     }
-    \caption{Coordinate system representation for a generic item $i$ given its rotation $r_i$ 
+    \caption{Coordinate system representation for a generic item $i$ and it's rotated clone $i \in I^R$ 
     \label{fig:coordinate_system}}
 \end{figure}
 
