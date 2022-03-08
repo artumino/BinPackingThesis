@@ -1,6 +1,6 @@
-use std::{env, fs::File, path::Path, io::{BufWriter, Write}};
+use std::{env, fs::File, path::Path, io::{Write}, collections::HashSet};
 
-use calamine::{open_workbook, Xlsx, Reader, RangeDeserializerBuilder, open_workbook_auto};
+use calamine::{Reader, RangeDeserializerBuilder, open_workbook_auto};
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -40,18 +40,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let mut is_pallet = true;
         let mut i = 0;
+        let mut item_types = HashSet::<String>::new();
         for raw_row in iter_result {
             if let Ok(row) = raw_row {
                 if is_pallet {
                     writeln!(&mut out_file, "bin {},{},{}", row.width, row.depth, row.height)?;
                 }
                 else {
-                    let number_values: Vec<&str> = row.number.split('-').collect();
-                    let number = number_values.get(0).unwrap();
-                    let number = str::parse::<i32>(number)?;
-                    for _ in 0..number {
-                        writeln!(&mut out_file, "box {},{},{},{}", i, row.width, row.depth, row.height)?;
-                        i += 1;
+                    if !item_types.contains(&row.id) {
+                        item_types.insert(row.id);
+                        let number_values: Vec<&str> = row.number.split('-').collect();
+                        let number = number_values.get(0).unwrap();
+                        let number = str::parse::<i32>(number)?;
+                        for _ in 0..number {
+                            writeln!(&mut out_file, "box {},{},{},{}", i, row.width, row.depth, row.height)?;
+                            i += 1;
+                        }
                     }
                 }
                 is_pallet = false;
