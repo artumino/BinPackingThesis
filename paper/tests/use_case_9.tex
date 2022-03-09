@@ -1,0 +1,31 @@
+\begin{table}[htbp]
+    \caption{Use case instances with different configurations}
+    \begin{tabular}{ll|ccc|ccc}
+    
+    \multicolumn{ 2}{c|}{\textbf{Instance}} & \multicolumn{ 3}{c|}{\textbf{Order by Hash}} & \multicolumn{ 3}{c}{\textbf{Single Placement}} \\ 
+    \multicolumn{ 2}{l|}{} & \textbf{\textit{TT (ms)}} & \textbf{\textit{B}} & \textbf{\textit{CR}} & \textbf{\textit{TT (ms)}} & \textbf{\textit{B}} & \textbf{\textit{CR}} \\ \hline
+    \multicolumn{1}{r}{\textbf{49}} & k=1 & 162 & 1 & 73.56 & 100 & 1 & 62.99 \\ 
+     & k=5 & 309 & 1 & 77.7 & 362 & 1 & 75.39 \\ 
+     & k=10 & 602 & 1 & 77.7 & 677 & 1 & 75.39 \\ 
+     & k=20 & 1243 & 1 & 77.7 & 1304 & 1 & 75.89 \\ 
+     & k=50 & 3151 & 1 & 74.65 & 3390 & 1 & 75.89 \\ 
+     & k=100 & 6994 & 1 & 76.78 & 6913 & 1 & 75.89 \\ 
+     & k=200 & 15553 & 1 & 76.91 & 14112 & 1 & 75.89 \\ \hline
+    \multicolumn{1}{r}{\textbf{50}} & k=1 & 9 & 1 & 59.07 & 17 & 1 & 63.86 \\ 
+     & k=5 & 34 & 1 & 65.64 & 46 & 1 & 63.86 \\ 
+     & k=10 & 48 & 1 & 60.83 & 79 & 1 & 63.86 \\ 
+     & k=20 & 89 & 1 & 60.83 & 147 & 1 & 64.13 \\ 
+     & k=50 & 227 & 1 & 65.64 & 340 & 1 & 64.26 \\ 
+     & k=100 & 426 & 1 & 65.64 & 666 & 1 & 65.64 \\ 
+     & k=200 & 910 & 1 & 65.64 & 1320 & 1 & 65.64 \\ \hline
+    \multicolumn{1}{r}{\textbf{51}} & k=1 & 92 & 1 & 68.28 & 2296 & 1 & 56.34 \\ 
+     & k=5 & 302 & 1 & 62.41 & 7617 & 1 & 63.05 \\ 
+     & k=10 & 527 & 1 & 67.92 & 14770 & 1 & 63.05 \\ 
+     & k=20 & 1578 & 1 & 75.57 & 32100 & 1 & 66.18 \\ 
+     & k=50 & 3877 & 1 & 73.11 & 84738 & 1 & 66.68 \\ 
+     & k=100 & 4986 & 1 & 68.5 & 170373 & 1 & 66.68 \\ 
+     & k=200 & 9969 & 1 & 68.5 & 345136 & 1 & 66.76 \\ \hline
+    \end{tabular}
+    \label{use_case_9}
+    \end{table}
+    

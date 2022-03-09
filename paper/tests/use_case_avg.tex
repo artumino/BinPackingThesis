@@ -1,0 +1,16 @@
+\begin{table}[htbp]
+    \caption{Summary of the use case test results}
+    \begin{tabular}{ll|ccc|ccc}
+    \multicolumn{ 2}{c|}{\textbf{Instance}} & \multicolumn{ 3}{c|}{\textbf{Order by Hash}} & \multicolumn{ 3}{c}{\textbf{Single Placement}} \\ 
+    \multicolumn{ 2}{l|}{} & \textbf{\textit{TT (ms)}} & \textbf{\textit{B}} & \textbf{\textit{CR}} & \textbf{\textit{TT (ms)}} & \textbf{\textit{B}} & \textbf{\textit{CR}} \\ \hline
+    \multicolumn{1}{r}{\textbf{Average}} & k=1 & 98.65 & 1.24 & 69.23 & 441.06 & 1.27 & 64.39 \\ 
+     & k=5 & 198.02 & 1.22 & 72.38 & 1,464.37 & 1.22 & 69.02 \\ 
+     & k=10 & 352.59 & 1.20 & 72.84 & 2,767.82 & 1.22 & 69.72 \\ 
+     & k=20 & 592.02 & 1.20 & 73.43 & 5,442.37 & 1.22 & 70.47 \\ 
+     & k=50 & 1,346.53 & 1.20 & 73.49 & 13,571.67 & 1.22 & 71.62 \\ 
+     & k=100 & 2,452.39 & 1.18 & 74.37 & 27,246.18 & 1.22 & 72.03 \\ 
+     & k=200 & 4,625.08 & 1.16 & 74.78 & 55,963.67 & 1.20 & 73.15 \\ \hline
+    \end{tabular}
+    \label{use_case_avg}
+    \end{table}
+    
