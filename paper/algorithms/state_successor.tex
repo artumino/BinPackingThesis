@@ -7,7 +7,7 @@
     \Output{$S_{new}$}
     \ForAll{$s \in S$}{
         $S_{new} \leftarrow \emptyset$\;
-        $G \leftarrow GroupByHeight(s.U)$ (algo. \ref{algo:group_by_height})\;
+        $G \leftarrow GroupByHash(s.U)$ (algo. \ref{algo:group_by_hash})\;
         $placed \leftarrow false$\;
         \ForAll{$(h, I) \in G$}{
             \ForAll{$q_b \in s.Q$}{
