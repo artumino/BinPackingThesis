@@ -79,7 +79,7 @@ Given a coordinate system, each item $i$ can be represented univocally in 3D spa
 \end{equation}
 
 \paragraph*{Constraints}
-\begin{align}
+\begin{eqnarray}
     \sum_{b \in B} u_{ib} = 1 \hspace{.5cm}& & \forall i \in I  \label{cons:all_items_in_bin} \\
     u_{ib} \le v_b \hspace{.5cm}& & \begin{aligned} \forall i \in I \\ 
                                                     \forall b \in B 
@@ -90,7 +90,7 @@ Given a coordinate system, each item $i$ can be represented univocally in 3D spa
     z^{max}_b \ge (z_i + h_i) - H(1-u_{ib}) \hspace{.5cm}& & \begin{aligned} \forall i \in I \\ 
                                                                     \forall b \in B 
                                                             \end{aligned} \label{cons:maxz} \\
-    \begin{aligned} (x_i + w_i) - x_j &< W(1 - x^p_{ij}) \\
+    \begin{aligned} (x_i + w_i) - x_j &< W(1 - x^p_{ij}) \\ %FIXME: should all be labeled, check the inequalities they are probably wrong
                     x_j - (x_i + w_i) &\le W x^p_{ij} \end{aligned} \hspace{.5cm}& & \forall i,j \in I \label{cons:x_prec} \\
     \begin{aligned} (y_i + d_i) - y_j &< D(1 - y^p_{ij}) \\
                     y_j - (y_i + d_i) &\le D y^p_{ij} \end{aligned} \hspace{.5cm}& & \forall i,j \in I \label{cons:y_prec} \\
@@ -99,7 +99,7 @@ Given a coordinate system, each item $i$ can be represented univocally in 3D spa
     x^p_{ij} + x^p_{ji} + y^p_{ij} + y^p_{ji} + z^p_{ij} + z^p_{ji} \le 7 - (u_{ib} + u_{jb}) \hspace{.5cm}& & \begin{aligned} \forall i,j \in I \\ 
                                                                                                                                 \forall b \in B 
                                                                                                                         \end{aligned} \label{cons:no_overlap}
-\end{align}
+\end{eqnarray}
 \subsection*{Othogonal rotations}
 
 Let us extend the definition of the bin packing problem without rotations with a new formulation which allows $90$ degrees rotations of each item.
