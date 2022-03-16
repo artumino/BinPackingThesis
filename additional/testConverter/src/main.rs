@@ -16,13 +16,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Hello, world!");
     let args: Vec<String> = env::args().collect();
 
-    if args.len() < 2 {
-        panic!("Must provide a use-case xls/xlsx file!");
+    if args.len() < 3 {
+        panic!("Must provide starting number and a use-case xls/xlsx file!");
     }
 
     let mut test_map = File::create("map.txt")?;
-    let mut instance_id = 0;
-    for file in args[1..].iter() {
+    let mut instance_id = args[1].parse::<i32>()?;
+    for file in args[2..].iter() {
         let mut excel = open_workbook_auto(file)?;
         let range = excel
         .worksheet_range_at(0)
