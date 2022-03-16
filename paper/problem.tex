@@ -8,13 +8,13 @@
 A conceptual model of the problem we are trying to solve would be:
 
 %TODO: Cage Ratio?
-\begin{align*}
-    \textbf{minimize} \hspace{.5cm}   & \text{unused volume in used bins} \\
-    \textbf{subject to} \hspace{.5cm} & \text{all items assigned to one and only one bin} \\
+\begin{eqnarray*}
+    \textbf{minimize} & \text{unused volume in used bins} \\
+    \textbf{subject to} & \text{all items assigned to one and only one bin} \\
                                       & \text{all items within the bin dimensions} \\
                                       & \text{no overlaps between items in the same bin} \\
                                       & \text{all items with support} \\
-\end{align*}
+\end{eqnarray*}
 
 We can now provide the formal definition of the 3DBPP by formulating a mixed integer linear programming problem model.
 
@@ -24,44 +24,42 @@ We'll now introduce a MILP model for the standard 3DBPP problem definition and t
 
 We start by defining the known sets and parameters of the problem.
 \paragraph*{Sets}
-\begin{align*}
-    I = \{1,\dots, n \}: \hspace{.5cm}& \text{set of items} \\
-    B = \{1,\dots, m \}: \hspace{.5cm}& \text{set of bins} 
-\end{align*}
+\begin{eqnarray*}
+    I = \{1,\dots, n \}: & \text{set of items} \\
+    B = \{1,\dots, m \}: & \text{set of bins} 
+\end{eqnarray*}
 \paragraph*{Parameters}
-\begin{align}
-          W \times D \times H  \hspace{.5cm}& \text{width $\times$ depth $\times$ height of a bin} \notag \\
-                            V  \hspace{.5cm}& \text{bin volume} \notag \\
-    w_i \times d_i \times h_i  \hspace{.5cm}& \text{width $\times$ depth $\times$ height of item $i$} & \forall i \in I \label{par:item_dim}
-\end{align}
+\begin{eqnarray}
+          W \times D \times H  & \text{width $\times$ depth $\times$ height of a bin} \notag \\
+                            V  & \text{bin volume} \notag \\
+    w_i \times d_i \times h_i  & \text{width $\times$ depth $\times$ height of item $i$} & \forall i \in I \label{par:item_dim}
+\end{eqnarray}
 
 \paragraph*{Variables} We can now introduce the following sets of integer variables
-\begin{align}
-              (x_i,y_i,z_i) \hspace{.5cm}& \text{bottom front left corner of an item} & \forall i \in I \label{var:item_pos} \\
-                    v_{b} \hspace{.5cm}& \begin{cases}
+\begin{eqnarray}
+              (x_i,y_i,z_i) & \text{bottom front left corner of an item} & \forall i \in I \label{var:item_pos} \\
+                    v_{b} & \begin{cases}
                                             1, \text{if bin $b$ is used} \\ 
                                             0, \text{otherwise}
                                         \end{cases} & \forall b \in B \notag \\
-                    u_{ib} \hspace{.5cm}& \begin{cases}
+                    u_{ib} & \begin{cases}
                                             1, \text{if item $i$ is placed in bin $b$} \\ 
                                             0, \text{otherwise}
-                                        \end{cases} & \begin{aligned} \forall i \in I \\ 
-                                                                \forall b \in B 
-                                                        \end{aligned} \notag \\
-                    x^p_{ij} \hspace{.5cm}& \begin{cases}
+                                        \end{cases} & \forall i \in I, \forall b \in B  \notag \\
+                    x^p_{ij} & \begin{cases}
                                             1, \text{if $x_i + w_i \le x_j$} \\ 
                                             0, \text{otherwise}
                                         \end{cases} & \forall i,j \in I \notag \\
-                    y^p_{ij} \hspace{.5cm}& \begin{cases}
+                    y^p_{ij} & \begin{cases}
                                             1, \text{if $y_i + d_i \le y_j$} \\ 
                                             0, \text{otherwise}
                                         \end{cases} & \forall i,j \in I \notag \\
-                    z^p_{ij} \hspace{.5cm}& \begin{cases}
+                    z^p_{ij} & \begin{cases}
                                             1, \text{if $z_i + h_i \le z_j$} \\ 
                                             0, \text{otherwise}
                                         \end{cases} & \forall i,j \in I \notag \\
-            z_b^\text{max} \hspace{.5cm}& \text{maximum height of bin $b$} & \forall b \in B \notag
-\end{align}
+            z_b^\text{max} & \text{maximum height of bin $b$} & \forall b \in B \notag
+\end{eqnarray}
 
 Given a coordinate system, each item $i$ can be represented univocally in 3D space by \cref{par:item_dim,var:item_pos} as seen in figure \ref{fig:coordinate_system}
 \begin{figure}
@@ -80,25 +78,20 @@ Given a coordinate system, each item $i$ can be represented univocally in 3D spa
 
 \paragraph*{Constraints}
 \begin{eqnarray}
-    \sum_{b \in B} u_{ib} = 1 \hspace{.5cm}& & \forall i \in I  \label{cons:all_items_in_bin} \\
-    u_{ib} \le v_b \hspace{.5cm}& & \begin{aligned} \forall i \in I \\ 
-                                                    \forall b \in B 
-                                    \end{aligned} \label{cons:items_in_used_bins} \\
-    \begin{aligned} x_i + w_i &\le W \\ 
-                    y_i + d_i &\le D \\
-                    z_i + h_i &\le H \\ \end{aligned} \hspace{.5cm}& & \forall i \in I \label{cons:inside} \\
-    z^{max}_b \ge (z_i + h_i) - H(1-u_{ib}) \hspace{.5cm}& & \begin{aligned} \forall i \in I \\ 
-                                                                    \forall b \in B 
-                                                            \end{aligned} \label{cons:maxz} \\
-    \begin{aligned} (x_i + w_i) - x_j &< W(1 - x^p_{ij}) \\ %FIXME: should all be labeled, check the inequalities they are probably wrong
-                    x_j - (x_i + w_i) &\le W x^p_{ij} \end{aligned} \hspace{.5cm}& & \forall i,j \in I \label{cons:x_prec} \\
-    \begin{aligned} (y_i + d_i) - y_j &< D(1 - y^p_{ij}) \\
-                    y_j - (y_i + d_i) &\le D y^p_{ij} \end{aligned} \hspace{.5cm}& & \forall i,j \in I \label{cons:y_prec} \\
-    \begin{aligned} (z_i + h_i) - z_j &< H(1 - z^p_{ij}) \\
-                    z_j - (z_i + h_i) &\le H z^p_{ij} \end{aligned} \hspace{.5cm}& & \forall i,j \in I \label{cons:z_prec} \\
-    x^p_{ij} + x^p_{ji} + y^p_{ij} + y^p_{ji} + z^p_{ij} + z^p_{ji} \le 7 - (u_{ib} + u_{jb}) \hspace{.5cm}& & \begin{aligned} \forall i,j \in I \\ 
-                                                                                                                                \forall b \in B 
-                                                                                                                        \end{aligned} \label{cons:no_overlap}
+    & \sum_{b \in B}{u_{ib}} = 1 & \forall i \in I  \label{cons:all_items_in_bin} \\
+    & u_{ib} \le v_b & \forall i \in I, \forall b \in B \label{cons:items_in_used_bins} \\
+    & v_b \ge v_c & \forall (b,c) \in B : b < c  \label{cons:bin_breaking} \\
+    & x_i + w_i \le W & \forall i \in I \label{cons:inside_x} \\ 
+    & y_i + d_i \le D & \forall i \in I \label{cons:inside_y} \\ 
+    & z_i + h_i \le H & \forall i \in I \label{cons:inside_z} \\ 
+    & z^{max}_b \ge (z_i + h_i) - H(1-u_{ib}) & \forall i \in I, \forall b \in B \label{cons:maxz} \\
+    & (x_i + w_i) - x_j\le W(1 - x^p_{ij}) & \forall i,j \in I \label{cons:x_prec_1} \\
+    & x_j - (x_i + w_i) + 1 \le W x^p_{ij} & \forall i,j \in I \label{cons:x_prec_2} \\
+    & (y_i + d_i) - y_j \le D(1 - y^p_{ij}) & \forall i,j \in I \label{cons:y_prec_1} \\
+    & y_j - (y_i + d_i) + 1 \le D y^p_{ij} & \forall i,j \in I \label{cons:y_prec_2} \\
+    & (z_i + h_i) - z_j\le H(1 - z^p_{ij}) & \forall i,j \in I \label{cons:z_prec_1} \\
+    & z_j - (z_i + h_i) + 1 \le H z^p_{ij} & \forall i,j \in I \label{cons:z_prec_2} \\
+    & x^p_{ij} + x^p_{ji} + y^p_{ij} + y^p_{ji} + z^p_{ij} + z^p_{ji} \ge u_{ib} + u_{jb} - 1 & \forall i,j \in I, \forall b \in B \label{cons:no_overlap}
 \end{eqnarray}
 \subsection*{Othogonal rotations}
 
@@ -107,28 +100,28 @@ Let $I = I^O \cup I^R$ be the new set of items where $I^O$ is the set of origina
 
 We can now rewrite constraint \ref{cons:all_items_in_bin} as \ref{cons:all_items_in_bin_with_rotation} to force only one for the item between the original and rotated to be part of the solution.
 
-\begin{align}
+\begin{eqnarray}
     %TODO: Non va bene
-    \sum_{b \in B} u_{ib} + \sum_{b \in B} u_{jb} = 1  \hspace{.5cm}& & \forall j = i^R \in I \label{cons:all_items_in_bin_with_rotation}
-\end{align}
+    & \sum_{b \in B} u_{ib} + \sum_{b \in B} u_{jb} = 1 & \forall j = i^R \in I \label{cons:all_items_in_bin_with_rotation}
+\end{eqnarray}
 
 \subsection*{Static stability constraints}
 
 We now extend the model introduced in \cref{ssec:formal_model} to add constraints addressing static stability.
 
 \paragraph*{Additional Parameters}
-\begin{align*}
-    \alpha_s  :\hspace{.5cm}& \text{support area threshold} \\
-    \beta_s  :\hspace{.5cm}& \text{support height tolerance} \\
-    DU      :\hspace{.5cm}& \text{discretization unity} \\
-\end{align*}
+\begin{eqnarray*}
+    \alpha_s  &:& \text{support area threshold} \\
+    \beta_s  &:& \text{support height tolerance} \\
+    DU      &:& \text{discretization unity} \\
+\end{eqnarray*}
 
 \paragraph*{Additional Variables}
 
 
 \paragraph*{Computed Parameters}
-\begin{align}
-    \gamma = \max_{\forall i \in I}\{ w_i, d_i \}  :\hspace{.5cm}& \text{maximum possible dimension of an item} \notag \\
-    XY_{rel} =  [ - \frac{\lfloor \gamma \rfloor}{DU}, \frac{\lfloor \gamma \rfloor}{DU}]  :\hspace{.5cm}& \text{set of possible distances between overlapping items} \notag \\
-    O : I \times B \times I \times B \times XY_{rel} \times XY_{rel} \rightarrow \mathbb{R}^+ :\hspace{.5cm}& \text{discrete overlap function} \label{eq:overlap_function}
-\end{align}
+\begin{eqnarray}
+    \gamma = \max_{\forall i \in I}\{ w_i, d_i \}  &:& \text{maximum possible dimension of an item} \notag \\
+    XY_{rel} =  [ - \frac{\lfloor \gamma \rfloor}{DU}, \frac{\lfloor \gamma \rfloor}{DU}]  &:& \text{set of possible distances between overlapping items} \notag \\
+    O : I \times B \times I \times B \times XY_{rel} \times XY_{rel} \rightarrow \mathbb{R}^+ &:& \text{discrete overlap function} \label{eq:overlap_function}
+\end{eqnarray}
