@@ -1,0 +1,31 @@
+\begin{table}[htbp]
+    \centering
+    \caption{Comparison with MILP model on limited set of boxes}
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline
+    \textbf{N} & \multicolumn{ 2}{c|}{\textbf{Group By Hash}} & \multicolumn{ 2}{c|}{\textbf{Single Placement}} & \multicolumn{ 2}{c|}{\textbf{MILP Model}} \\ \hline
+    \multicolumn{1}{|l|}{} & \textbf{Max Z} & \textbf{TT(s)} & \textbf{Max Z} & \textbf{TT(s)} & \textbf{Max Z} & \textbf{TT(s)} \\ \hline
+    1 & 85 & 0.00 & 85 & 0.00 & 85 & 0.01 \\ 
+    2 & 85 & 0.00 & 85 & 0.00 & 85 & 0.11 \\ 
+    3 & 85 & 0.00 & 85 & 0.00 & 85 & 0.33 \\ 
+    4 & 85 & 0.01 & 85 & 0.01 & 85 & 0.70 \\ 
+    5 & 85 & 0.02 & 85 & 0.02 & 86* & 21.39 \\ 
+    6 & 158 & 0.06 & 158 & 0.05 & 158** & 594.32 \\ 
+    7 & 158 & 0.07 & 158 & 0.08 & 158** & 3,178.00 \\ \hline
+    8 & 160 & 0.10 & 160 & 0.08 & - & - \\ 
+    9 & 169 & 0.09 & 161 & 0.10 & - & - \\ 
+    10 & 218 & 0.12 & 218 & 0.13 & - & - \\ 
+    11 & 240 & 0.12 & 240 & 0.12 & - & - \\ 
+    12 & 310 & 0.13 & 316 & 0.16 & - & - \\ 
+    13 & 310 & 0.15 & 333 & 0.18 & - & - \\ 
+    14 & 310 & 0.20 & 333 & 0.22 & - & - \\ 
+    15 & 406 & 0.21 & 397 & 0.27 & - & - \\ 
+    16 & 435 & 0.23 & 452 & 0.36 & - & - \\ 
+    17 & 429 & 0.27 & 515 & 0.41 & - & - \\ 
+    18 & 432 & 0.32 & 522 & 0.47 & - & - \\ 
+    19 & 458 & 0.35 & 522 & 0.55 & - & - \\ 
+    20 & 539 & 0.37 & 564 & 0.62 & - & - \\ \hline
+    \end{tabular}
+    \label{exp:model}
+    \end{table}
+** Some boxes had lower support than expected due to discretization errors within the $ 0.6 \le \beta_s \le 0.7$ range.
