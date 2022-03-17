@@ -36,8 +36,8 @@ We start by defining the known sets and parameters of the problem.
 \end{eqnarray}
 
 \paragraph*{Variables} We can now introduce the following sets of integer variables
-\begin{eqnarray}
-              (x_i,y_i,z_i) & \text{bottom front left corner of an item} & \forall i \in I \label{var:item_pos} \\
+\begin{align}
+              (x_i,y_i,z_i) & \qquad \text{bottom front left corner of an item} & \forall i \in I \label{var:item_pos} \\
                     v_{b} & \begin{cases}
                                             1, \text{if bin $b$ is used} \\ 
                                             0, \text{otherwise}
@@ -59,7 +59,7 @@ We start by defining the known sets and parameters of the problem.
                                             0, \text{otherwise}
                                         \end{cases} & \forall i,j \in I \notag \\
             z_b^\text{max} & \text{maximum height of bin $b$} & \forall b \in B \notag
-\end{eqnarray}
+\end{align}
 
 Given a coordinate system, each item $i$ can be represented univocally in 3D space by \cref{par:item_dim,var:item_pos} as seen in figure \ref{fig:coordinate_system}
 \begin{figure}
@@ -116,8 +116,16 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
     \delta      &:& \text{discretization unit} \\
 \end{eqnarray*}
 
+
+\paragraph*{Computed Parameters}
+\begin{eqnarray}
+    \gamma = \max_{\forall i \in I}\{ w_i, d_i \}  &:& \text{maximum possible dimension of an item} \notag \\
+    \Delta =  \left[ - \left\lfloor \frac{ \gamma }{\delta} \right\rfloor, \left\lfloor \frac{ \gamma }{\delta} \right\rfloor \right]  &:& \text{set of possible distances between overlapping items} \notag \\
+    O : I \times B \times I \times B \times \Delta \times \Delta \rightarrow \mathbb{R}^+ &:& \text{discrete overlap function} \label{eq:overlap_function}
+\end{eqnarray}
+
 \paragraph*{Additional Variables}
-\begin{eqnarray*}
+\begin{align*}
         s_{ij} & \begin{cases}
                         1, \text{if item $i$ can offer support to item $j$} \\ 
                         0, \text{otherwise}
@@ -134,15 +142,7 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
                     1, \text{if item $i$ receives support from item $j$} \\ \qquad \text{when both are placed in bin $b$} \\ \qquad \text{with distance $(\delta_x, \delta_y)$ between eachother } \\ 
                     0, \text{otherwise}
                 \end{cases} & \forall (i,j) \in I
-\end{eqnarray*}
-
-
-\paragraph*{Computed Parameters}
-\begin{eqnarray}
-    \gamma = \max_{\forall i \in I}\{ w_i, d_i \}  &:& \text{maximum possible dimension of an item} \notag \\
-    \Delta =  \left[ - \left\lfloor \frac{ \gamma }{\delta} \right\rfloor, \left\lfloor \frac{ \gamma }{\delta} \right\rfloor \right]  &:& \text{set of possible distances between overlapping items} \notag \\
-    O : I \times B \times I \times B \times \Delta \times \Delta \rightarrow \mathbb{R}^+ &:& \text{discrete overlap function} \label{eq:overlap_function}
-\end{eqnarray}
+\end{align*}
 
 \paragraph*{Additional Constraints}
 \begin{eqnarray}
