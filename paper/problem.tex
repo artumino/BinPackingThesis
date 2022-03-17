@@ -127,7 +127,7 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
                         0, \text{otherwise}
                     \end{cases} & \forall (i,j) \in I \\
         g_i & \begin{cases}
-                        1, \text{if $z_i \le \beta_s$ } \\ 
+                        1, \text{if $z_i = 0$ } \\ 
                         0, \text{otherwise}
                     \end{cases} & \forall (i,j) \in I \\
         s_{i j b \delta_x \delta_y} & \begin{cases}
@@ -152,7 +152,7 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
     & s_{ij} \le z^c_{ij} & \forall (i, j) \in I  \label{cons:supporting_2} \\
     & s_{ij} \ge z^p_{ij} + z^c_{ij} - 2 & \forall (i, j) \in I : i \neq j \label{cons:supporting} \\
     & \sum\limits_{j \in I}{s_{ij}} \le \sum\limits_{b \in B}{u_{ib}} & \forall i \in I  \label{cons:support_comes_from_placed} \\
-    & z_i \le \beta_s + H(1 - g_i) & \forall i \in I \label{cons:grounded} \\
+    & z_i \le H(1 - g_i) & \forall i \in I \label{cons:grounded} \\
     & \sum\limits_{(\delta_x, \delta_y) \in \Delta, b \in B : O(i, b, j, b, \delta_x, \delta_y) \neq 0} s_{i j b \delta_x \delta_y } \le s_{ij} & \forall (i, j) \in I \label{cons:discretized_support_same}
 \end{eqnarray}
 
