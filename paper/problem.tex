@@ -158,10 +158,10 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
 
 We can then define the following set of constraints for $\forall (\delta_x, \delta_y) \in \Delta, \forall b \in B, \forall (i,j) \in I : i \neq j \land O(i, b, j, b, \delta_x, \delta_y) \neq 0$
 \begin{eqnarray}
-    & x_i - x_j \ge \gamma \delta_x - 2W( 1 - s_{i j b \delta_x \delta_y}) &  \label{cons:discretized_support_limit_x_1} \\
-    & x_i - x_j \le \gamma (\delta_x + 1) + 2W( 1 - s_{i j b \delta_x \delta_y}) &  \label{cons:discretized_support_limit_x_2} \\
-    & y_i - y_j \ge \gamma \delta_y - 2D( 1 - s_{i j b \delta_x \delta_y}) &  \label{cons:discretized_support_limit_y_1} \\
-    & y_i - y_j \le \gamma (\delta_y + 1) + 2D( 1 - s_{i j b \delta_x \delta_y}) &  \label{cons:discretized_support_limit_y_2}
+    & x_j - x_i \ge \gamma \delta_x - 2W( 1 - s_{i j b \delta_x \delta_y}) &  \label{cons:discretized_support_limit_x_1} \\
+    & x_j - x_i \le \gamma (\delta_x + 1) + 2W( 1 - s_{i j b \delta_x \delta_y}) &  \label{cons:discretized_support_limit_x_2} \\
+    & y_j - y_i \ge \gamma \delta_y - 2D( 1 - s_{i j b \delta_x \delta_y}) &  \label{cons:discretized_support_limit_y_1} \\
+    & y_j - y_i \le \gamma (\delta_y + 1) + 2D( 1 - s_{i j b \delta_x \delta_y}) &  \label{cons:discretized_support_limit_y_2}
 \end{eqnarray}
 
 And finally we can introduce a feasibility constraint which ensures that every item that isn't on the ground is supported by some items in the same bin.
