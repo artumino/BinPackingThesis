@@ -20,8 +20,8 @@ As seen in \cref{fig:cage_ratio}, a high cage ratio means that even if a bin isn
 Our notion of vertical support stems from rules imposed by the industry and from the literature on Pallet Loading Problems where stability is usually ensured between layers of items as a constraint on the minimum ammount of area which rests on other items \cite{elhedhli2019three}.
 As seen in \cref{fig:support}, given a support area threshold which is usually equal to $\beta_s=0.7$ and a tollerance which in our case is equal to $\alpha_s=1\text{cm}$, we can define an item as supported if
 \begin{enumerate}
-    \item the sum of overlap area with every other item on which it is resting is greater then $\beta_s$ times it's area
-    \item the number of its corners resting on another item is greater than 3 and condition 1 holds with a lower threshold $\beta^\prime_s < \beta$
+    \item the sum of overlap area with every other item on which it is resting is greater then $\beta_s$ times it's area \label{support:area_support}
+    \item the number of its corners resting on another item is greater than 3 and condition \ref{support:area_support} holds with a lower threshold $\beta^\prime_s < \beta$ \label{support:vertex_support}
 \end{enumerate}
 
 \begin{figure}[H]
@@ -43,7 +43,7 @@ Given the definitions of our practical constraints, a conceptual formulation of 
                                       & \text{all items with vertical support} \\
 \end{eqnarray*}
 
-We'll now introduce a mixed integer linear programming model for the 3D-SBSBPP that we then extend to include orthogonal rotations and vertical support constraints limited to condition of area support.
+We'll now introduce a mixed integer linear programming model for the 3D-SBSBPP that we then extend to include orthogonal rotations and vertical support constraints limited to condition \ref{support:area_support} (area support).
 Cage ratio isn't directly included in the proposed MILP formulation since the evaluation of the heuristic with the model was done in a single bin configuration where minimizing the maximum height of the bin is equivalent to minimizing the cage ratio.
 
 \section{3D single bin-size bin packing problem}
