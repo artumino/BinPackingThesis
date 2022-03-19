@@ -1,6 +1,9 @@
 \section{3D Bin Packing Problem}
 
-\section{Support} %TODO: Here or in introduction?
+\subsection*{Vertical Support} %TODO: Here or in introduction?
+
+In addition to the non overlapping requirements of the 3D-BPP other practical constraints are usually introduced to address various problems. 
+
 
 \section{MILP Formulation}
 \label{sec:milp}%
@@ -77,6 +80,7 @@ Given a coordinate system, each item $i$ can be represented univocally in 3D spa
 \end{equation}
 
 \paragraph*{Constraints}
+\label{par:standard_const}
 \begin{eqnarray}
     & \sum\limits_{b \in B}{u_{ib}} = 1 & \forall i \in I  \label{cons:all_items_in_bin} \\
     & u_{ib} \le v_b & \forall i \in I, \forall b \in B \label{cons:items_in_used_bins} \\
@@ -114,6 +118,7 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
     \alpha_s  &:& \text{support area threshold} \\
     \beta_s  &:& \text{support height tolerance} \\
     \delta      &:& \text{discretization unit} \\
+    IB &:& \text{the set of tuples $(i, j, b)$ such that $(i,j) \in I \land i \neq j$ and $b \in B$}
 \end{eqnarray*}
 
 
@@ -121,7 +126,7 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
 \begin{eqnarray}
     \gamma = \max_{\forall i \in I}\{ w_i, d_i \}  &:& \text{maximum possible dimension of an item} \notag \\
     \Delta =  \left[ - \left\lfloor \frac{ \gamma }{\delta} \right\rfloor, \left\lfloor \frac{ \gamma }{\delta} \right\rfloor \right]  &:& \text{set of possible distances between overlapping items} \notag \\
-    O : I \times B \times I \times B \times \Delta \times \Delta \rightarrow \mathbb{R}^+ &:& \text{discrete overlap function} \label{eq:overlap_function}
+    O(i, j, b, h, k) \rightarrow \mathbb{R}^+ &:& \text{discrete overlap function} \label{eq:overlap_function}
 \end{eqnarray}
 
 \paragraph*{Additional Variables}
@@ -138,13 +143,14 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
                         1, \text{if $z_i = 0$ } \\ 
                         0, \text{otherwise}
                     \end{cases} & \forall (i,j) \in I \\
-        s_{i j b \delta_x \delta_y} & \begin{cases}
-                    1, \text{if item $i$ receives support from item $j$} \\ \qquad \text{when both are placed in bin $b$} \\ \qquad \text{with distance $(\delta_x, \delta_y)$ between eachother } \\ 
+        s^{kh}_{i j b} & \begin{cases}
+                    1, \text{if item $i$ receives support from item $j$} \\ \qquad \text{when both are placed in bin $b$} \\ \qquad \text{with distance $(k, h) \in \Delta$ between eachother } \\ 
                     0, \text{otherwise}
                 \end{cases} & \forall (i,j) \in I
 \end{align*}
 
 \paragraph*{Additional Constraints}
+\label{par:support_const}
 \begin{eqnarray}
     & z_j - (z_i + h_i) \le \beta_s + H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \label{cons:z_close_1} \\
     & z_j - (z_i + h_i) \ge -\beta_s - H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \label{cons:z_close_2} \\
@@ -153,18 +159,21 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
     & s_{ij} \ge z^p_{ij} + z^c_{ij} - 2 & \forall (i, j) \in I : i \neq j \label{cons:supporting} \\
     & \sum\limits_{j \in I}{s_{ij}} \le \sum\limits_{b \in B}{u_{ib}} & \forall i \in I  \label{cons:support_comes_from_placed} \\
     & z_i \le H(1 - g_i) & \forall i \in I \label{cons:grounded} \\
-    & \sum\limits_{(\delta_x, \delta_y) \in \Delta, b \in B : O(i, b, j, b, \delta_x, \delta_y) \neq 0} s_{i j b \delta_x \delta_y } \le s_{ij} & \forall (i, j) \in I \label{cons:discretized_support_same}
+    & \sum\limits_{(k, h) \in \Delta, b \in B : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le s_{ij} & \forall (i, j) \in I \label{cons:discretized_support_same} \\
+    & \sum\limits_{(k, h) \in \Delta : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le u_{ib} & \forall (i, j, b) \in IB \label{cons:discretized_support_right_bin_i} \\
+    & \sum\limits_{(k, h) \in \Delta : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le u_{jb} & \forall (i, j, b) \in IB \label{cons:discretized_support_right_bin_j} \\
 \end{eqnarray}
 
-We can then define the following set of constraints for $\forall (\delta_x, \delta_y) \in \Delta, \forall b \in B, \forall (i,j) \in I : i \neq j \land O(i, b, j, b, \delta_x, \delta_y) \neq 0$
-\begin{eqnarray}
-    & x_j - x_i \ge \gamma \delta_x - 2W( 1 - s_{i j b \delta_x \delta_y}) &  \label{cons:discretized_support_limit_x_1} \\
-    & x_j - x_i \le \gamma (\delta_x + 1) + 2W( 1 - s_{i j b \delta_x \delta_y}) &  \label{cons:discretized_support_limit_x_2} \\
-    & y_j - y_i \ge \gamma \delta_y - 2D( 1 - s_{i j b \delta_x \delta_y}) &  \label{cons:discretized_support_limit_y_1} \\
-    & y_j - y_i \le \gamma (\delta_y + 1) + 2D( 1 - s_{i j b \delta_x \delta_y}) &  \label{cons:discretized_support_limit_y_2}
-\end{eqnarray}
+We can then define a set of constraints which given a discretized placement $s^{k h}_{i j b}$ limits the distance between $i$ and $j$ to a given continuous region in space delimited by a square of the dimmension of our discretization unit $\gamma$. 
+Given every $ (k, h) \in \Delta, (i, j, b) \in IB$ such that $O(i, j, k, h) \neq 0$ the resulting constraints are defined in \cref{cons:discretized_support_limit_x_1,cons:discretized_support_limit_x_2,cons:discretized_support_limit_y_1,cons:discretized_support_limit_y_2}.
+\begin{align}
+    & x_j - x_i \ge \gamma k - 2W( 1 - s^{k h}_{i j b}) &  \label{cons:discretized_support_limit_x_1} \\
+    & x_j - x_i \le \gamma (k + 1) + 2W( 1 - s^{k h}_{i j b}) &  \label{cons:discretized_support_limit_x_2} \\
+    & y_j - y_i \ge \gamma h - 2D( 1 - s^{k h}_{i j b}) &  \label{cons:discretized_support_limit_y_1} \\
+    & y_j - y_i \le \gamma (h + 1) + 2D( 1 - s^{k h}_{i j b}) &  \label{cons:discretized_support_limit_y_2}
+\end{align}
 
 And finally we can introduce a feasibility constraint which ensures that every item that isn't on the ground is supported by some items in the same bin.
-\begin{eqnarray*}
-    & \sum\limits_{(\delta_x, \delta_y) \in \Delta, b \in B, j \in I : i \neq j \land O(i, b, j, b, \delta_x, \delta_y) \neq 0}{ O(i, b, j, b, \delta_x, \delta_y)s_{i j b \delta_x \delta_y }} \ge \alpha_s w_i d_i - w_i d_i g_i & \forall i \in I \label{cons:every_item_is_supported}
-\end{eqnarray*}
+\begin{eqnarray}
+    & \sum\limits_{(k, h) \in \Delta, b \in B, j \in I : i \neq j \land O(i, j, k, h) \neq 0}{ O(i, j, k, h)s^{k h}_{j i b}} \ge \alpha_s w_i d_i - w_i d_i g_i & \forall i \in I \label{cons:every_item_is_supported}
+\end{eqnarray}

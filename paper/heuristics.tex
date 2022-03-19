@@ -13,7 +13,7 @@ States or packings are partial solutions to the 3D-BPP. Given the formal definit
     \end{equation*}
 \end{definition}
 
-It is also assumed that variables identifying an item's position are independent between states (changes to their values in state $s$ won't affect state $s^\prime$). In order to simplify the algorithm rappresentation, rotations are handled as an additional parameter $r_i$ which indicates if item $i$ is rotated by $90\deg$ over the z-axis.
+It is also assumed that variables identifying an item's position are independent between states (changes to their values in state $s$ won't affect state $s^\prime$). In order to simplify the algorithm rappresentation, rotations are handled by simply swapping the dimensions $w_i$ and $d_i$ of item $i$ when needed.
 
 A state $s$ can then be defined as follows
 \begin{itemize}
@@ -41,7 +41,7 @@ We can also trivially define a function that determines if a state is a final st
     \end{equation}
 \end{definition}
 
-Each used bin $b$ has additional data associated to it that is contained in a structure $q_b \in s.Q$ which is used to store structures usefull to the constructive heuristic definied in \cref{sec:support_planes}. 
+Each used bin $b$ has additional data associated to it that is contained in $q_b \in s.Q$ which is used to store structures usefull to the constructive heuristic definied in \cref{sec:support_planes}. 
 Let us introduce the concept of packed items inside a bin:
 \begin{definition}[Packed item]
     Given a state $s$ and a bin $b \in s.B$, we say that item
@@ -59,8 +59,8 @@ Given a bin $b \in s.B$ we can then define structure $q_b$ as follows
     \item $T$: the AABB Tree (section \ref{sec:problem_state:aabbtree}) representing the items inside $b$
 \end{itemize}
 
-Notice that two separate sets containing the items packed in $b$ are present inside $q_b$ but adding and accessing items in $q_b.J$ has a time complexity of $O(1)$ given an underlying implementation as HashSet while maintaining $q_b.T$ usually has a time complexity of $O(log(|q_b.J|))$.
-The reason to include an AABB Tree inside this structure is further explained in sections \ref{sec:problem_state:feasibility} and \ref{ssec:scoring_insertions}
+Both sets $q_b.J$ and $q_b.T$ contain the items packed in $b$ but adding and accessing items in $q_b.J$ has a time complexity of $O(1)$ given an underlying implementation as HashSet while maintaining $q_b.T$ usually has a time complexity of $O(log(|q_b.J|))$.
+The AABB Tree inside this structure is included to allow for fast overlap checks between items and is further explained in sections \ref{sec:problem_state:feasibility} and \ref{ssec:scoring_insertions}.
 
 \subsection{AABB Tree}
 \label{sec:problem_state:aabbtree}%
@@ -73,8 +73,7 @@ AABB Trees are bounding volume hierarchies typically used for fast collision det
 \begin{itemize}
     \item $AABBInsert(i)$: which allows inserting an axis-aligned box $i$ in the tree
     \item $AABBOverlaps(i)$: which allows determining if an axis-aligned box $i$ overlaps an element in the tree
-    \item $AABBClosest(i, d)$: which, given an axis-aligned box $i$ and a direction \\$d \in \{ XP, XN, YP, YN, ZP, ZN \}$ along an axis, returns the closest element inside the tree following that direction starting from the box $i$
-    %TODO: Check this
+    \item $AABBClosest(i, d)$: which, given an axis-aligned box $i$ and a direction \\$d \in \{ XP, XN, YP, YN, ZP, ZN \}$ along an axis, returns the closest element following that direction starting from the box $i$
 \end{itemize}
 
 If the tree is properly balanced each operation on average has a time complexity of $O(log(n))$ where $n$ is the number of elements in the tree.
@@ -82,13 +81,12 @@ Maintaining an AABB Tree in the state allows us to do checks for feasibility dur
 
 \subsection{Feasibility}
 \label{sec:problem_state:feasibility}%
-A state $s$ is said to be feasible if the currently packed items for every bin $b \in s.B$ respects the constraints defined in the problem formulation (\ref{sec:milp})
-
+A state $s$ is said to be feasible if the currently packed items for every bin $b \in s.B$ respects the constraints defined in the problem formulation (\cref{par:standard_const,par:support_const}).
 Since the proposed heuristic is constructive it is more convenient to define the concept of feasibility relative to a change in the state.
 
 \paragraph*{Insertions}
 
-Given a state $s$ and $b \in s.B$, an insertion of items is a set of items that are placed in $b$ and have their $z_i$ within a tolerance of a certain $z$.
+Given a state $s$ and $b \in s.B$, an insertion of items is a set of items that are placed in $b$ and have their $z_i$ within a tolerance from a certain $z$.
 
 \begin{definition}[Insertion]
     \label{def:insertion}%
@@ -97,23 +95,22 @@ Given a state $s$ and $b \in s.B$, an insertion of items is a set of items that 
 
 \begin{observation}
     \label{oss:state_bin_open}
-    Given $s$ and $p = (b, \emptyset)$ where $b \notin s.B$, $p$ is an insertion which will open bin $b$ in $s$.
+    Given a state $s$ and an insertion $p = (b, \emptyset)$ where $b \notin s.B$, $p$ is an insertion which will open bin $b$ in $s$.
 \end{observation}
 
 \begin{definition}[Next]
     \label{def:state_next}%
-    Let $p$ be an insertion over a state $s$ we can then define $s^\prime = Next(s, p)$ as the "copy" of state $s$ with $s^\prime.p = p$. And $p$ is then pending on $s^\prime$.
+    Let $p$ be an insertion over a state $s$ we can then define $s^\prime = Next(s, p)$ as the "copy" of state $s$ with $s^\prime.p = p$. And $p$ is then pending insertion on $s^\prime$.
 \end{definition}
 
-In this way, we can evaluate the changes to the score of a state based on its pending insertion without having to update all the structures for every evaluated state. This property will become apparent in section \ref{sec:beamsearch}. 
-
-We can then define an algorithm that applies insertions to a given state $s$ with pending insertions with the help of a function $OpenBin(b)$ which initializes a new structure $q_b$ with every element at its empty value.
-The proposed algorithm is shown in \ref{algo:state_commit}.
+We can evaluate the changes to the score of a state based on its pending insertion without having to update all the structures for every evaluated state. This property will become apparent in section \ref{sec:beamsearch}. 
+We can then define an algorithm that applies a pending insertion $p$ on a given state $s$ with the help of a function $OpenBin(b)$ which initializes a new structure $q_b$ with every element at its empty value.
+The proposed algorithm is shown in \ref{algo:state_commit}. %TODO: Fix broken links
 
 \input{algorithms/state_commit}
 
 \paragraph*{Insertion feasibility}
-Describe insertion feasibility givine the sets defined\\
+An insertion $p = (b, I)$ that is pending on a given state $s$ is feasible if every inserted item $i \in p.I$ satisfies the constraint of non-overlap (\ref{cons:no_overlap}), the constraint of support (\ref{cons:every_item_is_supported}) and if it is placed within the size of the given bin.\\
 \input{algorithms/insertion_feasible}
 %TODO: Continue with definition of feasibility for sets already made and feasibility of an insertion
 
@@ -226,21 +223,21 @@ Each support plane can be characterized by the triple $S_z = (z, I_{support}, I_
     \item[--] $I_{upper}$: the set of items that will be obstacles to potential new items placed on the plane %TODO: change explaination to be more faithfull to the algorithm
 \end{itemize}%TODO: link to support
 
-Let $coords$ be the set of possible coordinate changes which allow for the problem to evaluate placements starting from different corners of the bin. %TODO: leave this here?
+Let $coords$ be the set of possible coordinate changes which allow for the problem to evaluate insertions starting from different corners of the bin. %TODO: leave this here?
 %TODO: Maybe explicit rotation?
 
 Given a function $IsFeasible(i, bin, I_{support}, I_{upper}, aabb)$ which evaluates if a packing of item $i$ in bin $bin$ is feasible,
-and the function $ComparePacking(p, p^\prime)$ which defines a ranking over placements in the same plane,
+and the function $ComparePacking(p, p^\prime)$ which defines a ranking over insertions in the same plane,
 the SP algorithm can be written as algorithm \ref{algo:sp_bestinsertion}.
 %TODO: Too many "let"?
 
 \input{algorithms/supportplane}
 
-To evaluate a packing on a plane a heuristic to solve the 2DBPP is used with the introduction of fixed placements which represent items on other planes that will be obstacles in the current one.
+To evaluate a packing on a plane a heuristic to solve the 2DBPP is used with the introduction of fixed insertions which represent items on other planes that will be obstacles in the current one.
 
-%TODO: Specify that the selected heuristic must operate with the assumption of fixed placements
+%TODO: Specify that the selected heuristic must operate with the assumption of fixed insertions
 
-Given the dimensions of the 2D bin $(W_b, D_b)$, the set of obstacles $I_{o}$ and the set of items to pack $I_{p}$ a new placement can be computed following algorithm \ref{algo:sp_rectpack}
+Given the dimensions of the 2D bin $(W_b, D_b)$, the set of obstacles $I_{o}$ and the set of items to pack $I_{p}$ a new insertion can be computed following algorithm \ref{algo:sp_rectpack}
 
 \input{algorithms/sp_rectpack}
 
