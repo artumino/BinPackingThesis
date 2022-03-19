@@ -1,11 +1,11 @@
-In this chapter, we describe a solution to the 3D bin packing problem with static stability.
-A solution candidate to the problem can be found by conducting a search over the tree of possible packings or states. In section \ref{sec:problem_state} we describe what a state or packing is and its representation.
-Since an exhaustive search isn't feasible, a heuristic search is conducted by combining a beam search algorithm described in section \ref{sec:beamsearch} and a constructive heuristic described in section \ref{sec:support_planes}.
+In this chapter, we describe an heuristic algorithm to solve the 3D bin packing problem with vertical support.
+In section \ref{sec:problem_state} we describe the concepts which will be used in the algorithm, like the definition of a state, insertions, and the feasibility of a solution.
+Since the 3D-BPP is NP-Hard an exhaustive search for a solution isn't practical so an heuristic search is conducted by combining a beam search algorithm described in section \ref{sec:beamsearch} and a constructive heuristic described in section \ref{sec:support_planes}.
 The proposed algorithm takes in input an initial feasible state (as defined in section \ref{sec:problem_state:feasibility}) usually represented by the empty state (\ref{def:empty_state}) and outputs the best scoring state based on an ordering function defined in section \ref{ssec:scoring_states}.
 
 \section{State}
 \label{sec:problem_state}%
-States or packings are partial solutions to the 3DBPP. Given the formal definition of the problem (\ref{sec:milp}) a few new definitions are introduced to facilitate the algorithm's definition.
+States or packings are partial solutions to the 3D-BPP. Given the formal definition of the problem (\ref{sec:milp}) a few new definitions are introduced to facilitate the algorithm's definition.
 \begin{definition}[Unpacked item]
     An item $i \in I$ is unpacked \textbf{iff}
     \begin{equation*}
@@ -13,12 +13,12 @@ States or packings are partial solutions to the 3DBPP. Given the formal definiti
     \end{equation*}
 \end{definition}
 
-It is also assumed that variables identifying an item's position, and rotation are independent between states (changes to their values in state $s$ won't affect state $s^\prime$).
+It is also assumed that variables identifying an item's position are independent between states (changes to their values in state $s$ won't affect state $s^\prime$). In order to simplify the algorithm rappresentation, rotations are handled as an additional parameter $r_i$ which indicates if item $i$ is rotated by $90\deg$ over the z-axis.
 
 A state $s$ can then be defined as follows
 \begin{itemize}
     \item $U$: the set of unpacked items
-    \item $B$: the set of bins
+    \item $B$: the set of used bins
     \item $Q = (q_1, q_2,\dots, q_b)$: the set of supporting structures for each bin $b \in B$
     \item $p$: the insertion pending on this state (described by def. \ref{def:insertion})
 \end{itemize}
@@ -41,8 +41,7 @@ We can also trivially define a function that determines if a state is a final st
     \end{equation}
 \end{definition}
 
-Each bin $b$ has additional data that is contained in a structure $q_b \in s.Q$ used to facilitate the execution of the algorithm. 
-
+Each used bin $b$ has additional data associated to it that is contained in a structure $q_b \in s.Q$ which is used to store structures usefull to the constructive heuristic definied in \cref{sec:support_planes}. 
 Let us introduce the concept of packed items inside a bin:
 \begin{definition}[Packed item]
     Given a state $s$ and a bin $b \in s.B$, we say that item
@@ -61,7 +60,6 @@ Given a bin $b \in s.B$ we can then define structure $q_b$ as follows
 \end{itemize}
 
 Notice that two separate sets containing the items packed in $b$ are present inside $q_b$ but adding and accessing items in $q_b.J$ has a time complexity of $O(1)$ given an underlying implementation as HashSet while maintaining $q_b.T$ usually has a time complexity of $O(log(|q_b.J|))$.
-
 The reason to include an AABB Tree inside this structure is further explained in sections \ref{sec:problem_state:feasibility} and \ref{ssec:scoring_insertions}
 
 \subsection{AABB Tree}
