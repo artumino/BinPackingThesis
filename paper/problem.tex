@@ -1,28 +1,37 @@
-\section{3D Bin Packing Problem}
+In this thesis we address the 3D single bin-size bin packing problem (3D-SBSBPP). Starting from a set of items of different size the objective of the problem is to arrange them in the least ammount of bins of a given fixed size without any overlap between eachother.
+In addition to the standard formulation of the problem three additional practical constraints given by our use-case need to be taken into account:
+\begin{itemize}
+    \item each item inside a bin should have static stability, meaning that every item should be supported by the ground or by other items in the same bin
+    \item the cage ratio of each used bin should be maximized
+    \item each item can be rotated orthogonally along its vertical axis
+\end{itemize}
 
-\subsection*{Vertical Support} %TODO: Here or in introduction?
+Given a certain placement of items inside a bin of base $W \times D$ with the top of the highest item being at $z_\text{max}$ and the sum of the volume of each item being $V$, its cage ratio is defined as $\text{CR} = \frac{V}{W \cdot D \cdot z_\text{max}}$.
+As seen in \cref{fig:cage_ratio}, a high cage ratio means that even if a bin isn't fully occupied it could potentially be used as a base for other items. In a single bin setting maximizing cage ratio is equivalent to minimizing $z_\text{max}$.
 
-In addition to the non overlapping requirements of the 3D-BPP other practical constraints are usually introduced to address various problems. 
+\begin{figure}
+    \scalebox{0.65}{%
+    \input{Images/cage_ratio}
+    }
+    \caption{Cage ratio of two different bin configurations}
+    \label{fig:cage_ratio}
+\end{figure}
 
-
-\section{MILP Formulation}
-\label{sec:milp}%
-\subsection*{Conceptual model}
-A conceptual model of the problem we are trying to solve would be:
-
-%TODO: Cage Ratio?
+A conceptual model to solve our problem would be:
 \begin{eqnarray*}
-    \textbf{minimize} & \text{unused volume in used bins} \\
+    \textbf{minimize} & \text{number of used bins} \\
+                        & \text{unused volume of each bin under $z_\text{max}$} \\
     \textbf{subject to} & \text{all items assigned to one and only one bin} \\
                                       & \text{all items within the bin dimensions} \\
                                       & \text{no overlaps between items in the same bin} \\
-                                      & \text{all items with support} \\
+                                      & \text{all items with vertical support} \\
 \end{eqnarray*}
 
-We can now provide the formal definition of the 3DBPP by formulating a mixed integer linear programming problem model.
+In \cref{sec:milp} we provide a mixed integer linear programming model for the 3D-SBSBPP that we then extend to include vertical support constraints.
+The pratical constraint related to cage ratio isn't directly included in the proposed MILP formulation since the evaluation of the heuristic with the model was done in a single bin configuration where minimizing the maximum height of the bin is equivalent to minimizing the cage ratio.
 
-\subsection*{Formal model}
-\label{ssec:formal_model}
+\section{3D single bin-size bin packing problem}
+\label{sec:milp}%
 We'll now introduce a MILP model for the standard 3DBPP problem definition and then we'll expand it to address the stability constraint afterwards.
 
 We start by defining the known sets and parameters of the problem.
@@ -66,11 +75,11 @@ We start by defining the known sets and parameters of the problem.
 
 Given a coordinate system, each item $i$ can be represented univocally in 3D space by \cref{par:item_dim,var:item_pos} as seen in figure \ref{fig:coordinate_system}
 \begin{figure}
-    \scalebox{0.65}{%
+    \scalebox{0.62}{%
     \input{Images/coordinate_system}
     }
-    \caption{Coordinate system representation for a generic item $i$ and it's rotated clone $i \in I^R$ 
-    \label{fig:coordinate_system}}
+    \caption{Coordinate system representation for a generic item $i$ and it's rotated clone $i \in I^R$}
+    \label{fig:coordinate_system}
 \end{figure}
 
 \paragraph*{Objective function}
@@ -81,7 +90,7 @@ Given a coordinate system, each item $i$ can be represented univocally in 3D spa
 
 \paragraph*{Constraints}
 \label{par:standard_const}
-\begin{eqnarray}
+\begin{align}
     & \sum\limits_{b \in B}{u_{ib}} = 1 & \forall i \in I  \label{cons:all_items_in_bin} \\
     & u_{ib} \le v_b & \forall i \in I, \forall b \in B \label{cons:items_in_used_bins} \\
     & v_b \ge v_c & \forall (b,c) \in B : b < c  \label{cons:bin_breaking} \\
@@ -96,7 +105,7 @@ Given a coordinate system, each item $i$ can be represented univocally in 3D spa
     & (z_i + h_i) - z_j\le H(1 - z^p_{ij}) & \forall i,j \in I \label{cons:z_prec_1} \\
     & z_j - (z_i + h_i) + 1 \le H z^p_{ij} & \forall i,j \in I \label{cons:z_prec_2} \\
     & x^p_{ij} + x^p_{ji} + y^p_{ij} + y^p_{ji} + z^p_{ij} + z^p_{ji} \ge u_{ib} + u_{jb} - 1 & \forall i,j \in I, \forall b \in B \label{cons:no_overlap}
-\end{eqnarray}
+\end{align}
 \subsection*{Othogonal rotations}
 
 Let us extend the definition of the bin packing problem without rotations with a new formulation which allows $90$ degrees rotations of each item.
@@ -104,10 +113,10 @@ Let $I = I^O \cup I^R$ be the new set of items where $I^O$ is the set of origina
 
 We can now rewrite constraint \ref{cons:all_items_in_bin} as \ref{cons:all_items_in_bin_with_rotation} to force only one for the item between the original and rotated to be part of the solution.
 
-\begin{eqnarray}
+\begin{align}
     %TODO: Non va bene
     & \sum\limits_{b \in B} u_{ib} + \sum\limits_{b \in B} u_{jb} = 1 & \forall j = i^R \in I \label{cons:all_items_in_bin_with_rotation}
-\end{eqnarray}
+\end{align}
 
 \subsection*{Static stability constraints}
 
@@ -124,9 +133,9 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
 
 \paragraph*{Computed Parameters}
 \begin{eqnarray}
-    \gamma = \max_{\forall i \in I}\{ w_i, d_i \}  &:& \text{maximum possible dimension of an item} \notag \\
-    \Delta =  \left[ - \left\lfloor \frac{ \gamma }{\delta} \right\rfloor, \left\lfloor \frac{ \gamma }{\delta} \right\rfloor \right]  &:& \text{set of possible distances between overlapping items} \notag \\
-    O(i, j, b, h, k) \rightarrow \mathbb{R}^+ &:& \text{discrete overlap function} \label{eq:overlap_function}
+    & \gamma = \max_{\forall i \in I}\{ w_i, d_i \}  :& \text{maximum possible dimension of an item} \notag \\
+    & \Delta =  \left[ - \left\lfloor \frac{ \gamma }{\delta} \right\rfloor, \left\lfloor \frac{ \gamma }{\delta} \right\rfloor \right]  :& \text{set of possible distances between overlapping items} \notag \\
+    & O(i, j, h, k) \rightarrow \mathbb{R}^+ :& \text{discrete overlap function} \label{eq:overlap_function}
 \end{eqnarray}
 
 \paragraph*{Additional Variables}
@@ -151,7 +160,7 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
 
 \paragraph*{Additional Constraints}
 \label{par:support_const}
-\begin{eqnarray}
+\begin{align}
     & z_j - (z_i + h_i) \le \beta_s + H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \label{cons:z_close_1} \\
     & z_j - (z_i + h_i) \ge -\beta_s - H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \label{cons:z_close_2} \\
     & s_{ij} \le z^p_{ij} & \forall (i, j) \in I  \label{cons:supporting_1} \\
@@ -162,7 +171,7 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
     & \sum\limits_{(k, h) \in \Delta, b \in B : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le s_{ij} & \forall (i, j) \in I \label{cons:discretized_support_same} \\
     & \sum\limits_{(k, h) \in \Delta : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le u_{ib} & \forall (i, j, b) \in IB \label{cons:discretized_support_right_bin_i} \\
     & \sum\limits_{(k, h) \in \Delta : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le u_{jb} & \forall (i, j, b) \in IB \label{cons:discretized_support_right_bin_j} \\
-\end{eqnarray}
+\end{align}
 
 We can then define a set of constraints which given a discretized placement $s^{k h}_{i j b}$ limits the distance between $i$ and $j$ to a given continuous region in space delimited by a square of the dimmension of our discretization unit $\gamma$. 
 Given every $ (k, h) \in \Delta, (i, j, b) \in IB$ such that $O(i, j, k, h) \neq 0$ the resulting constraints are defined in \cref{cons:discretized_support_limit_x_1,cons:discretized_support_limit_x_2,cons:discretized_support_limit_y_1,cons:discretized_support_limit_y_2}.
