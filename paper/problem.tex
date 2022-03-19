@@ -1,23 +1,39 @@
-In this thesis we address the 3D single bin-size bin packing problem (3D-SBSBPP). Starting from a set of items of different size the objective of the problem is to arrange them in the least ammount of bins of a given fixed size without any overlap between eachother.
-In addition to the standard formulation of the problem three additional practical constraints given by our use-case need to be taken into account:
+In this thesis we address the 3D single bin-size bin packing problem (3D-SBSBPP). Starting from a set of items of different size the goal is to arrange them in the least ammount of bins of a given fixed size without any overlap between eachother.
+In addition to the standard formulation of the problem three additional practical constraints needs to be taken into account to satisfy the requests of our use-case:
 \begin{itemize}
-    \item each item inside a bin should have static stability, meaning that every item should be supported by the ground or by other items in the same bin
+    \item each item inside a bin should have static stability, meaning that every item should be supported either by the ground or by other items in the same bin
     \item the cage ratio of each used bin should be maximized
     \item each item can be rotated orthogonally along its vertical axis
 \end{itemize}
 
-Given a certain placement of items inside a bin of base $W \times D$ with the top of the highest item being at $z_\text{max}$ and the sum of the volume of each item being $V$, its cage ratio is defined as $\text{CR} = \frac{V}{W \cdot D \cdot z_\text{max}}$.
+Given a certain placement of items inside a bin of base $W \times D$ with the top of the highest item being at $z_\text{max}$ and the sum of the volume of each item being $V$, the bin's cage ratio is defined as $\text{CR} = \frac{V}{W \cdot D \cdot z_\text{max}}$.
 As seen in \cref{fig:cage_ratio}, a high cage ratio means that even if a bin isn't fully occupied it could potentially be used as a base for other items. In a single bin setting maximizing cage ratio is equivalent to minimizing $z_\text{max}$.
 
-\begin{figure}
-    \scalebox{0.65}{%
+\begin{figure}[H]
+    \scalebox{0.60}{%
     \input{Images/cage_ratio}
     }
     \caption{Cage ratio of two different bin configurations}
     \label{fig:cage_ratio}
 \end{figure}
 
-A conceptual model to solve our problem would be:
+Our notion of vertical support stems from rules imposed by the industry and from the literature on Pallet Loading Problems where stability is usually ensured between layers of items as a constraint on the minimum ammount of area which rests on other items \cite{elhedhli2019three}.
+As seen in \cref{fig:support}, given a support area threshold which is usually equal to $\beta_s=0.7$ and a tollerance which in our case is equal to $\alpha_s=1\text{cm}$, we can define an item as supported if
+\begin{itemize}
+    \item the sum of overlap area with every other item on which it is resting is greater then $\beta_s$ times it's area
+    \item the number of its corners resting on another item is greater than 3 and condition 1 holds with a lower threshold $\beta^\prime_s < \beta$
+\end{itemize}
+
+\begin{figure}[H]
+    \scalebox{0.55}{%
+    \input{Images/support}
+    }
+    \caption{Rappresentation of an item with support given $\beta_s = 0.5, \alpha_s$}
+    \label{fig:support}
+\end{figure}
+
+\newpage
+Given the definitions of our practical constraints, a conceptual formulation of our model would be
 \begin{eqnarray*}
     \textbf{minimize} & \text{number of used bins} \\
                         & \text{unused volume of each bin under $z_\text{max}$} \\
@@ -27,13 +43,11 @@ A conceptual model to solve our problem would be:
                                       & \text{all items with vertical support} \\
 \end{eqnarray*}
 
-In \cref{sec:milp} we provide a mixed integer linear programming model for the 3D-SBSBPP that we then extend to include vertical support constraints.
-The pratical constraint related to cage ratio isn't directly included in the proposed MILP formulation since the evaluation of the heuristic with the model was done in a single bin configuration where minimizing the maximum height of the bin is equivalent to minimizing the cage ratio.
+We'll now introduce a mixed integer linear programming model for the 3D-SBSBPP that we then extend to include orthogonal rotations and vertical support constraints limited to condition of area support.
+Cage ratio isn't directly included in the proposed MILP formulation since the evaluation of the heuristic with the model was done in a single bin configuration where minimizing the maximum height of the bin is equivalent to minimizing the cage ratio.
 
 \section{3D single bin-size bin packing problem}
 \label{sec:milp}%
-We'll now introduce a MILP model for the standard 3DBPP problem definition and then we'll expand it to address the stability constraint afterwards.
-
 We start by defining the known sets and parameters of the problem.
 \paragraph*{Sets}
 \begin{eqnarray*}
