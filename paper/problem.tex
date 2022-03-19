@@ -68,7 +68,7 @@ The 3D-SBSBPP can then be formulated as a mixed-integer linear programming probl
 \label{par:standard_const}
 \begin{align}
    \min       \qquad& \sum\limits_{b \in B} (H v_b + z^{max}_b) & \label{eq:objective} \\
-   \text{st.} \qquad& \sum\limits_{b \in B}{u_{ib}} = 1 & \forall i \in I  \label{cons:all_items_in_bin} \\
+   \text{s.t.} \qquad& \sum\limits_{b \in B}{u_{ib}} = 1 & \forall i \in I  \label{cons:all_items_in_bin} \\
                     & u_{ib} \le v_b & \forall i \in I, \forall b \in B \label{cons:items_in_used_bins} \\
                     & v_b \ge v_c & \forall (b,c) \in B : b < c  \label{cons:bin_breaking} \\
                     & x_i + w_i \le W & \forall i \in I \label{cons:inside_x} \\ 
