@@ -19,16 +19,16 @@ As seen in \cref{fig:cage_ratio}, a high cage ratio means that even if a bin isn
 
 Our notion of vertical support stems from rules imposed by the industry and from the literature on Pallet Loading Problems where stability is usually ensured between layers of items as a constraint on the minimum ammount of area which rests on other items \cite{elhedhli2019three}.
 As seen in \cref{fig:support}, given a support area threshold which is usually equal to $\beta_s=0.7$ and a tollerance which in our case is equal to $\alpha_s=1\text{cm}$, we can define an item as supported if
-\begin{itemize}
+\begin{enumerate}
     \item the sum of overlap area with every other item on which it is resting is greater then $\beta_s$ times it's area
     \item the number of its corners resting on another item is greater than 3 and condition 1 holds with a lower threshold $\beta^\prime_s < \beta$
-\end{itemize}
+\end{enumerate}
 
 \begin{figure}[H]
     \scalebox{0.55}{%
     \input{Images/support}
     }
-    \caption{Rappresentation of an item with support given $\beta_s = 0.5, \alpha_s$}
+    \caption{Rappresentation of an item with vertical support given $\beta_s = 0.5, \alpha_s$}
     \label{fig:support}
 \end{figure}
 
@@ -48,46 +48,14 @@ Cage ratio isn't directly included in the proposed MILP formulation since the ev
 
 \section{3D single bin-size bin packing problem}
 \label{sec:milp}%
-We start by defining the known sets and parameters of the problem.
-\paragraph*{Sets}
-\begin{eqnarray*}
-    I = \{1,\dots, n \}: & \text{set of items} \\
-    B = \{1,\dots, m \}: & \text{set of bins} 
-\end{eqnarray*}
-\paragraph*{Parameters}
-\begin{eqnarray}
-          W \times D \times H  & \text{width $\times$ depth $\times$ height of a bin} \notag \\
-                            V  & \text{bin volume} \notag \\
-    w_i \times d_i \times h_i  & \text{width $\times$ depth $\times$ height of item $i$} & \forall i \in I \label{par:item_dim}
-\end{eqnarray}
+Let $I = \{1,\dots, n \}$ be the set of items that needs to be packed, $B = \{1,\dots, m \}$ the set of bins to evaluate of fixed dimensions $W \times D \times H$.
+Each item $i \in I$ is characterized by a given width, depth  and height $(w_i, d_i, h_i)$. 
+Let us introduce three continuous variables that identify the position of the bottom front left corner of an item $(x_i, y_i, h_i)$ as seen in \cref{fig:coordinate_system}.
+We can now introduce a set of integer variables $v_{b}$ which will be 1 if bin $b \in B$ will be used in the solution and 0 otherwhise. A set of integer variable $u_{ib}$ which will be 1 if item $i \in I$ will be placed in bin $b \in B$ and 0 otherwhise.
+In order to check for overlaps three sets of integer variables are introduced for each axis of possible overlap that are used to determine if there is a clear order of precedence on at least on axis. This formulation is also usually used in scheduling problems.
+The three sets of variables are $x^p_{ij}$ which will take the value of one if item $i \in I$ precedes item $j \in I$ over axis $x$ given that item $i$ precedes item $j$ if $x_i + w_i \le x_j$ and 0 otherwhise. 
+The other two sets are defined in a similar way over the remaining axis $y^p_{ij}$ and $z^p_{ij}$. An additional set of continuous variables $z_b^\text{max}$ is introduced which will assume the value of the maximum $x_i + h_i$ of the items $i \in I$ placed in bin $b \in B$.
 
-\paragraph*{Variables} We can now introduce the following sets of integer variables
-\begin{align}
-              (x_i,y_i,z_i) & \qquad \text{bottom front left corner of an item} & \forall i \in I \label{var:item_pos} \\
-                    v_{b} & \begin{cases}
-                                            1, \text{if bin $b$ is used} \\ 
-                                            0, \text{otherwise}
-                                        \end{cases} & \forall b \in B \notag \\
-                    u_{ib} & \begin{cases}
-                                            1, \text{if item $i$ is placed in bin $b$} \\ 
-                                            0, \text{otherwise}
-                                        \end{cases} & \forall i \in I, \forall b \in B  \notag \\
-                    x^p_{ij} & \begin{cases}
-                                            1, \text{if $x_i + w_i \le x_j$} \\ 
-                                            0, \text{otherwise}
-                                        \end{cases} & \forall i,j \in I \notag \\
-                    y^p_{ij} & \begin{cases}
-                                            1, \text{if $y_i + d_i \le y_j$} \\ 
-                                            0, \text{otherwise}
-                                        \end{cases} & \forall i,j \in I \notag \\
-                    z^p_{ij} & \begin{cases}
-                                            1, \text{if $z_i + h_i \le z_j$} \\ 
-                                            0, \text{otherwise}
-                                        \end{cases} & \forall i,j \in I \notag \\
-            z_b^\text{max} & \text{maximum height of bin $b$} & \forall b \in B \notag
-\end{align}
-
-Given a coordinate system, each item $i$ can be represented univocally in 3D space by \cref{par:item_dim,var:item_pos} as seen in figure \ref{fig:coordinate_system}
 \begin{figure}
     \scalebox{0.62}{%
     \input{Images/coordinate_system}
@@ -96,30 +64,33 @@ Given a coordinate system, each item $i$ can be represented univocally in 3D spa
     \label{fig:coordinate_system}
 \end{figure}
 
-\paragraph*{Objective function}
-\begin{equation}
-    \label{eq:objective}
-    \min \hspace{.2cm} \sum\limits_{b \in B} (H v_b + z^{max}_b)
-\end{equation}
-
-\paragraph*{Constraints}
+The 3D-SBSBPP can then be formulated as a mixed-integer linear programming problem:
 \label{par:standard_const}
 \begin{align}
-    & \sum\limits_{b \in B}{u_{ib}} = 1 & \forall i \in I  \label{cons:all_items_in_bin} \\
-    & u_{ib} \le v_b & \forall i \in I, \forall b \in B \label{cons:items_in_used_bins} \\
-    & v_b \ge v_c & \forall (b,c) \in B : b < c  \label{cons:bin_breaking} \\
-    & x_i + w_i \le W & \forall i \in I \label{cons:inside_x} \\ 
-    & y_i + d_i \le D & \forall i \in I \label{cons:inside_y} \\ 
-    & z_i + h_i \le H & \forall i \in I \label{cons:inside_z} \\ 
-    & z^{max}_b \ge (z_i + h_i) - H(1-u_{ib}) & \forall i \in I, \forall b \in B \label{cons:maxz} \\
-    & (x_i + w_i) - x_j\le W(1 - x^p_{ij}) & \forall i,j \in I \label{cons:x_prec_1} \\
-    & x_j - (x_i + w_i) + 1 \le W x^p_{ij} & \forall i,j \in I \label{cons:x_prec_2} \\
-    & (y_i + d_i) - y_j \le D(1 - y^p_{ij}) & \forall i,j \in I \label{cons:y_prec_1} \\
-    & y_j - (y_i + d_i) + 1 \le D y^p_{ij} & \forall i,j \in I \label{cons:y_prec_2} \\
-    & (z_i + h_i) - z_j\le H(1 - z^p_{ij}) & \forall i,j \in I \label{cons:z_prec_1} \\
-    & z_j - (z_i + h_i) + 1 \le H z^p_{ij} & \forall i,j \in I \label{cons:z_prec_2} \\
-    & x^p_{ij} + x^p_{ji} + y^p_{ij} + y^p_{ji} + z^p_{ij} + z^p_{ji} \ge u_{ib} + u_{jb} - 1 & \forall i,j \in I, \forall b \in B \label{cons:no_overlap}
+   \min       \qquad& \sum\limits_{b \in B} (H v_b + z^{max}_b) & \label{eq:objective} \\
+   \text{st.} \qquad& \sum\limits_{b \in B}{u_{ib}} = 1 & \forall i \in I  \label{cons:all_items_in_bin} \\
+                    & u_{ib} \le v_b & \forall i \in I, \forall b \in B \label{cons:items_in_used_bins} \\
+                    & v_b \ge v_c & \forall (b,c) \in B : b < c  \label{cons:bin_breaking} \\
+                    & x_i + w_i \le W & \forall i \in I \label{cons:inside_x} \\ 
+                    & y_i + d_i \le D & \forall i \in I \label{cons:inside_y} \\ 
+                    & z_i + h_i \le H & \forall i \in I \label{cons:inside_z} \\ 
+                    & z^{max}_b \ge (z_i + h_i) - H(1-u_{ib}) & \forall i \in I, \forall b \in B \label{cons:maxz} \\
+                    & (x_i + w_i) - x_j\le W(1 - x^p_{ij}) & \forall i,j \in I \label{cons:x_prec_1} \\
+                    & x_j - (x_i + w_i) + 1 \le W x^p_{ij} & \forall i,j \in I \label{cons:x_prec_2} \\
+                    & (y_i + d_i) - y_j \le D(1 - y^p_{ij}) & \forall i,j \in I \label{cons:y_prec_1} \\
+                    & y_j - (y_i + d_i) + 1 \le D y^p_{ij} & \forall i,j \in I \label{cons:y_prec_2} \\
+                    & (z_i + h_i) - z_j\le H(1 - z^p_{ij}) & \forall i,j \in I \label{cons:z_prec_1} \\
+                    & z_j - (z_i + h_i) + 1 \le H z^p_{ij} & \forall i,j \in I \label{cons:z_prec_2} \\
+                    & x^p_{ij} + x^p_{ji} + y^p_{ij} + y^p_{ji} + z^p_{ij} + z^p_{ji} \ge u_{ib} + u_{jb} - 1 & \forall i,j \in I, \forall b \in B \label{cons:no_overlap}
 \end{align}
+
+The objective function \ref{eq:objective} seeks to minimize the number of opened bins and the maximum heights of the opened bins. In a single bin configuration since all the volume mass is concentrated inside one bin this also means that it maximises the cage ratio.
+Constraint \ref{cons:all_items_in_bin} ensures that each item is packed in one and only one bin, while contraint \ref{cons:items_in_used_bins} ensures that items are only packed in bins that are used in the solution.
+Since the solution as lots of simmetries with respects to the number of bins a simmetry breaking constraint \ref{cons:bin_breaking} can be added on the opening of bins to improve solve times.
+Each item is also ensured to be placed inside the bin thanks to \cref{cons:inside_x,cons:inside_y,cons:inside_z}.
+The value of $z^{max}_b$ is forced to converge to the maximum height of a given bin thanks to constraint \ref{cons:maxz}.
+Constraints from \ref{cons:x_prec_1} to \ref{cons:z_prec_2} are used to define the precedence binary variables $x^p_{ij}$, $y^p_{ij}$, $z^p_{ij}$ over each axis as described in the problem formulation.
+Constraint \ref{cons:no_overlap} then ensures that if two items are in the same bin then there needs to be at least one axis with a clear order of precedence, otherwise the two items would be overlapping eachother.
 \subsection*{Othogonal rotations}
 
 Let us extend the definition of the bin packing problem without rotations with a new formulation which allows $90$ degrees rotations of each item.
