@@ -1,4 +1,4 @@
-In this thesis we address the 3D single bin-size bin packing problem (3D-SBSBPP). Starting from a set of items of different size the goal is to arrange them in the least ammount of bins of a given fixed size without any overlap between eachother.
+In this thesis we address the 3D single bin-size bin packing problem (3D-SBSBPP) with the addition of a few practical constraints. Starting from a set of items of different size the goal is to arrange them in the least ammount of bins of a given fixed size without any overlap between eachother.
 In addition to the standard formulation of the problem three additional practical constraints need to be taken into account to satisfy the requests of our use-case:
 \begin{itemize}
     \item each item inside a bin should have static stability, meaning that every item should be supported either by the ground or by other items in the same bin
@@ -25,8 +25,8 @@ It is also noted that in a single bin configuration, maximizing cage ratio is eq
 Our notion of vertical support stems from rules imposed by the industry and from the literature on Pallet Loading Problems and Container Loading Problems where stability is usually ensured between horizontal or vertical slices of items as a constraint on the minimum ammount of area which rests on other items (as for ex. \citep{elhedhli2019three,kurpel2020exact,paquay2016mixed}).
 Given a support area threshold which is usually equal to $\alpha_s=0.7$ and a tollerance which in our case is equal to $\beta_s=1\text{cm}$, we can define an item as supported if
 \begin{enumerate}
-    \item the sum of overlap area with every other item on which it is resting is greater then $\alpha_s$ times it's area \label{support:area_support}
-    \item the number of its corners resting on another item is greater than 3 and condition \ref{support:area_support} holds with a lower threshold $\alpha^\prime_s < \alpha_s$ \label{support:vertex_support}
+    \item the sum of the overlap area over the XY-plane with every other item on which it is resting is greater then $\alpha_s$ times it's base area (area support) \label{support:area_support}
+    \item the number of its corners resting on another item is greater than 3 and condition \ref{support:area_support} holds with a lower threshold $\alpha^\prime_s < \alpha_s$ (vertex support) \label{support:vertex_support}
 \end{enumerate}
 A visual rappresentation of the condition of support is illustrated in \cref{fig:support}.
 
