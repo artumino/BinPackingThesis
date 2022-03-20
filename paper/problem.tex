@@ -43,7 +43,7 @@ Given the definitions of our practical constraints, a conceptual formulation of 
                                       & \text{all items with vertical support} \\
 \end{eqnarray*}
 
-We'll now introduce a mixed integer linear programming model for the 3D-SBSBPP that we then extend to include orthogonal rotations and vertical support constraints limited to condition \ref{support:area_support} (area support).
+In \cref{sec:milp} a mixed integer linear programming model for the 3D-SBSBPP is presented and it's later extended to include orthogonal rotations in \cref{subsec:orthogonal_rotations} and vertical support constraints limited to condition \ref{support:area_support} (area support) in \cref{subsec:vertical_support_formulation}.
 Cage ratio isn't directly included in the proposed MILP formulation since the evaluation of the heuristic with the model was done in a single bin configuration where minimizing the maximum height of the bin is equivalent to minimizing the cage ratio.
 
 \section{3D single bin-size bin packing problem}
@@ -84,28 +84,31 @@ The 3D-SBSBPP can then be formulated as a mixed-integer linear programming probl
                     & x^p_{ij} + x^p_{ji} + y^p_{ij} + y^p_{ji} + z^p_{ij} + z^p_{ji} \ge u_{ib} + u_{jb} - 1 & \forall i,j \in I, \forall b \in B \label{cons:no_overlap}
 \end{align}
 
-The objective function \ref{eq:objective} seeks to minimize the number of opened bins and the maximum heights of the opened bins. In a single bin configuration since all the volume mass is concentrated inside one bin this also means that it maximises the cage ratio.
+The objective function \ref{eq:objective} seeks to minimize the number of opened bins and the maximum heights of the opened bins.
+In a single bin configuration since all the volume mass is concentrated inside one bin this also means that it maximises the cage ratio.
 Constraint \ref{cons:all_items_in_bin} ensures that each item is packed in one and only one bin, while contraint \ref{cons:items_in_used_bins} ensures that items are only packed in bins that are used in the solution.
 Since the solution as lots of simmetries with respects to the number of bins a simmetry breaking constraint \ref{cons:bin_breaking} can be added on the opening of bins to improve solve times.
 Each item is also ensured to be placed inside the bin thanks to \cref{cons:inside_x,cons:inside_y,cons:inside_z}.
 The value of $z^{max}_b$ is forced to converge to the maximum height of a given bin thanks to constraint \ref{cons:maxz}.
 Constraints from \ref{cons:x_prec_1} to \ref{cons:z_prec_2} are used to define the precedence binary variables $x^p_{ij}$, $y^p_{ij}$, $z^p_{ij}$ over each axis as described in the problem formulation.
 Constraint \ref{cons:no_overlap} then ensures that if two items are in the same bin then there needs to be at least one axis with a clear order of precedence, otherwise the two items would be overlapping eachother.
-\subsection*{Othogonal rotations}
+\subsection{Othogonal rotations}
+\label{subsec:orthogonal_rotations}%
 
 Let us extend the definition of the bin packing problem without rotations with a new formulation which allows $90$ degrees rotations of each item.
 Let $I = I^O \cup I^R$ be the new set of items where $I^O$ is the set of original non-rotated items and $I^R$ is the set of items rotated by $90$ degrees.
-
-We can now rewrite constraint \ref{cons:all_items_in_bin} as \ref{cons:all_items_in_bin_with_rotation} to force only one for the item between the original and rotated to be part of the solution.
+Given the set of tuples $(i, j) \in I^{OR}$ where $i$ is the original item with dimensions $(w_i, d_i, h_i)$ and $j$ is the corresponding rotated clone with dimensions $(w_j, d_j, h_j) = (d_i, w_i, h_i)$, we can now rewrite constraint \ref{cons:all_items_in_bin} as \ref{cons:all_items_in_bin_with_rotation} to force only one for the item between the original and rotated to be part of the solution.
 
 \begin{align}
-    %TODO: Non va bene
-    & \sum\limits_{b \in B} u_{ib} + \sum\limits_{b \in B} u_{jb} = 1 & \forall j = i^R \in I \label{cons:all_items_in_bin_with_rotation}
+    & \sum\limits_{b \in B} u_{ib} + \sum\limits_{b \in B} u_{jb} = 1 & \forall (i, j) \in I^{OR} \label{cons:all_items_in_bin_with_rotation}
 \end{align}
 
-\subsection*{Static stability constraints}
+\subsection{Discrete vertical support formulation}
+\label{subsec:vertical_support_formulation}%
 
-We now extend the model introduced in \cref{ssec:formal_model} to add constraints addressing static stability.
+We now extend the model to address the constraint of static support. 
+In the literature there are some mathematical formulations tackle the concept of area support (and in some cases vertex support). In \citefullauthor{elhedhli2019three} a SOCP formulation of the support constraint was used but was limited to the problem of spacing between layers with one of the layers being fixed in position, in our case a similar formulation would lead to a non-linear support constraint.
+By introducing a discretization over the XY-plane a linear version of the constraint can be then formulated, a similar formulation, although applied to all the space, was proposed in \citefullauthor{}
 
 \paragraph*{Additional Parameters}
 \begin{eqnarray*}
@@ -159,7 +162,7 @@ We now extend the model introduced in \cref{ssec:formal_model} to add constraint
 \end{align}
 
 We can then define a set of constraints which given a discretized placement $s^{k h}_{i j b}$ limits the distance between $i$ and $j$ to a given continuous region in space delimited by a square of the dimmension of our discretization unit $\gamma$. 
-Given every $ (k, h) \in \Delta, (i, j, b) \in IB$ such that $O(i, j, k, h) \neq 0$ the resulting constraints are defined in \cref{cons:discretized_support_limit_x_1,cons:discretized_support_limit_x_2,cons:discretized_support_limit_y_1,cons:discretized_support_limit_y_2}.
+Given every tuple of possible discretized distances between items $ (k, h) \in \Delta$ and every tuple of different pairs of items in the same bin $(i, j, b) \in I^B$ such that the items would overlap over the discretized plane XY for a non-null region ($O(i, j, k, h) \neq 0$) the resulting constraints are defined in \cref{cons:discretized_support_limit_x_1,cons:discretized_support_limit_x_2,cons:discretized_support_limit_y_1,cons:discretized_support_limit_y_2}.
 \begin{align}
     & x_j - x_i \ge \gamma k - 2W( 1 - s^{k h}_{i j b}) &  \label{cons:discretized_support_limit_x_1} \\
     & x_j - x_i \le \gamma (k + 1) + 2W( 1 - s^{k h}_{i j b}) &  \label{cons:discretized_support_limit_x_2} \\
@@ -167,7 +170,7 @@ Given every $ (k, h) \in \Delta, (i, j, b) \in IB$ such that $O(i, j, k, h) \neq
     & y_j - y_i \le \gamma (h + 1) + 2D( 1 - s^{k h}_{i j b}) &  \label{cons:discretized_support_limit_y_2}
 \end{align}
 
-And finally we can introduce a feasibility constraint which ensures that every item that isn't on the ground is supported by some items in the same bin.
+And finally we can introduce a feasibility constraint which ensures that every item that isn't on the ground is supported by other items placed beneath it by at least $\beta_s$ times its area, which corresponds to condition \ref{support:area_support} of the pratical constraint of vertical support.
 \begin{eqnarray}
     & \sum\limits_{(k, h) \in \Delta, b \in B, j \in I : i \neq j \land O(i, j, k, h) \neq 0}{ O(i, j, k, h)s^{k h}_{j i b}} \ge \alpha_s w_i d_i - w_i d_i g_i & \forall i \in I \label{cons:every_item_is_supported}
 \end{eqnarray}
