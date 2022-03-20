@@ -81,16 +81,16 @@ Maintaining an AABB Tree in the state allows us to do checks for feasibility dur
 
 \subsection{Feasibility}
 \label{sec:problem_state:feasibility}%
-A state $s$ is said to be feasible if the currently packed items for every bin $b \in s.B$ respects the constraints defined in the problem formulation (\cref{par:standard_const,par:support_const}).
+A state $s$ is said to be feasible if the currently packed items for every bin $b \in s.B$ arent't overlapping any other item, if they are all contained inside their bin and if each item is either on the ground or satisfies at least one of the support conditions (cond. \ref{support:area_support}, cond. \ref{support:vertex_support}).
 Since the proposed heuristic is constructive it is more convenient to define the concept of feasibility relative to a change in the state.
 
 \paragraph*{Insertions}
 
-Given a state $s$ and $b \in s.B$, an insertion of items is a set of items that are placed in $b$ and have their $z_i$ within a tolerance from a certain $z$.
+Given a state $s$ and $b \in s.B$, an insertion of items is a set of non-overlapping items that are placed in $b$ and have their $z_i$ within a tolerance from a certain $z$.
 
 \begin{definition}[Insertion]
     \label{def:insertion}%
-    Given a state $s$ and a tolerance $\beta_s$ we define an insertion or placement $p$ a tuple $(b, I)$ where $b$ is a bin and $I$ is a set of items that are going to be packed in $b$ such that, $I \subseteq s.U \land \exists z (z \in \mathbb{Z} \land \forall i ( i \in I \land |z_i - z| \le \beta_s))$
+    Given a state $s$ and a tolerance $\beta_s$ we define an insertion or placement $p$ a tuple $(b, I)$ where $b$ is a bin and $I$ is a set of non-overlapping items that are going to be packed in $b$ such that, $I \subseteq s.U \land \exists z (z \in \mathbb{Z} \land \forall i ( i \in I \land |z_i - z| \le \beta_s))$
 \end{definition}
 
 \begin{observation}
@@ -100,12 +100,12 @@ Given a state $s$ and $b \in s.B$, an insertion of items is a set of items that 
 
 \begin{definition}[Next]
     \label{def:state_next}%
-    Let $p$ be an insertion over a state $s$ we can then define $s^\prime = Next(s, p)$ as the "copy" of state $s$ with $s^\prime.p = p$. And $p$ is then pending insertion on $s^\prime$.
+    Let $p$ be an insertion over a state $s$ we can then define $s^\prime = Next(s, p)$ as the "copy" of state $s$ with $s^\prime.p = p$. And $p$ is then a pending insertion on $s^\prime$.
 \end{definition}
 
 We can evaluate the changes to the score of a state based on its pending insertion without having to update all the structures for every evaluated state. This property will become apparent in section \ref{sec:beamsearch}. 
 We can then define an algorithm that applies a pending insertion $p$ on a given state $s$ with the help of a function $OpenBin(b)$ which initializes a new structure $q_b$ with every element at its empty value.
-The proposed algorithm is shown in \ref{algo:state_commit}. %TODO: Fix broken links
+The proposed algorithm is shown in \ref{algo:state_commit}.
 
 \input{algorithms/state_commit}
 
@@ -186,7 +186,6 @@ Since the scoring of the states is what will influence the final solution the mo
 
 In the proposed solution to handle multiple objective functions, lexicographic ordering is used.
 \begin{definition}
-    %TODO: Citation needed for the BRKGA-MP-IPR paper
     \label{def:lexicographic_ordering}
     Let $f_1(s), f_2(s), f_i(s), \dots, f_n(s)$ be objective functions ordered by precedence based on index $i$, then 
     \begin{equation*}
@@ -205,7 +204,7 @@ The defined ordering utilized is the following:
 \begin{itemize}
     \item $f_1(s) = -|s.B|$: we prefer states that opened fewer bins.
     \item $f_2(s) = \text{avgvol}(s)$: we prefer states that have packed more average volume between bins.
-    \item $f_3(s) = \text{avgcageratio}(s)$: we prefer states that have better average cage ratio (def. \ref{def:cage_ratio}) between bins.
+    \item $f_3(s) = \text{avgcageratio}(s)$: we prefer states that have better average cage ratio (\cref{eq:cage_ratio}) between bins.
 \end{itemize}
 
 \section{Support Planes}
@@ -229,7 +228,6 @@ Let $coords$ be the set of possible coordinate changes which allow for the probl
 Given a function $IsFeasible(i, bin, I_{support}, I_{upper}, aabb)$ which evaluates if a packing of item $i$ in bin $bin$ is feasible,
 and the function $ComparePacking(p, p^\prime)$ which defines a ranking over insertions in the same plane,
 the SP algorithm can be written as algorithm \ref{algo:sp_bestinsertion}.
-%TODO: Too many "let"?
 
 \input{algorithms/supportplane}
 
