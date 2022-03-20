@@ -161,3 +161,5 @@ And finally we can introduce a feasibility constraint which ensures that every i
 \begin{eqnarray}
     & \sum\limits_{(k, h) \in \Delta, b \in B, j \in I : i \neq j \land O(i, j, k, h) \neq 0}{ O(i, j, k, h)s^{k h}_{j i b}} \ge \alpha_s w_i d_i - w_i d_i g_i & \forall i \in I \label{cons:every_item_is_supported}
 \end{eqnarray}
+
+It is noted that since every combination of $(i,j,b) \in I^B$ and $(h,k) \in \Delta$ where $O(i, j, k, h) = 0$ do not contribute to the support constraint, then they can be omitted from the formulation of the problem to reduce the number of constraints to evaluate.
