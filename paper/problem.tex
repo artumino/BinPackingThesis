@@ -107,8 +107,8 @@ Given the set of tuples $(i, j) \in I^{OR}$ where $i$ is the original item with 
 \label{subsec:vertical_support_formulation}%
 
 We now extend the model to address the constraint of static support. 
-In the literature there are some mathematical formulations tackle the concept of area support (and in some cases vertex support). In \citefullauthor{elhedhli2019three} a SOCP formulation of the support constraint was used but was limited to the problem of spacing between layers with one of the layers being fixed in position, in our case a similar formulation would lead to a non-linear support constraint.
-By introducing a discretization over the XY-plane a linear version of the constraint can be then formulated, a similar formulation, although applied to all the space, was proposed in \citefullauthor{}
+In the literature there are some mathematical formulations that tackle the concept of area support, and in some cases vertex support. In \citeauthor{elhedhli2019three} a SOCP formulation of the support constraint was used but was limited to the problem of spacing between layers with one of the layers being fixed in position, in our case a similar formulation would lead to a non-linear support constraint.
+By introducing a discretization over the XY-plane a linear version of the constraint can be formulated similar to the one proposed in \citeauthor{kurpel2020exact} without the need to discretize the z-axis as well.
 
 \paragraph*{Additional Parameters}
 \begin{eqnarray*}
