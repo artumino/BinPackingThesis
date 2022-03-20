@@ -1,7 +1,7 @@
 In this chapter in \cref{exp:model_tests} we evaluate the proposed heuristic against the MILP model (\ref{sec:milp}) and in \cref{exp:literature_tests} against other heuristic from the literature. We then show the effectivness of our approach for our case study in \cref{exp:usecase_results}.
 All the tests were run on a desktop computer with an AMD Ryzen-7 5800x processor with 8 cores at 3.8 GHz and 32GB of DDR4 system RAM with Windows 10. The algorithm was implemented in Java 11 and the model was run using the python APIs from CPLEX Optimization Studio 22.1.0.
 In every test CPLEX was used with a maximum runtime of 1 hour.
-Each evaluation against the heuristic lists both operational modes described in \cref{sec:placement_modes} and are listed as "Order By Hash" and "Single Placement".
+Each evaluation against the heuristic lists both operational modes described in \cref{sec:placement_modes} listed as "Order By Hash" and "Single Placement".
 
 %TODO: Talk about time normalization?
 \section{Model validation}
@@ -21,6 +21,7 @@ The solution to instance number 5 and instance number 7 is also shown in \cref{f
 \input{Images/tests/model/model}
 
 \section{Literature results}
+The heuristic was also compared to other heuristic from the literature over a set of classical problem classes defined by \citeauthor{martello2000three}. %TODO: Go ahead
 \label{exp:literature_tests}
 \label{def:class1_instances}
 
