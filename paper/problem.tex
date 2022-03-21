@@ -103,7 +103,7 @@ Constraint \ref{cons:no_overlap} then ensures that if two items are in the same 
 
 Let us extend the definition of the bin packing problem without rotations with a new formulation which allows $90$ degrees rotations of each item.
 Let $I = I^O \cup I^R$ be the new set of items where $I^O$ is the set of original non-rotated items and $I^R$ is the set of items rotated by $90$ degrees.
-Given the set of tuples $(i, j) \in I^{OR}$ where $i$ is the original item with dimensions $(w_i, d_i, h_i)$ and $j$ is the corresponding rotated clone with dimensions $(w_j, d_j, h_j) = (d_i, w_i, h_i)$, we can now rewrite constraint \ref{cons:all_items_in_bin} as \ref{cons:all_items_in_bin_with_rotation} to force only one for the item between the original and rotated to be part of the solution.
+Given the set of tuples $(i, j) \in I^{OR}$ where $i$ is the original item with dimensions $(w_i, d_i, h_i)$ and $j$ is the corresponding rotated clone with dimensions $(w_j, d_j, h_j) = (d_i, w_i, h_i)$, we can now rewrite constraint \ref{cons:all_items_in_bin} as \ref{cons:all_items_in_bin_with_rotation} to force only one of them to be part of the solution.
 
 \begin{align}
     & \sum\limits_{b \in B} u_{ib} + \sum\limits_{b \in B} u_{jb} = 1 & \forall (i, j) \in I^{OR} \label{cons:all_items_in_bin_with_rotation}
@@ -139,8 +139,8 @@ Given all the additional parameters and variables introduced, a new formulation 
     & \sum\limits_{j \in I}{s_{ij}} \le \sum\limits_{b \in B}{u_{ib}} & \forall i \in I  \label{cons:support_comes_from_placed} \\
     & z_i \le H(1 - g_i) & \forall i \in I \label{cons:grounded} \\
     & \sum\limits_{(k, h) \in \Delta, b \in B : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le s_{ij} & \forall (i, j) \in I \label{cons:discretized_support_same} \\
-    & \sum\limits_{(k, h) \in \Delta : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le u_{ib} & \forall (i, j, b) \in IB \label{cons:discretized_support_right_bin_i} \\
-    & \sum\limits_{(k, h) \in \Delta : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le u_{jb} & \forall (i, j, b) \in IB \label{cons:discretized_support_right_bin_j}
+    & \sum\limits_{(k, h) \in \Delta : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le u_{ib} & \forall (i, j, b) \in I^B \label{cons:discretized_support_right_bin_i} \\
+    & \sum\limits_{(k, h) \in \Delta : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le u_{jb} & \forall (i, j, b) \in I^B \label{cons:discretized_support_right_bin_j}
 \end{align}
 Constraints \ref{cons:z_close_1} and \ref{cons:z_close_2} ensure that $z^c_{ij}$ is forced to 1 only when the distance over the z-axis between item $i$ and item $j$ is within the range $[-\beta_s, \beta_s]$.
 The value of $s_{ij}$ is then assigned to the logical equation $z^p_{ij} \land z^c_{ij}$ thanks to constraints from \ref{cons:supporting_1} to \ref{cons:supporting}.
