@@ -15,7 +15,7 @@ The test was run with an iterative approach by selecting only a limited ammout o
 Starting from instance with 6 boxes to pack, the solution from the previous instance of the problem was used to mip start the new one to allow for lower execution times.
 Table \ref{exp:model} shows the obtained $z_{\text{max}}$ value of the heuristic and the MILP solution, the runtime in seconds and the number of items.
 Since the underlying problem is NP-Hard it is shown that starting from instances of size bigger than 8 items, the MILP model becomes too slow for practical use while our heuristic mantains a negligible execution time.
-Due to discretization errors, some of the model instances gave solutions that didn't have the expected ammount of support and are marked with an asterix.
+Due to discretization errors, some of the model instances gave solutions that didn't have the expected amount of support and are marked with an asterix.
 The solution to instance number 5 and instance number 7 is also shown in \cref{fig:model_tests}.
 \label{exp:model_tests}
 \input{tests/model}
@@ -46,7 +46,7 @@ The times are averaged across all 8 classes of problem based on the size of the 
 \section{Case study results}
 Case study experiments were conducted on a series of problem instances that were divided between 20 real world instances and 80 generated instances based on a sampling of an anagraphic of real world products.
 Each instance was anonymized and converted to a format similar to the one used for the literature tests thanks to a Rust program available at \url{https://github.com/artumino/BinPackingThesis/tree/main/additional/testConverter}.
-Support parameters for the heuristic was set to $\alpha_s = 0.7$ and $\beta_s = 10$ with both area and vertex support enabled, with dimensions for the bin, for the items and for the tollerances assumed to be in millimeters.
+Support parameters for the heuristic was set to $\alpha_s = 0.7$ and $\beta_s = 10$ with both area and vertex support enabled, with dimensions for the bin, for the items and for the tolerances assumed to be in millimeters.
 Different values of $k \in \{1, 5, 10, 20, 50, 100, 200\}$ were tested as well as both placement modes.
 
 Each generated instance is composed of a random number of $N$ items sampled from a given range of possible instance sizes. All generated instances had a bin of standard size $800 \times 1200 \times 2000$.
