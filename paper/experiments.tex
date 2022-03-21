@@ -22,14 +22,29 @@ The solution to instance number 5 and instance number 7 is also shown in \cref{f
 \input{Images/tests/model/model}
 
 \section{Literature results}
-The heuristic was also compared to other heuristic from the literature over a set of classical problem classes defined by \citeauthor{martello2000three}. %TODO: Go ahead
-\label{exp:literature_tests}
+The heuristic was also evaluated against instances from the literature defined by \citeauthor{martello2000three}.
+Since these instances were designed for heuristics without the vertical support constraint and without orthogonal rotations we ran the experiments with a relaxed version of our constraints.
+The heuristic was configured to ignore the support constraint with $\alpha_s = 0$ and $\beta_s = 1$. We also disable orthogonal rotations and stopped scoring insertions based on the support area available (as described in \cref{ssec:scoring_insertions}).
+
 \label{def:class1_instances}
+The literature instances are divided in classes from 1 to 8 with each class having a different bin size and various distributions of types of items.
+Instances were generated with the C++ instance generator provided by \citeauthor{martello2000three} which allows the generation of problem instances given a problem class and the number of items to use.
+We generated 10 instances for each pair of problem class and number of items $n \in \{50, 100, 150, 200\}$.
+
+In \cref{exp:literature_bins} (and more in depth in \cref{exp:literature_all_bins}) we compare the average number of opened bins across 10 instaces for each problem class and $n$ number of items combination.
+The results are then compared to the most effective methods from the literature listed as TS3 \citep{lodi2002heuristic}, GLS \citep{faroe2003guided}, GASP \citep{crainic2009ts2pack}, GVND \citep{parreno2010hybrid}, EHGH2 \citep{hifi2014hybrid}, BRKGA \citep{gonccalves2013biased}, BRKGA-VD \citep{zudio2018brkga} and ordered by publishing date.
+Best values of all the heuristics are marked in bold. Best scoring values across different configurations of our heuristic are instead marked in italic.
+Results show an average gap of $4.1\%$ compared to the average value across the other heuristics and an average gap of $5.32\%$ across the values from the best performing one.
+
+\label{exp:literature_tests}
+\input{tests/literature_bins}
+\input{tests/literature_time_gap}
+
 
 \section{Case study results}
 Case study experiments were conducted on a series of problem instances that were divided between 20 real world instances and 80 generated instances based on a sampling of an anagraphic of real world products.
 Each instance was anonymized and converted to a format similar to the one used for the literature tests thanks to a Rust program available at \url{https://github.com/artumino/BinPackingThesis/tree/main/additional/testConverter}.
-Support parameters for the heuristic was set to $\alpha_s = 0.7$ and $\beta_s = 10$ with both area and vertex support enabled, with dimensions for the bin, for the items and for the tollerances assumed to be in millimiters.
+Support parameters for the heuristic was set to $\alpha_s = 0.7$ and $\beta_s = 10$ with both area and vertex support enabled, with dimensions for the bin, for the items and for the tollerances assumed to be in millimeters.
 Different values of $k \in \{1, 5, 10, 20, 50, 100, 200\}$ were tested as well as both placement modes.
 
 Each generated instance is composed of a random number of $N$ items sampled from a given range of possible instance sizes. All generated instances had a bin of standard size $800 \times 1200 \times 2000$.

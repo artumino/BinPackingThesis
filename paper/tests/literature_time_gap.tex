@@ -1,0 +1,22 @@
+\begin{table}[htbp]
+    \caption{Average execution time of literature results with bin gap}
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{|l|l|c|c|c|c|c|}
+    \hline
+    \multicolumn{1}{|c|}{\textbf{Heuristic}} &  & \textbf{Average Execution Time (s)} &  &  &  & \textbf{Average Bin Gap \%} \\ \hline
+    \multicolumn{ 2}{|c|}{} & n=50 & n=100 & n=150 & n=200 &  \\ \hline
+    \textbf{Order by Hash} & k=1 & 0.03 & 0.11 & 0.28 & 0.54 & 4.57 \\ 
+     & k=5 & 0.08 & 0.38 & 1.00 & 2.09 & 4.32 \\ 
+     & k=10 & 0.15 & 0.73 & 1.93 & 4.00 & 4.29 \\ 
+    \textbf{} & \textbf{k=20} & \textbf{0.29} & \textbf{1.40} & \textbf{3.77} & \textbf{7.71} & \textbf{4.05} \\ 
+     & k=50 & 0.70 & 3.50 & 9.39 & 19.59 & 3.95 \\ \hline
+    \textbf{Single Placement} & k=1 & 0.05 & 0.18 & 0.50 & 1.05 & 4.35 \\ 
+     & k=5 & 0.12 & 0.72 & 2.10 & 4.62 & 4.01 \\ 
+     & \textbf{k=10} & \textbf{0.23} & \textbf{1.38} & \textbf{4.11} & \textbf{8.95} & \textbf{3.94} \\ 
+     & k=20 & 0.46 & 2.67 & 8.21 & 17.64 & 3.74 \\ 
+     & k=50 & 1.12 & 6.45 & 20.39 & 43.50 & 3.52 \\ \hline \hline
+    \textbf{BRKGA-VD} &  & 1.85 & 8.69 & 20.53 & 39.85 & 0.00 \\ \hline
+    \end{tabular}}
+    \label{literature_time_gap}
+\end{table}
+    
