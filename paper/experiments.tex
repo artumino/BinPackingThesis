@@ -2,6 +2,8 @@ In this chapter in \cref{exp:model_tests} we evaluate the proposed heuristic aga
 All the tests were run on a desktop computer with an AMD Ryzen-7 5800x processor with 8 cores at 3.8 GHz and 32GB of DDR4 system RAM with Windows 10. The algorithm was implemented in Java 11 and the model was run using the python APIs from CPLEX Optimization Studio 22.1.0.
 In every test CPLEX was used with a maximum runtime of 1 hour.
 Each evaluation against the heuristic lists both operational modes described in \cref{sec:placement_modes} listed as "Order By Hash" and "Single Placement".
+All the instaces used in each section of this chapter are available at \url{https://github.com/artumino/BinPackingThesis/tree/main/tests/instances}.
+Out of the 100 instances used for our case study experiments, only 80 were freely sharable with the generation procedure also described in \cref{exp:usecase_results}.
 
 %TODO: Talk about time normalization?
 \section{Model validation}
@@ -14,7 +16,6 @@ Starting from instance with 6 boxes to pack, the solution from the previous inst
 Table \ref{exp:model} shows the obtained $z_{\text{max}}$ value of the heuristic and the MILP solution, the runtime in seconds and the number of items.
 Since the underlying problem is NP-Hard it is shown that starting from instances of size bigger than 8 items, the MILP model becomes too slow for practical use while our heuristic mantains a negligible execution time.
 Due to discretization errors, some of the model instances gave solutions that didn't have the expected ammount of support and are marked with an asterix.
-All the instaces divided by number of items are available at \url{https://github.com/artumino/BinPackingThesis/tree/main/tests/model/instances}.
 The solution to instance number 5 and instance number 7 is also shown in \cref{fig:model_tests}.
 \label{exp:model_tests}
 \input{tests/model}
@@ -26,6 +27,32 @@ The heuristic was also compared to other heuristic from the literature over a se
 \label{def:class1_instances}
 
 \section{Case study results}
+Case study experiments were conducted on a series of problem instances that were divided between 20 real world instances and 80 generated instances based on a sampling of an anagraphic of real world products.
+Each instance was anonymized and converted to a format similar to the one used for the literature tests thanks to a Rust program available at \url{https://github.com/artumino/BinPackingThesis/tree/main/additional/testConverter}.
+Support parameters for the heuristic was set to $\alpha_s = 0.7$ and $\beta_s = 10$ with both area and vertex support enabled, with dimensions for the bin, for the items and for the tollerances assumed to be in millimiters.
+Different values of $k \in \{1, 5, 10, 20, 50, 100, 200\}$ were tested as well as both placement modes.
+
+Each generated instance is composed of a random number of $N$ items sampled from a given range of possible instance sizes. All generated instances had a bin of standard size $800 \times 1200 \times 2000$.
+We identified four ranges of interest and generated 20 instances for each range as follows:
+\begin{itemize}
+    \item \textbf{Class 1-20}: a class of instances with the target sizes for our case-study $N \in [70,100]$
+    \item \textbf{Class 21-40}: a class of small sized instances with number of items $N \in [50,70]$
+    \item \textbf{Class 41-60}: a class of medium sized instances with number of items $N \in [70,120]$
+    \item \textbf{Class 61-80}: a class of big instances with number of items $N \in [120,200]$
+\end{itemize}
+
+Given an input $N$ (the size of the test instance), the generation procedure uniformly sampled an item type from an anagraphic of real-world products. The number of items of that type to add to the test instance was then sampled from a normal distribution $\mathcal{N}(\mu = 4.6, \sigma = 1.8)$, floored to be an integer value and clamped to avoid generating more items than $N$. 
+This uniform sampling of item types was done until the instance was composed of $N$ items.
+
+Real world instances are listed as \textbf{Class 81-100} and have a variable number of items between $[25, 345]$, a variable bin size (although similar to the one used for the generated instances), and a variable number of items of the same type with homogeneous instances with only a few unique types of items and instances with every item of a different type.
+An example of real world instances is shown in \cref{fig:usecase_tests} where items of the same shape are marked with the same color.
+
+Table \ref{exp:usecase_results} shows the average results over the 20 instances per class, divided by each configuration of the heuristic with different values of $k$. The results shown include the total execution time in milliseconds (TT), the number of opened bins (B) and the average cage ratio between the opened bins (CR). It is clear that although the "Single Placement" method had better results when dealing with a relaxed version of the problem, grouping items by type shows consideral improvements under all measured metrics when taking support into account.
+Most of the configurations lead to an average cage ratio of more than $70\%$, which was the target value for our case study.
+It is also possible to see that increasing the value of $k$ improves the quality of the solutions, on average, at the expense of a higher execution time.
+By doing a case by case analysis of the each experiment we discovered that in some instances increasing $k$ can temporarily worsen the solution. 
+A further study of the problematic instances highlighted that the current greedy scoring mechanism of the states can lead to cutting out good solutions too early. 
+Further improvements are considered in \cref{chapther:conclusions}.
 \label{exp:usecase_results}
 \input{tests/use_case_avg.tex}
 \input{Images/tests/usecase/usecase}
