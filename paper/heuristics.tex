@@ -120,13 +120,12 @@ An insertion $p = (b, I)$ that is pending on a given state $s$ is feasible if ev
 Given an item from the set of the inserted items $i \in p.I$, and the AABB tree for bin $p.b$ in the current state $q_b.T$ as $T$.
 Let $I_{\text{support}}$ be the set of items that could support item $i$ when placed in the bin, which could be saved in an appropriate structure or computed through the AABB tree as defined in \cref{aabb:get_supporting}.
 
-Let $HasSupport(i, I_{\text{support}})$ be the function that returns true if the considered item would verify at least one of the conditions of support (\ref{support:area_support} or \ref{support:vertex_support}) or false otherwise as defined in algo. \ref{algo:hash_support}.
-We can define a function $IsFeasible(i, I_{\text{support}}, T)$ which returns true if the insertion of $i$ in bin $b$ for state $s$ is feasible and false otherwise as seen in algo. \ref{algo:insertion_feasible}. 
+Let $HasSupport(i, I_{\text{support}})$ be the function that returns true if the considered item would verify at least one of the conditions of support (\ref{support:area_support} or \ref{support:vertex_support}) or false otherwise.
+We can define a function $IsFeasible(i, I_{\text{support}}, T)$ which returns true if the insertion of $i$ in bin $b$ for state $s$ is feasible and false otherwise. 
 If every item $i \in p.I$ is feasible and every item in $I$ isn't overlapping the others, then insertion $p$ is feasible.
 In case some items in $p$ aren't feasible we can always define a function $RemoveInfeasibleItems(p, I_{\text{support}}, T)$ which removes every unfeasible item and returns a new insertion $p^\prime = (b, I^\prime)$ where $I^\prime = p.I \setminus \{i \in p.I : \lnot IsFeasible(i, I_{\text{support}}, T)\}$. \label{algo:remove_infeasible}
-\input{algorithms/insertion_feasible}
 
-Checking if a state is feasible can then be done by iteratively applying all the insertions ordered by z and updating the proper trees, or starting from an already built tree and computing the set $I_{\text{support}}$ for each item through the tree.
+Checking if a state is feasible can then be done by iteratively applying all the insertions ordered by z and updating the proper trees, or starting from an already built tree and computing the set $I_{\text{support}}$ for each item through the tree as defined in \ref{aabb:get_supporting}.
 \begin{proposition}
     \label{prop:feasible_expansion}
     A state $s^\prime$ derived by committing a feasible insertion $p$ to a feasible state $s$ is feasible.
@@ -146,9 +145,20 @@ Checking if a state is feasible can then be done by iteratively applying all the
     and it is always feasible
 \end{observation}
 
-\subsection{Uniqueness}
+\subsection{State Hashing}
 \label{sec:state_uniqueness}%
-%TODO: State hash, bin hash and uniqueness
+From a given state, it's possible to apply two different sequences of insertions and end up with two states that have all the items in the same positions.
+This undesirable behavior was observed during our computational experiments.
+A hashing mechanism needs to be introduced to enable checking if two states are likely the same in constant time.
+In a state $s$ we can identify a packed item $i \in I$ in a given position $(x_i, y_i, z_i)$ with its given dimensions $(w_i, d_i, z_i)$ in a given bin $b \in s.B$ with a non-commutative hashing function $hash_{nc}$. 
+The resulting hash $hash_{ib} = hash_{nc}(b, x_i, y_i, z_i, w_i, d_i, h_i)$ can identify every similar packing of an item of the same shape in that specific bin spot.
+Since $hash_{ib}$ identifies one item with the shape of $i$ in the same spot as $i$, we can use a commutative function to combine every hash for every packed item in every bin to ignore the order with which items were added to the solution.
+The combined hash can then be saved inside the state structure as follows. 
+\begin{equation}
+    s.hash = \sum\limits_{b \in s.B}{\sum\limits_{i \in q_b.J}{hash_{ib}}}
+\end{equation}
+In our tests, by filtering states with the proposed hash as seen in algo. \ref{algo:beamsearch}, with a simple 64-bit hashing function, this mechanism allowed us to filter out almost all equal states between iterations with a low amount of collisions.
+Since the combining of hashes is a simple sum with modulus, the hashing of the state can also be kept updated in constant time at each iteration by simply adding the inserted hashes in the $Commit$ function (algo. \ref{algo:state_commit}).
 
 \section{Beam Search}
 \label{sec:beamsearch}%
