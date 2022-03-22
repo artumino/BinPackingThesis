@@ -14,8 +14,13 @@
         $S^{t+1} \gets Sort(S^{t+1})$ (sec. \ref{ssec:scoring_states})\;
         $S^t \gets \emptyset$\;
         $i \gets 0$\;
+        $seen \gets \emptyset$\;
         \ForAll{$s \in S^{t+1}$}{
+            \If{$s.hash \in seen$}{
+                continue\;
+            }
             $S^t \gets S^t \cup Commit(s)$ (algo. \ref{algo:state_commit})\;
+            $seen \gets seen \cup \{ s.hash \}$\;
             $i \gets i+1$\;
             \If{$i > k$}{
                 break\;

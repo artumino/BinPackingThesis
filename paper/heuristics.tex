@@ -162,10 +162,10 @@ Since the combining of hashes is a simple sum with modulus, the hashing of the s
 
 \section{Beam Search}
 \label{sec:beamsearch}%
-Beam Search (BS) %TODO: maybe add info on literature  (search about Bisiani)
-is a heuristic tree search algorithm designed for systems with limited memory where expanding every possible node is unfeasible.
+%TODO: maybe add info on literature  (search about Bisiani)
+Beam Search (BS) is a heuristic tree search algorithm designed for systems with limited memory where expanding every possible node is unfeasible.
 The idea behind BS is to conduct an iterative truncated breadth-first search where, at each iteration, only a limited number of $k$ nodes is expanded.
-After the expansion, every new node needs to be evaluated and sorted in order to prune the number of nodes down to the $k$ best ones. The algorithm keeps exploring until no further node can be expanded.
+After the expansion, every new node needs to be evaluated and sorted to prune the number of nodes down to the $k$ best ones. The algorithm keeps exploring until no further node can be expanded.
 
 To perform BS one must define the node structure, an expansion function to generate new nodes from existing ones, a ranking between nodes, and a function to determine if a node is final.
 
@@ -174,11 +174,12 @@ This state expansion procedure, with the exception of empty insertions, will gen
 
 If the starting state for the search is feasible every new state generated will be feasible and if a final state is found it will be feasible ( \cref{prop:feasible_expansion}).
 We also note that starting from state $s$ the time complexity to compute feasible insertions can be lower than the complexity required to update the structures that will be used for further expansions (AABB Tree insertion and balancing, memory cloning, etc.) so we modified the standard BS algorithm to separate the expansion phase from the commit phase.
+As noted in \cref{sec:state_uniqueness}, since by evaluating different insertions on different states it is possible to end up having two equal states, a filtering mechanism should be introduced.
+During each iteration, it is possible to keep the hashes of the best scoring selected states in a HashSet and discard new states with the same hash.
 
 Given $S^0$ the set of initial states and $k$ the number of best states to expand at each iteration, the described procedure is represented by algorithm \ref{algo:beamsearch}.
 As observed in \cref{def:empty_state} it's possible to start the search from $S^0 = \{ s_e \}$.
 
-%TODO: Remove duplicates
 \input{algorithms/beamsearch}
 
 \paragraph*{State Expansion}
