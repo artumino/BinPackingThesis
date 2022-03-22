@@ -81,22 +81,22 @@ AABB Trees are bounding volume hierarchies typically used for fast collision det
 If the tree is appropriately balanced, each operation, on average, has a time complexity of $O(log(n))$ where $n$ is the number of elements in the tree.
 Maintaining an AABB Tree in the state allows us to do checks for feasibility during the construction of a solution (as detailed in \ref{ssec:scoring_insertions} ) and feasibility checks on the final states to allow for error detection.
 
-
+\label{aabb:get_supporting}%
+An additional opertation $AABBGetSupporting(i, \beta_s)$ was added to compute the set of supporting boxes of item $i$ given a tolerance $\beta_s$.
+This was possible by only checking intersections over the XY-plane similarly to the $AABBOverlaps$ implementation and filtering each item by the distance with tolerance.
 
 \subsection{Feasibility}
 \label{sec:problem_state:feasibility}%
-A state $s$ is said to be feasible if the currently packed items in each bin $b \in s.B$ aren't overlapping any other item if they are all contained inside their bin and if each item is either on the ground or satisfies at least one of the support conditions (cond. \ref{support:area_support}, cond. \ref{support:vertex_support}).
-Since the proposed heuristic is constructive it is more convenient to define the concept of feasibility relative to a change in the state.
-
+A state $s$ is feasible if the currently packed items in each bin $b \in s.B$ aren't overlapping any other item if they are all contained inside their bin and if each item is either on the ground or satisfies at least one of the support conditions (cond. \ref{support:area_support}, cond. \ref{support:vertex_support}).
+Since the proposed heuristic is constructive, it is more convenient to define the concept of feasibility relative to a change in the state.
+In the heuristic, we generate new states by applying insertions starting from an initial feasible one. Let us define the concept of insertion and how an insertion is feasible..
 \paragraph*{Insertions}
 
-Given a state $s$ and $b \in s.B$, an insertion of items is a set of non-overlapping items that are placed in $b$ and have their $z_i$ within a tolerance from a certain $z$.
-
+Given a state $s$ and $b \in s.B$, an insertion of items is a set of non-overlapping items that are placed in $b$ and have their $z_i$ within tolerance from a certain $z$.
 \begin{definition}[Insertion]
     \label{def:insertion}%
-    Given a state $s$ and a tolerance $\beta_s$ we define an insertion or placement $p$ a tuple $(b, I)$ where $b$ is a bin and $I$ is a set of non-overlapping items that are going to be packed in $b$ such that, $I \subseteq s.U \land \exists z (z \in \mathbb{Z} \land \forall i ( i \in I \land |z_i - z| \le \beta_s))$
+    Given a state $s$ and a tolerance $\beta_s$ we define an insertion or placement $p$ a tuple $(b, I)$ where $b$ is a bin, and $I$ is a set of non-overlapping items that are going to be packed in $b$ such that, $I \subseteq s.U \land \exists z (z \in \mathbb{Z} \land \forall i ( i \in I \land |z_i - z| \le \beta_s))$
 \end{definition}
-
 \begin{observation}
     \label{oss:state_bin_open}
     Given a state $s$ and an insertion $p = (b, \emptyset)$ where $b \notin s.B$, $p$ is an insertion which will open bin $b$ in $s$.
@@ -107,27 +107,30 @@ Given a state $s$ and $b \in s.B$, an insertion of items is a set of non-overlap
     Let $p$ be an insertion over a state $s$ we can then define $s^\prime = Next(s, p)$ as the "copy" of state $s$ with $s^\prime.p = p$. And $p$ is then a pending insertion on $s^\prime$.
 \end{definition}
 
-We can evaluate the changes to the score of a state based on its pending insertion without having to update all the structures for every evaluated state. This property will become apparent in section \ref{sec:beamsearch}. 
+We can evaluate the changes to the score of a state based on its pending insertion. 
+In this way, we don't have to update all the structures for every evaluated state. 
+In addition, this property let us do fewer memory clones of states that would have been discarded either way (as seen in \cref{sec:beamsearch}). 
 We can then define an algorithm that applies a pending insertion $p$ on a given state $s$ with the help of a function $OpenBin(b)$ which initializes a new structure $q_b$ with every element at its empty value.
 The proposed algorithm is shown in \ref{algo:state_commit}.
 
 \input{algorithms/state_commit}
 
 \paragraph*{Insertion feasibility}
-An insertion $p = (b, I)$ that is pending on a given state $s$ is feasible if every inserted item $i \in p.I$ satisfies the constraint of non-overlap (\ref{cons:no_overlap}), the constraint of support (\ref{cons:every_item_is_supported}) and if it is placed within the size of the given bin.\\
+An insertion $p = (b, I)$ that is pending on a given state $s$ is feasible if every inserted item $i \in p.I$ satisfies the constraint of non-overlap (\ref{cons:no_overlap}), the constraint of support (\ref{cons:every_item_is_supported}) and if it is placed within the size of the given bin.
+Given an item from the set of the inserted items $i \in p.I$, and the AABB tree for bin $p.b$ in the current state $q_b.T$ as $T$.
+Let $I_{\text{support}}$ be the set of items that could support item $i$ when placed in the bin, which could be saved in an appropriate structure or computed through the AABB tree as defined in \cref{aabb:get_supporting}.
+
+Let $HasSupport(i, I_{\text{support}})$ be the function that returns true if the considered item would verify at least one of the conditions of support (\ref{support:area_support} or \ref{support:vertex_support}) or false otherwise as defined in algo. \ref{algo:hash_support}.
+We can define a function $IsFeasible(i, I_{\text{support}}, T)$ which returns true if the insertion of $i$ in bin $b$ for state $s$ is feasible and false otherwise as seen in algo. \ref{algo:insertion_feasible}. 
+If every item $i \in p.I$ is feasible and every item in $I$ isn't overlapping the others, then insertion $p$ is feasible.
+In case some items in $p$ aren't feasible we can always define a function $RemoveInfeasibleItems(p, I_{\text{support}}, T)$ which removes every unfeasible item and returns a new insertion $p^\prime = (b, I^\prime)$ where $I^\prime = p.I \setminus \{i \in p.I : \lnot IsFeasible(i, I_{\text{support}}, T)\}$. \label{algo:remove_infeasible}
 \input{algorithms/insertion_feasible}
-%TODO: Continue with definition of feasibility for sets already made and feasibility of an insertion
 
-\paragraph*{State feasibility}
-Describe how to compute the sets efficiently to use the insertion feasibility logic\\
-\input{algorithms/state_feasible}
-%TODO: Give a brief description on how to use the AABB to computer the feasibility of a given state instead
-
+Checking if a state is feasible can then be done by iteratively applying all the insertions ordered by z and updating the proper trees, or starting from an already built tree and computing the set $I_{\text{support}}$ for each item through the tree.
 \begin{proposition}
     \label{prop:feasible_expansion}
     A state $s^\prime$ derived by committing a feasible insertion $p$ to a feasible state $s$ is feasible.
 \end{proposition}
-%TODO: Do I need to demonstrate this?
 
 \begin{observation}
     \label{def:empty_state}
@@ -142,6 +145,10 @@ Describe how to compute the sets efficiently to use the insertion feasibility lo
     \end{equation*}
     and it is always feasible
 \end{observation}
+
+\subsection{Uniqueness}
+\label{sec:state_uniqueness}%
+%TODO: State hash, bin hash and uniqueness
 
 \section{Beam Search}
 \label{sec:beamsearch}%
