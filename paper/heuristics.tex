@@ -160,6 +160,7 @@ The combined hash can then be saved inside the state structure as follows.
 In our tests, by filtering states with the proposed hash as seen in algo. \ref{algo:beamsearch}, with a simple 64-bit hashing function, this mechanism allowed us to filter out almost all equal states between iterations with a low amount of collisions.
 Since the combining of hashes is a simple sum with modulus, the hashing of the state can also be kept updated in constant time at each iteration by simply adding the inserted hashes in the $Commit$ function (algo. \ref{algo:state_commit}).
 
+%TODO: Do a grammar pass
 \section{Beam Search}
 \label{sec:beamsearch}%
 %TODO: maybe add info on literature  (search about Bisiani)
@@ -177,8 +178,8 @@ We also note that starting from state $s$ the time complexity to compute feasibl
 As noted in \cref{sec:state_uniqueness}, since by evaluating different insertions on different states it is possible to end up having two equal states, a filtering mechanism should be introduced.
 During each iteration, it is possible to keep the hashes of the best scoring selected states in a HashSet and discard new states with the same hash.
 
-Given $S^0$ the set of initial states and $k$ the number of best states to expand at each iteration, the described procedure is represented by algorithm \ref{algo:beamsearch}.
-As observed in \cref{def:empty_state} it's possible to start the search from $S^0 = \{ s_e \}$.
+Given a set of initial states $S^0$ and the number of best states to expand at each iteration $k$, the described BS can be represented by algorithm \ref{algo:beamsearch}.
+As observed in \cref{def:empty_state}, it's possible to start the search from $S^0 = \{ s_e \}$.
 
 \input{algorithms/beamsearch}
 
@@ -187,16 +188,22 @@ As observed in \cref{def:empty_state} it's possible to start the search from $S^
 An expansion of a state $s$ can be seen as a new set of states $S_{new}$ derived by a set of feasible insertions.
 In order to determine these insertions, an underlying heuristic is used (described in \cref{sec:support_planes}).
 
-%TODO: Citation needed? Maybe search in martello, vigo
-%TODO: We can call this greedy
-The main idea in this phase of the algorithm is to find feasible insertions in all the bins for items that still need to be packed and that are of the same height.
-With this approach, the solutions given by the algorithm will start by trying to fill lower layers with items of the same height if possible and they'll become more heterogeneous in upper layers where the classes of height will start to mix up.
-The underlying heuristic will also use a scoring mechanism to select the best insertions for a given class of heights in order to avoid having too many states to sort.
+The main idea in this phase of the algorithm is to find feasible insertions in all the bins at the lowest possible height for items that still need to be packed.
+To reduce the number of possible expansions to evaluate we limit the search to insertions of items with unique shapes.
+With a similar concept to the one used in \cref{sec:state_uniqueness}, an hash for each item's dimensions can be computed on the fly or pre-computed as a problem's parameter.
+Given each item's hash we can then group items that have the same shape.
+The evaluation of new insertions can then be done with two different approaches:
+\begin{itemize}
+    \label{def:placement_modes}%
+    \item \textbf{Single Placement}: where we evaluate only the possible insertion of a single item per item type, which would generate insertions of at most 1 item,
+    \item \textbf{Group by Hash}: where we evaluate the biggest possible insertion of a group of items of the same shape, which would generate insertions of at most the size of the group of items with the same shape.
+\end{itemize}
+Creating insertions of groups of similar items is usually used in Pallet Loading Problems (as for ex. \cite{elhedhli2019three}) to create better bases of support for upper layers.
+With a similar intuition, the idea of placing groups of items of the same shape is to facilitate the creation of uniform planes (not necessarily layers) to use for further insertions.
 
-Given a set of items $I$ and a tolerance $\beta_s$ we can introduce an algorithm to group them by their shap and produce a set $G$ of tuples $(h, I^\prime)$ where $h$ is the hash summurizing the shape of the group and $I^\prime$ is the set of items grouped as in algo. \ref{algo:group_by_hash}.
-
+Given a set of items $I$ and a tolerance $\beta_s$ we can introduce an algorithm to group them by their shape and produce a set $G$ of tuples $(h, I^\prime)$ where $h$ is the hash summurizing the shape of the group and $I^\prime$ is the set of items grouped as in algo. \ref{algo:group_by_hash}.
 Once items are grouped by shape the best insertion for each class of items can be computed for each open bin. If no insertion is possible in any bin, then the only viable insertion is the bin opening insertion (\cref{oss:state_bin_open}).
-The described procedure is detailed in algo. \ref{algo:state_successor}.
+The described procedure is detailed in algo. \ref{algo:state_successor}, which can be modified with minor changes to limit the number of items to consider when in single placement mode.
 
 \input{algorithms/state_successor}
 \input{algorithms/group_by_height}
@@ -210,7 +217,7 @@ Since the scoring of the states is what will influence the final solution the mo
 In the proposed solution to handle multiple objective functions, lexicographic ordering is used.
 \begin{definition}
     \label{def:lexicographic_ordering}
-    Let $f_1(s), f_2(s), f_i(s), \dots, f_n(s)$ be objective functions ordered by precedence based on index $i$, then 
+    Let $f_1(s), f_2(s), f_i(s), \dots, f_n(s)$ be objective functions ordered by precedence based on index $i \in \mathbb{Z}$, then 
     \begin{equation*}
         s < s^\prime \hspace{.2cm} \textbf{iff} \hspace{.2cm} \exists j \in \mathbb{Z} : \left\{
             \begin{aligned}
