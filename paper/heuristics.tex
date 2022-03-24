@@ -239,43 +239,42 @@ The defined ordering utilized is the following:
 
 \section{Support Planes}
 \label{sec:support_planes}%
-%TODO far scorrere meglio
 Support Planes (SP) is a constructive heuristic based on an underlying 2D-BPP heuristic which is used to evaluate feasible insertions inside a bin starting from a set of items to pack.
-Since the insertions must be feasible SP mantains an internal structure to facilitate the check for feasibility.
+Since insertions must be feasible, SP maintains an internal structure to facilitate feasibility checks.
 The idea at the base of SP is to build a solution to the 3D-BPP by filling 2D planes called \textit{support planes}.
 
 Each support plane is characterized by the tuple $(z, I_{support}, I_{upper})$ where
 \begin{itemize}
     \item $z$: is the height of the plane,
     \item $I_{support}$: the set of the items that can offer support to items placed on the plane,
-    \item $I_{upper}$: the set of items that will be obstacles to potential new items placed on the plane
+    \item $I_{upper}$: the set of items that will be obstacles to potential new items placed on the plane.
 \end{itemize}
 
-Every item which is placed in the bin has the ability to either generate a new support plane or be part of the supporting items of other planes. 
-Items that are placed above a particular plane are considered obstacles and are added to the $I_{upper}$ set.
-Since insertions always happen in the lowest possible planes, the set of obstacles of planes where new insertions can be made are usually composed of items that have their top face above the $z$ of the evaluated plane. %TODO: maybe update this
-When evaluating a new possible insertion, given a set of items to place $I$, support planes selects the first feasible insertion starting from the lowest plane by using a modified version of Extreme Point in two dimensions (introduced in \cite{crainic2008extreme}).
+Every item placed in the bin can either generate a new support plane or be part of the supporting items of other planes. 
+Items placed above a particular plane, such that $z_i + h_i > z$, are considered obstacles and are added to the $I_{upper}$ set.
+When evaluating a new possible insertion, given a set of items to place $I$, SP selects the first feasible insertion starting from the lowest plane by using a modified version of Extreme Point in two dimensions (introduced in \cite{crainic2008extreme}).
+Once no more insertions can be made on the lowest available support plane, it's removed from the set of planes.
+Since insertions always happen in the lowest possible planes, the set of obstacles of planes where new insertions can be made is composed of items that only have their top face above the $z$ of the evaluated plane, such that $z_i < z < z_i + h_i$.
 
-The Extreme Point algorithm consists in the evaluation of placements of rectangles in a plane based on a set of reference points. 
+The Extreme Point (EP) algorithm evaluates the placement of rectangles in a plane based on a set of reference points. 
 Each rectangle placement generates a new set of reference points which are usually introduced based on the projection of its extreme points along each axis.
-In our verion of the algorithm the extreme points of each item are introduced without projection to increase the likelyhood of evaluating placements that verify the support constraint.
 The extreme points of an added rectangle $r$ placed in $(x_r, y_r)$ of dimensions $(w_r, d_r)$ are the top left corner $(x_r, y_r + d_r)$ and the bottom right corner $(x_r + w_r, y_r)$.
-If a placement in a given reference point can't be made, it is also evaluated if the item can be rotated to fit.
+In our version of the algorithm, the extreme points of each item are introduced without projection to increase the likelihood of evaluating placements that verify the support constraint.
+If placements in a given reference point cannot be made, items can be rotated along their z-axis if they fit.
 When a reference point is used for a placement, it is then removed from the pool of reference points.
 
 Since reference points are usually ordered based on the euclidean distance from the bottom left corner of the plane and the extreme points are usually generated and projected towards the origin of each axis, the placements over one plane are usually biased towards the bottom left corner.
-To address the problem we evaluate four instances of extreme points with each instance having a different coordinate change applied to every item which moves the origin of the plane to each corner of the bin.
-This addition is based on similar approaches from the literature where it usually used to more uniformly fill the space (ex. \citeauthor{GAJDA2022102559}) and was verified to yeild better cage ratio results in our internal testing.
+To address the problem, we evaluate four instances of EP where each has a different coordinate change applied to every item that moves the plane's origin to each corner of the bin.
+This addition is based on similar approaches from the literature where it is usually used to more uniformly fill the space (ex. \citeauthor{GAJDA2022102559}) and was verified to yield better cage ratio results in our internal testing.
 %TODO: Check the above
-Elements from the collection of obstacles for a plane are considered as fixed placements already made with their extreme points already added to the reference point collection, this allows us to also evaluate placements near other items from different planes.
-When checking for a possible placement over a plane, the feasibility check defined in \cref{sec:problem_state:feasibility} can be used to avoid selecting unfeasible insertions.
-A graphical rappresentation of a support plane is shown in \cref{fig:support_planes}, when a bin is opened the only support plane available is the one on the ground.
+
+Elements from the collection of obstacles for a plane are considered fixed placements already made with their extreme points already added to the reference point collection; this allows us to evaluate placements near other items from different planes.
+When checking for possible placements in a reference point, the feasibility check defined in \cref{sec:problem_state:feasibility} can be used to avoid selecting unfeasible insertions.
+A graphical representation of a support plane is shown in \cref{fig:support_planes}. When a bin is opened the only support plane available is the one on the ground.
 
 %TODO: Proporre la versione ibrida maxrect/extreme points?
-%TODO: Separare parte extreme point da parte support plane
-%TODO: Spiegare concetto di obstacles con magari immagine
 
-Given a function $IsFeasible(i, bin, I_{support}, I_{upper}, aabb)$ which evaluates if a packing of item $i$ in bin $bin$ is feasible,
+Given a function to check the feasibility of an insertion,
 and the function $ComparePacking(p, p^\prime)$ which defines a ranking over insertions in the same plane,
 the SP algorithm can be written as algorithm \ref{algo:sp_bestinsertion}.
 

@@ -28,7 +28,7 @@ The heuristic was configured to ignore the support constraint with $\alpha_s = 0
 
 \label{def:class1_instances}
 The literature instances are divided into classes from 1 to 8, with each class having a different bin size and various distributions of types of items.
-Instances were generated with the C++ instance generator provided by \citeauthor{martello2000three} which allows the generation of problem instances given a problem class and the number of items to use.
+Instances were generated with the C++ instance generator provided by \citeauthor{martello2000three} which allows the generation of problem instances given a problem class and the number of items to use. %FIXME: with a given problem class and number of items to use
 We generated 10 instances for each pair of problem class and number of items $n \in \{50, 100, 150, 200\}$ for a total of $320$ instances.
 
 In \cref{exp:literature_bins} we compare the average number of opened bins across 10 instances for each problem class and $n$ number of items combination.
@@ -37,7 +37,7 @@ The best values of all the heuristics are marked in bold. Best scoring values ac
 Results show an average gap of $4.1\%$ compared to the average value across the other heuristics and an average gap of $5.32\%$ with respect to the best performing one.
 
 In \cref{exp:literature_time_gap} we give an approximate comparison between the average execution time of our heuristic with respect to BRKGA-VD. Execution times for BRKGA-VD were normalized by comparing directly the floating-point operations per second of the processors used, which resulted in dividing BRKGA-VD execution times by a normalization term of $9.3$. 
-The times are averaged across all 8 classes of problems based on the size of the instance. In the last column, we also included the average gap of each configuration of the heuristic with respect to the values of BRKGA-VD.
+The times are averaged across all 8 classes of problems based on the size of the instance. In the last column, we also included the average gap of each configuration of the heuristic with respect to the values of BRKGA-VD. %TODO: The values presented are the times averaged across 8 classes of problems divided according to the size of the instance and the heuristic configuration.
 \label{exp:literature_tests}
 \input{tests/literature_bins}
 \input{tests/literature_time_gap}
