@@ -3,27 +3,24 @@
     \SetAlgoLined
     \SetKwInOut{Input}{input}
     \SetKwInOut{Output}{output}
-    \Input{$s_b, I$}
-    \Output{$placement$}
-    $placement \leftarrow \emptyset$\;
-    \ForAll{$S_z \in planes$}{
-        $I_p \leftarrow I \setminus \{ i \in I : z + i.h > H_b \}$\;
-        \ForAll{$change \in coords$}{
-            $I^\prime_{upper} \leftarrow CoordinateChange(change, I_{upper})$\;
-            $I^\prime_{p} \leftarrow CoordinateChange(change, I_{p})$\;
-            $P^\prime \leftarrow SPPackPlane(W_b, D_b, I^\prime_{upper}, I^\prime_{p})$ (Algorithm \ref{algo:sp_rectpack})\;
-            $P \leftarrow CoordinateChange(change, P^\prime)$\;
-        
-            $P \leftarrow \{ i \in P : IsFeasible(i, bin, I_{support}, I_{upper}, aabb)\}$\;
-
-            \If{$ComparePacking(placement, P)$}{
-                $placement \leftarrow P$\;
+    \Input{$Z, I$}
+    \Output{$p$}
+    $p \leftarrow \text{none}$\;
+    \ForAll{$(z, I_{support}, I_{upper}) \in Z$}{
+        \ForAll{possible coordinate changes}{
+            \CommentSty{//Initialize reference points}
+            $refPoints \gets \emptyset$\;
+            \If{$z = 0$}{
+                $refPoints \gets (0,0)$\;
+            }
+            \ForAll{$i \in I_{support}$}{
+                $refPoints \gets refPoints \cup {(x_i, y_i)}$\;
             }
         }
-        \If{$placement \neq \emptyset$}{
-            \Return{$placement$}
+        \If{$p \neq \text{none}$}{
+            \Return{$p$}
         }
     }
-    \Return{$placement$}
+    \Return{$p$}
     \caption{SP Best Insertion}
 \end{algorithm}

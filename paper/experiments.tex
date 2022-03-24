@@ -1,7 +1,7 @@
 In this chapter, in \cref{exp:model_tests}, we evaluate the proposed heuristic against the MILP model (\ref{sec:milp}), and in \cref{exp:literature_tests} against other heuristics from the literature. We then show the effectiveness of our approach for our case study in \cref{exp:usecase_results}.
 All the tests were run on a desktop computer with an AMD Ryzen-7 5800x processor with 8 cores at 3.8 GHz and 32GB of DDR4 system RAM with Windows 10. The algorithm was implemented in Java 11, and the model was run using the python APIs from CPLEX Optimization Studio 22.1.0.
 In every test, CPLEX was used with a maximum runtime of 1 hour.
-Each evaluation against the heuristic lists both operational modes described in \cref{def:placement_modes} listed as "Group By Hash" and "Single Placement".
+Each evaluation against the heuristic lists both operational modes described in \cref{def:placement_modes} listed as "PM" and "PS".
 All the instances used in each section of this chapter are available at \url{https://github.com/artumino/BinPackingThesis/tree/main/tests/instances}.
 Out of the 100 instances used for our case study experiments, only 80 were freely sharable with the generation procedure also described in \cref{exp:usecase_results}.
 
@@ -66,7 +66,7 @@ An example of real-world instances is shown in \cref{fig:usecase_tests} where it
 
 Table \ref{exp:usecase_results} shows the average results over the 20 instances per class, divided by each configuration of the heuristic with different values of $k$.
 The results shown include the total execution time in milliseconds (TT), the number of opened bins (B), and the average cage ratio between the opened bins (CR).
-It is clear that although the "Single Placement" method had better results when dealing with a relaxed version of the problem, grouping items by type shows considerable improvements under all measured metrics when taking vertical support into account.
+It is clear that although the "PS" method had better results when dealing with a relaxed version of the problem, grouping items by type shows considerable improvements under all measured metrics when taking vertical support into account.
 Most of the configurations lead to an average cage ratio of more than $70\%$, which was the target value for our case study.
 It is also possible to see that increasing the value of $k$ improves the quality of the solutions, on average, at the expense of a higher execution time.
 By doing a case-by-case analysis of each experiment, we discovered that increasing $k$ can temporarily worsen the solution in some instances. 

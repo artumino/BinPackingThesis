@@ -195,15 +195,15 @@ Given each item's hash we can then group items that have the same shape.
 The evaluation of new insertions can then be done with two different approaches:
 \begin{itemize}
     \label{def:placement_modes}%
-    \item \textbf{Single Placement}: where we evaluate only the possible insertion of a single item per item type, which would generate insertions of at most 1 item,
-    \item \textbf{Group by Hash}: where we evaluate the biggest possible insertion of a group of items of the same shape, which would generate insertions of at most the size of the group of items with the same shape.
+    \item \textbf{PS}: where we evaluate only the possible insertion of a single item per item type, which would generate insertions of at most 1 item,
+    \item \textbf{PM}: where we evaluate the biggest possible insertion of a group of items of the same shape, which would generate insertions of at most the size of the group of items with the same shape.
 \end{itemize}
 Creating insertions of groups of similar items is usually used in Pallet Loading Problems (as for ex. \cite{elhedhli2019three}) to create better bases of support for upper layers.
 With a similar intuition, the idea of placing groups of items of the same shape is to facilitate the creation of uniform planes (not necessarily layers) to use for further insertions.
 
 Given a set of items $I$ and a tolerance $\beta_s$ we can introduce an algorithm to group them by their shape and produce a set $G$ of tuples $(h, I^\prime)$ where $h$ is the hash summurizing the shape of the group and $I^\prime$ is the set of items grouped as in algo. \ref{algo:group_by_hash}.
 Once items are grouped by shape the best insertion for each class of items can be computed for each open bin. If no insertion is possible in any bin, then the only viable insertion is the bin opening insertion (\cref{oss:state_bin_open}).
-The described procedure is detailed in algo. \ref{algo:state_successor}, which can be modified with minor changes to limit the number of items to consider when in single placement mode.
+The described procedure is detailed in algo. \ref{algo:state_successor}, which can be modified with minor changes to limit the number of items to consider when in PS mode.
 
 \input{algorithms/state_successor}
 \input{algorithms/group_by_height}
@@ -254,35 +254,40 @@ Every item placed in the bin can either generate a new support plane or be part 
 Items placed above a particular plane, such that $z_i + h_i > z$, are considered obstacles and are added to the $I_{upper}$ set.
 When evaluating a new possible insertion, given a set of items to place $I$, SP selects the first feasible insertion starting from the lowest plane by using a modified version of Extreme Point in two dimensions (introduced in \cite{crainic2008extreme}).
 Once no more insertions can be made on the lowest available support plane, it's removed from the set of planes.
-Since insertions always happen in the lowest possible planes, the set of obstacles of planes where new insertions can be made is composed of items that only have their top face above the $z$ of the evaluated plane, such that $z_i < z < z_i + h_i$.
+Since insertions always happen in the lowest possible planes, the set of obstacles of those planes is composed of items that only have their top face above the $z$ of the evaluated plane, such that $z_i < z < z_i + h_i$.
 
-The Extreme Point (EP) algorithm evaluates the placement of rectangles in a plane based on a set of reference points. 
+The Extreme Point (EP) algorithm evaluates the placement of rectangles in a plane based on a set of reference points with a best-fit approach. 
 Each rectangle placement generates a new set of reference points which are usually introduced based on the projection of its extreme points along each axis.
 The extreme points of an added rectangle $r$ placed in $(x_r, y_r)$ of dimensions $(w_r, d_r)$ are the top left corner $(x_r, y_r + d_r)$ and the bottom right corner $(x_r + w_r, y_r)$.
 In our version of the algorithm, the extreme points of each item are introduced without projection to increase the likelihood of evaluating placements that verify the support constraint.
-If placements in a given reference point cannot be made, items can be rotated along their z-axis if they fit.
+Placements follow a first-fit approach where the algorithm selects the first point closest to the origin where a rectangle can fit with or without rotations.
 When a reference point is used for a placement, it is then removed from the pool of reference points.
+Before evaluating placements, the item to place are ordered based on their area.
 
 Since reference points are usually ordered based on the euclidean distance from the bottom left corner of the plane and the extreme points are usually generated and projected towards the origin of each axis, the placements over one plane are usually biased towards the bottom left corner.
 To address the problem, we evaluate four instances of EP where each has a different coordinate change applied to every item that moves the plane's origin to each corner of the bin.
 This addition is based on similar approaches from the literature where it is usually used to more uniformly fill the space (ex. \citeauthor{GAJDA2022102559}) and was verified to yield better cage ratio results in our internal testing.
 %TODO: Check the above
 
-Elements from the collection of obstacles for a plane are considered fixed placements already made with their extreme points already added to the reference point collection; this allows us to evaluate placements near other items from different planes.
-When checking for possible placements in a reference point, the feasibility check defined in \cref{sec:problem_state:feasibility} can be used to avoid selecting unfeasible insertions.
-A graphical representation of a support plane is shown in \cref{fig:support_planes}. When a bin is opened the only support plane available is the one on the ground.
+In order to facilitate the evaluation of reference points with support, we also generate a reference point in the bottom left corner of each item that belongs to the set of supporting items $I_{support}$.
+The EP procedure is called for each item to pack on a given plane. In order to produce a feasible insertion, every item in the insertions shouldn't overlap each other.
+Since we can't modify the state's structures between calls to EP, we need to keep a temporary AABB tree updated composed of the items that are part of the current insertion $T^\prime$.
+We can then define a function that uses the temporary tree and the feasibility function defined in \cref{sec:problem_state:feasibility} to ensure feasible insertions as follows.
+\begin{equation}
+    EPCanPack(i, I_{support}, T, T^\prime) = IsFeasible(i, I_{support}, T) \land \lnot AABBOverlaps(i, T^\prime)
+\end{equation}
+A graphical representation of a support plane is shown in \cref{fig:support_planes} with the reference points available.
+When a bin is opened the only support plane available is the one on the ground. 
+In the figure different coordinate changes are marked with different colors.
 
 %TODO: Proporre la versione ibrida maxrect/extreme points?
 
+%FIXME: Finish this small section
 Given a function to check the feasibility of an insertion,
 and the function $ComparePacking(p, p^\prime)$ which defines a ranking over insertions in the same plane,
 the SP algorithm can be written as algorithm \ref{algo:sp_bestinsertion}.
 
 \input{algorithms/supportplane}
-
-To evaluate a packing on a plane a heuristic to solve the 2DBPP is used with the introduction of fixed insertions which represent items on other planes that will be obstacles in the current one.
-
-%TODO: Specify that the selected heuristic must operate with the assumption of fixed insertions
 
 Given the dimensions of the 2D bin $(W_b, D_b)$, the set of obstacles $I_{o}$ and the set of items to pack $I_{p}$ a new insertion can be computed following algorithm \ref{algo:sp_rectpack}
 
