@@ -1,0 +1,14 @@
+\begin{algorithm}[htb] 
+    \DontPrintSemicolon
+    \SetAlgoLined
+    \SetKwInOut{Input}{input}
+    \SetKwInOut{Output}{output}
+    \Input{ $p, i, T, refPoints$}
+    $refPoints \gets refPoints \setminus \{ (x_i, y_i) \}$\;
+    $refPoints \gets refPoints \cup \{(x_i + w_i, y_i), (x_i, y_i + d_i)\}$\;
+    $sort(refPoints)$ \CommentSty{// Based on euclidean distance from $(0,0)$}\;
+    $p.I \gets p.I \cup \{ i \}$\;
+    $AABBInsert(i, T^\prime)$ \CommentSty{//\cref{sec:problem_state:aabbtree}}\;
+    \Return
+    \caption{EP Insert Rect \label{algo:ep_insert_rect}}
+\end{algorithm}

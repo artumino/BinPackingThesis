@@ -11,7 +11,7 @@
         $placed \leftarrow false$\;
         \ForAll{$(h, I) \in G$}{
             \ForAll{$q_b \in s.Q$}{
-                $P \leftarrow SPBestInsertion(q_b, I)$ (algo. \ref{algo:sp_bestinsertion})\; %TODO: change with proper parameters
+                $P \leftarrow SPBestInsertion(q_b.Z, I, q_b.T)$ (\cref{sec:support_planes})\;
                 \If{$P \neq \emptyset$}{
                     $placed \leftarrow true$\;
                     \ForAll{$p \in P$}{

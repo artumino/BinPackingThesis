@@ -1,11 +1,11 @@
 This chapter describes a heuristic algorithm to solve the 3D bin packing problem with vertical support.
 In section \ref{sec:problem_state} we describe the concepts which will be used in the algorithm, like the definition of a state, insertions, and the feasibility of a solution.
-Since the 3D-BPP is NP-Hard, an exhaustive search for a solution isn't practical, so a heuristic search is conducted by combining a beam search algorithm described in \cref{sec:beamsearch} and a constructive heuristic described in \cref{sec:support_planes}.
-The proposed algorithm takes in input an initial feasible state (as defined in section \ref{sec:problem_state:feasibility}), usually represented by the empty state (\ref{def:empty_state}), and outputs the best scoring state based on an ordering function defined in section \ref{ssec:scoring_states}.
+Since the 3D-BPP is NP-Hard, an exhaustive search for a solution is not practical, so a heuristic search is conducted by combining the beam search algorithm described in \cref{sec:beamsearch} with the constructive heuristic described in \cref{sec:support_planes}.
+The proposed algorithm takes in input the empty state (\ref{def:empty_state}), and outputs the best scoring state based on an ordering function defined in section \ref{ssec:scoring_states}.
 
 \section{States}
 \label{sec:problem_state}%
-States or packings are partial solutions to the 3D-BPP. Since our heuristic is constructive by nature, the main idea of the algorithm is that by starting from a state representing an empty solution, we'll iteratively build new states that are always closer to a complete solution to the problem.
+States or packings are partial solutions to the 3D-BPPWS. Since our heuristic is constructive by nature, the main idea of the algorithm is that by starting from a state representing an empty solution, we'll iteratively build new states that are always closer to a complete solution to the problem.
 Given the formal definition of the problem (\ref{sec:milp}) we introduce a few new definitions to facilitate the algorithm's definition.
 First, it is helpful to define a collection of items that still need to be assigned to a particular bin; this collection would then be used to track how many items still need to be placed.
 Let us define the concept of unpacked items in relation to our MILP formulation.
@@ -26,7 +26,7 @@ A state $s$ can then be defined as follows:
     \item $p$: the insertion pending on this state (described by def. \ref{def:insertion}).
 \end{itemize}
 
-Since the heuristic will open new bins when the already opened ones are full, the number of bins in each state can vary and isn't fixed as a parameter to the problem like in the MILP formulation.
+Since the heuristic will open new bins when the already opened ones are full, the number of bins in each state can vary and is not fixed as a parameter to the problem like in the MILP formulation.
 Thanks to the newly introduced definitions, we can trivially define a function that determines if a state is a final state.
 \begin{definition}
     \label{def:state_final}
@@ -62,7 +62,7 @@ Given a bin $b \in s.B$ we can then define structure $q_b$ as follows.
     \item $T$: the AABB Tree (section \ref{sec:problem_state:aabbtree}) representing the items inside $b$.
 \end{itemize}
 
-Both sets $q_b.J$ and $q_b.T$ contain the items packed in $b$ but adding and accessing items in $q_b.J$ has a time complexity of $O(1)$ given an underlying implementation as HashSet while maintaining $q_b.T$ usually has a time complexity of $O(log(|q_b.J|))$.
+Both sets $q_b.J$ and $q_b.T$ contain the items packed in $b$ but adding and accessing items in $q_b.J$ has a time complexity of $O(1)$ given an implementation as hash set while maintaining $q_b.T$ usually has a time complexity of $O(log(|q_b.J|))$.
 
 \subsection{AABB Tree}
 \label{sec:problem_state:aabbtree}%
@@ -75,39 +75,41 @@ AABB Trees are bounding volume hierarchies typically used for fast collision det
 \begin{itemize}
     \item $AABBInsert(i)$: which allows inserting an axis-aligned box $i$ in the tree
     \item $AABBOverlaps(i)$: which allows determining if an axis-aligned box $i$ overlaps an element in the tree
-    \item $AABBClosest(i, d)$: which, given an axis-aligned box $i$ and a direction \\$d \in \{ XP, XN, YP, YN, ZP, ZN \}$ along an axis, returns the closest element following that direction starting from the box $i$
+    \item $AABBClosest(i, d)$: which, given an axis-aligned box $i$ and an axis-aligned direction $d$, returns the closest element following that direction starting from the box $i$
 \end{itemize}
 
 If the tree is appropriately balanced, each operation, on average, has a time complexity of $O(log(n))$ where $n$ is the number of elements in the tree.
 Maintaining an AABB Tree in the state allows us to do checks for feasibility during the construction of a solution (as detailed in \ref{ssec:scoring_insertions} ) and feasibility checks on the final states to allow for error detection.
 
 \label{aabb:get_supporting}%
-An additional opertation $AABBGetSupporting(i, \beta_s)$ was added to compute the set of supporting boxes of item $i$ given a tolerance $\beta_s$.
+An additional opertation $AABBGetSupporting(i, \beta_s)$ was added to compute the set of supporting boxes of item $i$ given a vertical tolerance $\beta_s$.
 This was possible by only checking intersections over the XY-plane similarly to the $AABBOverlaps$ implementation and filtering each item by the distance with tolerance.
 
 \subsection{Feasibility}
 \label{sec:problem_state:feasibility}%
 A state $s$ is feasible if the currently packed items in each bin $b \in s.B$ aren't overlapping any other item if they are all contained inside their bin and if each item is either on the ground or satisfies at least one of the support conditions (cond. \ref{support:area_support}, cond. \ref{support:vertex_support}).
 Since the proposed heuristic is constructive, it is more convenient to define the concept of feasibility relative to a change in the state.
-In the heuristic, we generate new states by applying insertions starting from an initial feasible one. Let us define the concept of insertion and how an insertion is feasible..
-\paragraph*{Insertions}
+In the heuristic, we generate new states by applying insertions starting from an initial feasible one. Let us define the concept of insertion and how an insertion is feasible.
 
-Given a state $s$ and $b \in s.B$, an insertion of items is a set of non-overlapping items that are placed in $b$ and have their $z_i$ within tolerance from a certain $z$.
 \begin{definition}[Insertion]
     \label{def:insertion}%
-    Given a state $s$ and a tolerance $\beta_s$ we define an insertion or placement $p$ a tuple $(b, I)$ where $b$ is a bin, and $I$ is a set of non-overlapping items that are going to be packed in $b$ such that, $I \subseteq s.U \land \exists z (z \in \mathbb{Z} \land \forall i ( i \in I \land |z_i - z| \le \beta_s))$
+    Given a state $s$, we define an insertion $p$ as a tuple $(b, I)$ where $b \in s.B$, and $I$ is a set of non-overlapping unpacked items such that they are inserted at the same $z$.
+    \begin{equation*}
+        \label{eq:insertion_same_z}
+        I \subseteq s.U \land \exists z (z \in \mathbb{Z} \land \forall i ( i \in I \land z_i = z))
+    \end{equation*}
 \end{definition}
 \begin{observation}
     \label{oss:state_bin_open}
-    Given a state $s$ and an insertion $p = (b, \emptyset)$ where $b \notin s.B$, $p$ is an insertion which will open bin $b$ in $s$.
+    Given a state $s$ and an insertion $p = (b, \emptyset)$ where $b \notin s.B$, $p$ is an insertion that opens a new bin $b$ in $s$.
 \end{observation}
 
 \begin{definition}[Next]
     \label{def:state_next}%
-    Let $p$ be an insertion over a state $s$ we can then define $s^\prime = Next(s, p)$ as the "copy" of state $s$ with $s^\prime.p = p$. And $p$ is then a pending insertion on $s^\prime$.
+    Let $p$ be an insertion over a state $s$, we define $s^\prime = Next(s, p)$ as a "copy" of state $s$ where $p$ is the pending insertion ($s^\prime.p = p$).
 \end{definition}
 
-We can evaluate the changes to the score of a state based on its pending insertion. 
+We evaluate the changes to the score of a state based on its pending insertion. 
 In this way, we don't have to update all the structures for every evaluated state. 
 In addition, this property let us do fewer memory clones of states that would have been discarded either way (as seen in \cref{sec:beamsearch}). 
 We can then define an algorithm that applies a pending insertion $p$ on a given state $s$ with the help of a function $OpenBin(b)$ which initializes a new structure $q_b$ with every element at its empty value.
@@ -116,13 +118,13 @@ The proposed algorithm is shown in \ref{algo:state_commit}.
 \input{algorithms/state_commit}
 
 \paragraph*{Insertion feasibility}
-An insertion $p = (b, I)$ that is pending on a given state $s$ is feasible if every inserted item $i \in p.I$ satisfies the constraint of non-overlap (\ref{cons:no_overlap}), the constraint of support (\ref{cons:every_item_is_supported}) and if it is placed within the size of the given bin.
+An insertion $p = (b, I)$ that is pending on a given state $s$ is feasible if every inserted item $i \in p.I$ satisfies the constraint of non-overlap (\ref{cons:no_overlap}), the constraint of support (\ref{cons:every_item_is_supported}) and if it is placed within the bin.
 Given an item from the set of the inserted items $i \in p.I$, and the AABB tree for bin $p.b$ in the current state $q_b.T$ as $T$.
 Let $I_{\text{support}}$ be the set of items that could support item $i$ when placed in the bin, which could be saved in an appropriate structure or computed through the AABB tree as defined in \cref{aabb:get_supporting}.
 
-Let $HasSupport(i, I_{\text{support}})$ be the function that returns true if the considered item would verify at least one of the conditions of support (\ref{support:area_support} or \ref{support:vertex_support}) or false otherwise.
+Let $HasSupport(i, I_{\text{support}})$ be the function that returns true if the considered item would verify at least one of the conditions of support (cond. \ref{support:area_support} or cond. \ref{support:vertex_support}) or false otherwise.
 We can define a function $IsFeasible(i, I_{\text{support}}, T)$ which returns true if the insertion of $i$ in bin $b$ for state $s$ is feasible and false otherwise. 
-If every item $i \in p.I$ is feasible and every item in $I$ isn't overlapping the others, then insertion $p$ is feasible.
+If every item $i \in p.I$ is feasible and every item in $I$ is not overlapping the others, then insertion $p$ is feasible.
 In case some items in $p$ aren't feasible we can always define a function $RemoveInfeasibleItems(p, I_{\text{support}}, T)$ which removes every unfeasible item and returns a new insertion $p^\prime = (b, I^\prime)$ where $I^\prime = p.I \setminus \{i \in p.I : \lnot IsFeasible(i, I_{\text{support}}, T)\}$. \label{algo:remove_infeasible}
 
 Checking if a state is feasible can then be done by iteratively applying all the insertions ordered by z and updating the proper trees, or starting from an already built tree and computing the set $I_{\text{support}}$ for each item through the tree as defined in \ref{aabb:get_supporting}.
@@ -239,7 +241,7 @@ The defined ordering utilized is the following:
 
 \section{Support Planes}
 \label{sec:support_planes}%
-Support Planes (SP) is a constructive heuristic based on an underlying 2D-BPP heuristic which is used to evaluate feasible insertions inside a bin starting from a set of items to pack.
+Support Planes (SP) is a constructive heuristic based on an underlying 2D-BPP heuristic which is used to generate feasible insertions inside a bin starting from a set of items to pack.
 Since insertions must be feasible, SP maintains an internal structure to facilitate feasibility checks.
 The idea at the base of SP is to build a solution to the 3D-BPP by filling 2D planes called \textit{support planes}.
 
@@ -254,7 +256,7 @@ Every item placed in the bin can either generate a new support plane or be part 
 Items placed above a particular plane, such that $z_i + h_i > z$, are considered obstacles and are added to the $I_{upper}$ set.
 When evaluating a new possible insertion, given a set of items to place $I$, SP selects the first feasible insertion starting from the lowest plane by using a modified version of Extreme Point in two dimensions (introduced in \cite{crainic2008extreme}).
 Once no more insertions can be made on the lowest available support plane, it's removed from the set of planes.
-Since insertions always happen in the lowest possible planes, the set of obstacles of those planes is composed of items that only have their top face above the $z$ of the evaluated plane, such that $z_i < z < z_i + h_i$.
+Since insertions always happen in the lowest possible planes, the set of obstacles of those planes is composed of items that have only their top face above the $z$ of the evaluated plane, such that $z_i \le z < z_i + h_i$.
 
 The Extreme Point (EP) heuristic evaluates the placement of rectangles in a plane based on a set of reference points with a best-fit approach. 
 Each rectangle placement generates a new set of reference points which are usually introduced based on the projection of its corner points along the orthogonal axis of the plane.
@@ -264,6 +266,7 @@ Placements follow a first-fit approach where the algorithm selects the first poi
 In order to facilitate the evaluation of reference points with support, we also generate a reference point in the bottom left corner of each item that belongs to the set of supporting items $I_{support}$.
 When a reference point is used for a placement, it is then removed from the pool of reference points.
 Before evaluating placements, the item to place are ordered based on their area.
+New planes have the origin of space $(0,0)$ as an available reference point.
 
 Since reference points are usually ordered based on the euclidean distance from the bottom left corner of the plane and the corner points are usually generated and projected towards the origin of each axis, the placements over one plane are usually biased towards the bottom left corner.
 To address the problem, we evaluate four instances of EP where each has a different coordinate change applied to every item that moves the plane's origin to each corner of the bin.
@@ -285,9 +288,9 @@ In the figure different coordinate changes are marked with different colors.
 
 \begin{figure}[hp]
     \centering
-    %\scalebox{0.75}{%
+    \scalebox{0.9}{%
     \input{Images/support_planes}
-    %}
+    }
     \caption{Representation of a generic support plane with a placed item}
     \label{fig:support_planes}
 \end{figure}
@@ -302,18 +305,12 @@ In the figure different coordinate changes are marked with different colors.
 \end{figure}
 %TODO: Proporre la versione ibrida maxrect/extreme points?
 
-%FIXME: Finish this small section
-Given a function to check the feasibility of an insertion,
-and the function $ComparePacking(p, p^\prime)$ which defines a ranking over insertions in the same plane,
-the SP algorithm can be written as algorithm \ref{algo:sp_bestinsertion}.
+Given \cref{eq:ep_can_pack} to check if a considered placement would lead to a feasible insertion, the set of items to pack $I$, the AABB tree of the currently packed items $T$ and the set of currently available support planes $Z$.
+The heuristic that will output the new best possible feasible insertion for the given set of items or an empty object can be summarized in alg. \ref{algo:sp_bestinsertion}. 
 
 \input{algorithms/supportplane}
+\input{algorithms/ep_insert_rect}
 
-Given the dimensions of the 2D bin $(W_b, D_b)$, the set of obstacles $I_{o}$ and the set of items to pack $I_{p}$ a new insertion can be computed following algorithm \ref{algo:sp_rectpack}
-
-\input{algorithms/sp_rectpack}
-
-%FIXME: [G1-END]
 \paragraph*{Commit Extension}
 We now describe an extension to $Commit$ (algo. \ref{algo:state_commit}) to update the structures needed by SP.
 
@@ -333,3 +330,9 @@ This new algorithm can be used as the last step of the $Commit$ algorithm for ea
 
 \subsection{Scoring Insertions}
 \label{ssec:scoring_insertions}%
+Similarly to the scoring of states (\cref{ssec:scoring_states}), an ordering function is also needed to evaluate different insertions for the same set of items.
+Given the lexicographic ordering formulation in \cref{def:lexicographic_ordering} a few new statistics can be calculated and stored inside an insertion to help in the evaluation.
+Thanks to experimental results the following ordering was used:
+\begin{itemize}
+    \item $f_1(s) = -|s.B|$: TODO
+\end{itemize}

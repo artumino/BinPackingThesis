@@ -1,26 +1,51 @@
-\begin{algorithm}[H] \label{algo:sp_bestinsertion}
+\begin{algorithm}[hp]
     \DontPrintSemicolon
     \SetAlgoLined
     \SetKwInOut{Input}{input}
     \SetKwInOut{Output}{output}
-    \Input{$Z, I$}
+    \Input{$Z, I, T$}
     \Output{$p$}
-    $p \leftarrow \text{none}$\;
     \ForAll{$(z, I_{support}, I_{upper}) \in Z$}{
+        $P \gets \emptyset$\;
         \ForAll{possible coordinate changes}{
-            \CommentSty{//Initialize reference points}
-            $refPoints \gets \emptyset$\;
-            \If{$z = 0$}{
-                $refPoints \gets (0,0)$\;
-            }
+            $p \leftarrow (z, \emptyset)$\;
+            $T^\prime \gets \text{empty AABB tree}$\;
+            \CommentSty{//Initialize reference points}\;
+            $refPoints \gets (0,0)$\;
             \ForAll{$i \in I_{support}$}{
-                $refPoints \gets refPoints \cup {(x_i, y_i)}$\;
+                $refPoints \gets refPoints \cup \{(x_i, y_i)\}$\;
+            }
+            \ForAll{$i \in I_{upper}$}{
+                $refPoints \gets refPoints \cup \{(x_i + w_i, y_i), (x_i, y_i + d_i)\}$\;
+            }
+            $sort(refPoints)$ \CommentSty{// Based on euclidean distance from $(0,0)$}\;
+
+            \CommentSty{//Create a feasible insertion for the given items}\;
+            \ForAll{$i \in I$}{
+                \CommentSty{//Evaluate first possible placement}\;
+                \ForAll{$(x,y) \in refPoints$}{
+                    $(x_i, y_i, z_i) = (x, y, z)$\;
+                    \If{$EPCanPlace(i, T, T^\prime)$}{
+                        $EPInsertRect(p, i, T^\prime, refPoints)$ \CommentSty{// alg. \ref{algo:ep_insert_rect}}\;
+                        break\;
+                    }
+                    $(w_i, d_i) \gets (d_i, w_i)$ \CommentSty{//Try rotating $i$}\;
+                    \If{$EPCanPlace(i, T, T^\prime)$}{
+                        $EPInsertRect(p, i, T^\prime, refPoints)$ \CommentSty{// alg. \ref{algo:ep_insert_rect}}\;
+                        break\;
+                    }
+                    $(w_i, d_i) \gets (d_i, w_i)$ \CommentSty{//Restore original $i$ rotation}\;
+                }
+            }
+            \If{$p \neq (z, \emptyset)$}{
+                $P \gets P \cup p$\;
             }
         }
-        \If{$p \neq \text{none}$}{
-            \Return{$p$}
+        $sort(P)$ \CommentSty{//Sorted as in \cref{ssec:scoring_insertions}}\;
+        \If{$P \neq \emptyset$}{
+            \Return{first element of $P$}
         }
     }
-    \Return{$p$}
-    \caption{SP Best Insertion}
+    \Return{none}
+    \caption{SP Best Insertion \label{algo:sp_bestinsertion}}
 \end{algorithm}
