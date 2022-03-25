@@ -332,7 +332,12 @@ This new algorithm can be used as the last step of the $Commit$ algorithm for ea
 \label{ssec:scoring_insertions}%
 Similarly to the scoring of states (\cref{ssec:scoring_states}), an ordering function is also needed to evaluate different insertions for the same set of items.
 Given the lexicographic ordering formulation in \cref{def:lexicographic_ordering} a few new statistics can be calculated and stored inside an insertion to help in the evaluation.
-Thanks to experimental results the following ordering was used:
+The parameters used to sort an insertion $p$ are then the following:
 \begin{itemize}
-    \item $f_1(s) = -|s.B|$: TODO
+    \item $f_1(p) = -|p.I|$: maximize number of items inserted (of the same shape),
+    \item $f_2(p) = -\sum\limits_{i \in p.I}{(w_i d_i + w_i d_i h_i)}$: maximize the sum of the area and volume of each packed item,
+    \item $f_3(p) = \max\limits_{i \in p.I}(z_i + h_i)$: minimize the maximum height of the inserted items,
+    \item $f_4(p) = \text{sum of the supported area of items in $p.I$}$: minimize the support area available to the inserted items,
+    \item $f_5(p) = $
 \end{itemize}
+%TODO: more in depth
