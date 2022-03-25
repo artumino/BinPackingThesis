@@ -23,7 +23,7 @@ It is also noted that in a single bin configuration, maximizing cage ratio is eq
 \end{figure}
 
 Our notion of vertical support stems from rules imposed by the industry and from the literature on Pallet Loading Problems and Container Loading Problems. Vertical stability is usually ensured between horizontal or vertical slices of items as a constraint on the minimum amount of area which rests on other items (as for ex. \citep{elhedhli2019three,kurpel2020exact,paquay2016mixed}).
-Given a support area threshold which is usually equal to $\alpha_s=0.7$ and a tolerance, which in our case is equal to $\beta_s=1\text{cm}$, we can define an item as supported if
+Given a support area threshold $\alpha_s$ and a vertical tolerance $\beta_s$ we can define an item as supported if one of the following holds
 \begin{enumerate}
     \item the sum of the overlap area over the XY-plane with every other item on which it is resting is greater than $\alpha_s$ times its base area. (area support) \label{support:area_support}
     \item the number of its corners resting on another item is greater than 3, and condition \ref{support:area_support} holds with a lower threshold $\alpha^\prime_s < \alpha_s$. (vertex support) \label{support:vertex_support}
