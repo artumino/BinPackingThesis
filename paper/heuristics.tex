@@ -150,14 +150,14 @@ Checking if a state is feasible can then be done by iteratively applying all the
 From a given state, it's possible to apply two different sequences of insertions and end up with two states that have all the items in the same positions.
 This undesirable behavior was observed during our computational experiments.
 A hashing mechanism needs to be introduced to enable checking if two states are likely the same in constant time.
-In a state $s$ we can identify a packed item $i \in I$ in a given position $(x_i, y_i, z_i)$ with its given dimensions $(w_i, d_i, z_i)$ in a given bin $b \in s.B$ with a non-commutative hashing function $hash_{nc}$. 
-The resulting hash $hash_{ib} = hash_{nc}(b, x_i, y_i, z_i, w_i, d_i, h_i)$ can identify every similar packing of an item of the same shape in that specific bin spot.
+In a state $s$ we can identify a packed item $i \in I$ in a given position $(x_i, y_i, z_i)$ with its given dimensions $(w_i, d_i, z_i)$ in a given bin $b \in s.B$ with a non-commutative hashing function $hash\_nc$. 
+The resulting hash $hash_{ib} = hash\_nc(b, x_i, y_i, z_i, w_i, d_i, h_i)$ can identify every similar packing of an item of the same shape in that specific bin spot.
 Since $hash_{ib}$ identifies one item with the shape of $i$ in the same spot as $i$, we can use a commutative function to combine every hash for every packed item in every bin to ignore the order with which items were added to the solution.
 The combined hash can then be saved inside the state structure as follows. 
 \begin{equation}
     s.hash = \sum\limits_{b \in s.B}{\sum\limits_{i \in q_b.J}{hash_{ib}}}
 \end{equation}
-In our tests, by filtering states with the proposed hash as seen in algo. \ref{algo:beamsearch}, with a simple 64-bit hashing function, this mechanism allowed us to filter out almost all equal states between iterations with a low amount of collisions.
+In our tests, by filtering states with the proposed hash as seen in algo. \ref{algo:beamsearch}, with a simple 64-bit hashing function, this mechanism allowed us to filter out all equal states between iterations with a low amount of collisions.
 Since the combining of hashes is a simple sum with modulus, the hashing of the state can also be kept updated in constant time at each iteration by simply adding the inserted hashes in the $Commit$ function (algo. \ref{algo:state_commit}).
 
 %TODO: Do a grammar pass
@@ -256,24 +256,27 @@ When evaluating a new possible insertion, given a set of items to place $I$, SP 
 Once no more insertions can be made on the lowest available support plane, it's removed from the set of planes.
 Since insertions always happen in the lowest possible planes, the set of obstacles of those planes is composed of items that only have their top face above the $z$ of the evaluated plane, such that $z_i < z < z_i + h_i$.
 
-The Extreme Point (EP) algorithm evaluates the placement of rectangles in a plane based on a set of reference points with a best-fit approach. 
-Each rectangle placement generates a new set of reference points which are usually introduced based on the projection of its extreme points along each axis.
-The extreme points of an added rectangle $r$ placed in $(x_r, y_r)$ of dimensions $(w_r, d_r)$ are the top left corner $(x_r, y_r + d_r)$ and the bottom right corner $(x_r + w_r, y_r)$.
-In our version of the algorithm, the extreme points of each item are introduced without projection to increase the likelihood of evaluating placements that verify the support constraint.
+The Extreme Point (EP) heuristic evaluates the placement of rectangles in a plane based on a set of reference points with a best-fit approach. 
+Each rectangle placement generates a new set of reference points which are usually introduced based on the projection of its corner points along the orthogonal axis of the plane.
+The corner points of an added rectangle $r$ placed in $(x_r, y_r)$ of dimensions $(w_r, d_r)$ are the top left corner $(x_r, y_r + d_r)$ and the bottom right corner $(x_r + w_r, y_r)$.
+In our version of the algorithm, the corner points of each item are introduced without projecting them to increase the likelihood of evaluating placements that verify the support constraint.
 Placements follow a first-fit approach where the algorithm selects the first point closest to the origin where a rectangle can fit with or without rotations.
+In order to facilitate the evaluation of reference points with support, we also generate a reference point in the bottom left corner of each item that belongs to the set of supporting items $I_{support}$.
 When a reference point is used for a placement, it is then removed from the pool of reference points.
 Before evaluating placements, the item to place are ordered based on their area.
 
-Since reference points are usually ordered based on the euclidean distance from the bottom left corner of the plane and the extreme points are usually generated and projected towards the origin of each axis, the placements over one plane are usually biased towards the bottom left corner.
+Since reference points are usually ordered based on the euclidean distance from the bottom left corner of the plane and the corner points are usually generated and projected towards the origin of each axis, the placements over one plane are usually biased towards the bottom left corner.
 To address the problem, we evaluate four instances of EP where each has a different coordinate change applied to every item that moves the plane's origin to each corner of the bin.
 This addition is based on similar approaches from the literature where it is usually used to more uniformly fill the space (ex. \citeauthor{GAJDA2022102559}) and was verified to yield better cage ratio results in our internal testing.
 %TODO: Check the above
 
-In order to facilitate the evaluation of reference points with support, we also generate a reference point in the bottom left corner of each item that belongs to the set of supporting items $I_{support}$.
-The EP procedure is called for each item to pack on a given plane. In order to produce a feasible insertion, every item in the insertions shouldn't overlap each other.
-Since we can't modify the state's structures between calls to EP, we need to keep a temporary AABB tree updated composed of the items that are part of the current insertion $T^\prime$.
-We can then define a function that uses the temporary tree and the feasibility function defined in \cref{sec:problem_state:feasibility} to ensure feasible insertions as follows.
+The EP procedure is called for each item to pack on a given plane. 
+In order to produce a valid insertion, every item in the insertion shouldn't overlap each other (as stated in \cref{def:insertion}).
+Since the AABB tree for a given state is shared by each evaluation of a possible insertion, it can't be modified to account for temporary placements of items.
+This means that we need to keep a temporary AABB tree updated composed of the items that are part of the current insertion $T^\prime$.
+We can then define a function that uses the temporary tree and the feasibility function defined in \cref{sec:problem_state:feasibility} to ensure that we are producing a feasible insertion as \cref{eq:ep_can_pack}.
 \begin{equation}
+    \label{eq:ep_can_pack}
     EPCanPack(i, I_{support}, T, T^\prime) = IsFeasible(i, I_{support}, T) \land \lnot AABBOverlaps(i, T^\prime)
 \end{equation}
 A graphical representation of a support plane is shown in \cref{fig:support_planes} with the reference points available.
