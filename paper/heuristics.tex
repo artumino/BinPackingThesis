@@ -279,10 +279,27 @@ We can then define a function that uses the temporary tree and the feasibility f
     \label{eq:ep_can_pack}
     EPCanPack(i, I_{support}, T, T^\prime) = IsFeasible(i, I_{support}, T) \land \lnot AABBOverlaps(i, T^\prime)
 \end{equation}
-A graphical representation of a support plane is shown in \cref{fig:support_planes} with the reference points available.
+A graphical representation of a support plane is shown in \cref{fig:support_planes} with the reference points available. In \cref{fig:ep_coordinate_changes} the state of two extreme point instances for the bottom left and top left coordinate changes are shown.
 When a bin is opened the only support plane available is the one on the ground. 
 In the figure different coordinate changes are marked with different colors.
 
+\begin{figure}[hp]
+    \centering
+    %\scalebox{0.75}{%
+    \input{Images/support_planes}
+    %}
+    \caption{Representation of a generic support plane with a placed item}
+    \label{fig:support_planes}
+\end{figure}
+
+\begin{figure}[hp]
+    \centering
+    %\scalebox{0.75}{%
+    \input{Images/ep_coordinate_changes}
+    %}
+    \caption{Extreme Point instances for some coordinate changes of \cref{fig:support_planes}}
+    \label{fig:ep_coordinate_changes}
+\end{figure}
 %TODO: Proporre la versione ibrida maxrect/extreme points?
 
 %FIXME: Finish this small section
