@@ -24,7 +24,7 @@
             \ForAll{$i \in I$}{
                 \CommentSty{//Evaluate first possible placement}\;
                 \ForAll{$(x,y) \in refPoints$}{
-                    $(x_i, y_i, z_i) = (x, y, z)$\;
+                    $(x_i, y_i, z_i) \gets (x, y, z)$\;
                     \If{$EPCanPlace(i, T, T^\prime)$}{
                         $EPInsertRect(p, i, T^\prime, refPoints)$ \CommentSty{// alg. \ref{algo:ep_insert_rect}}\;
                         break\;
