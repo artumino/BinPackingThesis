@@ -332,12 +332,22 @@ This new algorithm can be used as the last step of the $Commit$ algorithm for ea
 \label{ssec:scoring_insertions}%
 Similarly to the scoring of states (\cref{ssec:scoring_states}), an ordering function is also needed to evaluate different insertions for the same set of items.
 Given the lexicographic ordering formulation in \cref{def:lexicographic_ordering} a few new statistics can be calculated and stored inside an insertion to help in the evaluation.
-The parameters used to sort an insertion $p$ are then the following:
+By using the AABB tree which represents the bin where the insertion is going to happen $T$ it is also possible, given one of the inserted items $i \in p.I$, to define functions that use the tree to calculate usefull statistics:
 \begin{itemize}
-    \item $f_1(p) = -|p.I|$: maximize number of items inserted (of the same shape),
+    \item $CloseItems(i, T)$: which returns the number of packed items close to $i$,
+    \item $CloseSameHeight(i, T)$: which returns the number of packed items in the tree close to $i$ and with its same height,
+    \item $CloseSameShape(i, T)$: which returns the number of packed items in the tree close to $i$ and with its same shape,
+    \item $TotalSupportedArea(i, T)$: which returns total base area of $i$ which is supported by other items.
+\end{itemize}
+We can then sort an insertion $p$, given the AABB tree of the bin where the insertion will happen $T$, with a lexicographic ordering as follows:
+\begin{itemize}
+    \item $f_1(p) = -\sum\limits_{i \in p.I}{CloseSameShape(i, T)} - |p.I|$: maximize number of items inserted (of the same shape) that are close to already packed items of the same shape,
     \item $f_2(p) = -\sum\limits_{i \in p.I}{(w_i d_i + w_i d_i h_i)}$: maximize the sum of the area and volume of each packed item,
     \item $f_3(p) = \max\limits_{i \in p.I}(z_i + h_i)$: minimize the maximum height of the inserted items,
-    \item $f_4(p) = \text{sum of the supported area of items in $p.I$}$: minimize the support area available to the inserted items,
-    \item $f_5(p) = $
+    \item $f_4(p) = \sum\limits_{i \in p.I}{TotalSupportedArea(i, T)}$: minimize the support area available to the inserted items,
+    \item $f_5(p) = -\sum\limits_{i \in p.I}{CloseSameHeight(i, T)} - |p.I|$: maximize the number of items inserted (of the same height) that are close to already packed items of the same height,
+    \item $f_5(p) = -\sum\limits_{i \in p.I}{CloseItems(i, T)} - |p.I|$: maximize the number of items inserted that are close to already packed items.
 \end{itemize}
-%TODO: more in depth
+It is noted that prefering feasible insertions that minimize the supported area of each item as in $f_4$ is inspired by other works on spacing from the literature.
+As shown in \cite{elhedhli2019three}, overly satisfying the support constraint can lead to unbalanced bins.
+Minimizing the supported area of each item leads to minimizing the perimeter of overlap between items which in turn results in more balanced bins and with better spacing between items.
