@@ -1,4 +1,3 @@
-%TODO: Rebuild these in with the proper site
 @article{martello2000three,
   title={The three-dimensional bin packing problem},
   author={Martello, Silvano and Pisinger, David and Vigo, Daniele},
@@ -216,4 +215,77 @@
   author = {Gerhard Wäscher and Heike Haußner and Holger Schumann},
   keywords = {Cutting, Packing, Typology},
   abstract = {The number of publications in the area of Cutting and Packing (C&P) has increased considerably over the last two decades. The typology of C&P problems introduced by Dyckhoff [Dyckhoff, H., 1990. A typology of cutting and packing problems. European Journal of Operational Research 44, 145–159] initially provided an excellent instrument for the organisation and categorisation of existing and new literature. However, over the years also some deficiencies of this typology became evident, which created problems in dealing with recent developments and prevented it from being accepted more generally. In this paper, the authors present an improved typology, which is partially based on Dyckhoff’s original ideas, but introduces new categorisation criteria, which define problem categories different from those of Dyckhoff. Furthermore, a new, consistent system of names is suggested for these problem categories. Finally, the practicability of the new scheme is demonstrated by using it as a basis for a categorisation of the C&P literature from the years between 1995 and 2004.}
+}
+
+@article{ZHU2012452,
+  title = {Space defragmentation for packing problems},
+  journal = {European Journal of Operational Research},
+  volume = {222},
+  number = {3},
+  pages = {452-463},
+  year = {2012},
+  issn = {0377-2217},
+  doi = {https://doi.org/10.1016/j.ejor.2012.05.031},
+  url = {https://www.sciencedirect.com/science/article/pii/S037722171200389X},
+  author = {Wenbin Zhu and Zhaoyi Zhang and Wee-Chong Oon and Andrew Lim},
+  keywords = {Packing, 2D/3D bin packing, Space defragmentation, Bin shuffling, Comparability graph, Visibility graph},
+  abstract = {One of main difficulties of multi-dimensional packing problems is the fragmentation of free space into several unusable small parts after a few items are packed. This study proposes a defragmentation technique to combine the fragmented space into a continuous usable space, which potentially allows the packing of additional items. We illustrate the effectiveness of this technique using the two- and three-dimensional bin packing problem, where the aim is to load all given items (represented by rectangular boxes) into the minimum number of identical bins. Experimental results based on well-known 2D and 3D bin packing data sets show that our defragmentation technique alone is able to produce solutions approaching the quality of considerably more complex meta-heuristic approaches for the problem. In conjunction with a bin shuffling strategy for incremental improvement, our resultant algorithm outperforms all leading meta-heuristic approaches based on the commonly used benchmark data by a significant margin.}
+}
+
+@article{Calzavara2021,
+  author={Calzavara, Gabriele and Iori, Manuel and Locatelli, Marco and Moreira, Mayron C. O. and Silveira, Tiago},
+  title={Mathematical models and heuristic algorithms for pallet building problems with practical constraints},
+  journal={Annals of Operations Research},
+  year={2021},
+  month={Oct},
+  day={25},
+  abstract={In the pallet building problem, we aim at loading a given set of items into one or more pallets, by satisfying specific constraints and minimizing the number of pallets used. In this paper, we address a practical case of this problem that originates from a real-world robotized application, subject to some non-trivial operational constraints. In practice, items are grouped into families and must be packed into horizontal layers. To facilitate loading/unloading operations, items of the same type packed into the same layer should be contiguous and at least one of them should be visible from the outside. We present a formal mathematical description for layer and pallet creation subproblems and then we propose heuristic, metaheuristic, matheuristic algorithms to solve the overall problem. The performance of the algorithms is assessed through extensive computational tests on real-world instances.},
+  issn={1572-9338},
+  doi={10.1007/s10479-021-04349-w},
+  url={https://doi.org/10.1007/s10479-021-04349-w}
+}
+
+@Article{Alonso2020,
+  author={Alonso, M. T. and Alvarez-Valdes, R. and Parre{\~{n}}o, F.},
+  title={A GRASP algorithm for multi container loading problems with practical constraints},
+  journal={4OR},
+  year={2020},
+  month={Mar},
+  day={01},
+  volume={18},
+  number={1},
+  pages={49-72},
+  abstract={We consider the multicontainer loading problem of a company that has to serve its customers by first putting the products on pallets and then loading pallets onto trucks. When a large number of units of a product have to be shipped, the company requires that homogeneous pallets, with only one product, are built first, then weakly heterogeneous pallets, in which each layer corresponds to a single product, and finally strongly heterogeneous pallets with the remaining units of the products. To be useful in practice, the solutions have to satisfy five types of constraints: geometric constraints, so that pallets are completely inside the trucks and do not overlap; weight constraints, limiting the total weight a truck can bear and the maximum weight supported by each axle; constraints limiting the position of the centre of gravity of the cargo; dynamic stability constraints, to avoid cargo displacement when the truck is moving; and constraints ensuring that the delivery dates of products are respected. We have developed a Greedy Randomized Adaptive Search Procedure, including some improvement methods tailored to the problem, among them an adaptation of ejection chains. The approach has been tested on a benchmark of real problems and it has been shown to be capable of finding high-quality, realistic solutions in short computing times. We also provide a comparison with an integer programming formulation that justifies the use of a metaheuristic algorithm.},
+  issn={1614-2411},
+  doi={10.1007/s10288-018-0397-z},
+  url={https://doi.org/10.1007/s10288-018-0397-z}
+}
+
+@article{GZARA20201062,
+  title = {The Pallet Loading Problem: Three-dimensional bin packing with practical constraints},
+  journal = {European Journal of Operational Research},
+  volume = {287},
+  number = {3},
+  pages = {1062-1074},
+  year = {2020},
+  issn = {0377-2217},
+  doi = {https://doi.org/10.1016/j.ejor.2020.04.053},
+  url = {https://www.sciencedirect.com/science/article/pii/S0377221720304069},
+  author = {Fatma Gzara and Samir Elhedhli and Burak C. Yildiz},
+  keywords = {Pallet Loading Problem, Three dimensional bin packing, Vertical support, Load bearing, Layer based column generation},
+  abstract = {Pallet loading requires the solution of a three-dimensional bin packing problem (3DBPP) with additional requirements. In particular, vertical support and load bearing, which are not enforced in 3DBPP, are essential in practice. In this work, we provide a complete solution approach for pallet loading problems where practical constraints of vertical support, load bearing, planogram sequencing, and weight limits are fully accounted for. Using a layer based column generation approach, we tackle vertical support using second order cone programming, and satisfy load bearing through a graph representation to trace load distribution. Additionally, we use industry data to propose an instance generator that produces realistic items with practical attributes such as support surface, load capacity, weight, and planogram sequence number. Extensive numerical testing reveals the ability of the approach to find high quality solutions for industry size instances in fast computational times.}
+}
+
+@article{paquay2007,
+  author = {Célia Paquay and Sabine Limbourg and Michaël Schyns and José Fernando Oliveira},
+  title = {MIP-based constructive heuristics for the three-dimensional Bin Packing Problem with transportation constraints},
+  journal = {International Journal of Production Research},
+  volume = {56},
+  number = {4},
+  pages = {1581-1592},
+  year  = {2018},
+  publisher = {Taylor & Francis},
+  doi = {10.1080/00207543.2017.1355577},
+  URL = { https://doi.org/10.1080/00207543.2017.1355577 },
+  eprint = { https://doi.org/10.1080/00207543.2017.1355577 }
 }

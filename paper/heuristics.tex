@@ -270,8 +270,7 @@ New planes have the origin of space $(0,0)$ as an available reference point.
 
 Since reference points are usually ordered based on the euclidean distance from the bottom left corner of the plane and the corner points are usually generated and projected towards the origin of each axis, the placements over one plane are usually biased towards the bottom left corner.
 To address the problem, we evaluate four instances of EP where each has a different coordinate change applied to every item that moves the plane's origin to each corner of the bin.
-This addition is based on similar approaches from the literature where it is usually used to more uniformly fill the space (ex. \citep{GAJDA2022102559}) and was verified to yield better cage ratio results in our internal testing.
-%TODO: Check the above
+This addition is based on similar approaches from the literature where it is usually used to more uniformly distribute weight across a surface (ex. \citep{GAJDA2022102559}) and was verified to yield better cage ratio results in our internal testing.
 
 The EP procedure is called for each item to pack on a given plane. 
 In order to produce a valid insertion, every item in the insertion shouldn't overlap each other (as stated in \cref{def:insertion}).

@@ -1,8 +1,58 @@
 %Overview of section
-\section{Two-Dimensional Bin Packing Problem}
-
 \section{Three-Dimensional Bin Packing Problem}
 
+%Corner Point 
+\citep{martello2000three}
+
+%Guided Local Search GLS 
+\citep{faroe2003guided}
+
+%Tabu Search 
+\citep{lodi2002heuristic}
+
+%Extreme Point 
+\citep{crainic2008extreme}
+
+%TS2 Pack - Tabu Search 
+\citep{crainic2009ts2pack}
+
+%GRASP 
+\citep{parreno2010hybrid}
+
+%Genetic
+\citep{WU2010347}
+
+%Space Defrag in BPP {Zhu and Lim (2012)}
+\citep{ZHU2012452}
+
+%Hybrid greedy LP 
+\citep{hifi2014hybrid}
+
+%BRKGA 
+\citep{gonccalves2013biased}
+
+%BRKGA-VND 
+\citep{zudio2018brkga}
+
 \section{Vertical Support}
-Vertical support (or static stability) received most of its contributions from the fields of Pallet Loading Problems (PLP) and Cargo Loading Problems (CLP). In \citep{elhedhli2019three} a second order cone programming formulation was provided as a solution to a spacing problem between layers of a pallet. The pubblication further described the concept of minimizing the area of overlap between items of different layers to increase spacing between items of the same layer and increase the amount of potential support for higher layers.
-In \citep{paquay2016mixed} a formulation of the CLP was given with practical constraints like weight distrubtiom, non-regular container shapes and vertical stability through vertex support.
+Vertical support (or static stability) received most of its contributions from the fields of Pallet Loading Problems (PLP) and Cargo Loading Problems (CLP).
+In recent years there has been lots of pubblications addressing various practical constraints dictated by the industry needs.
+In this section we focus on pubblications related to these two problems that dealt with the concept of vertical support.
+
+Considering Pallet Loading Problems, in \citep{elhedhli2019three} a column-generation framework and a branch-and-price solution to the mixed-case pallet loading problem was proposed with a two-dimensional layer generation problem as the pricing subproblem.
+The subproblem was then solved with exact methods and heuristically with additions including item groupings, item replacement the reoganization of layers and spacing.
+A new instance generator for instances that better reppresent industry instances was provided. The paper didn't directly address vertical support although given the layering approach used solutions had implicitly favored solutions with support.
+The work was later extended by \citep{GZARA20201062} to explicitly address practical constraints such as vertical support, load bearing, pallet weight limits and planogram sequencing.  
+In addition, a second-order cone programming formulation was provided as a solution to a spacing problem between layers of a pallet and further extensions to the previously introduced instance generator were made.
+
+%PLP problem with Reactive GRASP
+\citep{Calzavara2021}
+
+Considering Container Loading Problems, a MIP formulation was proposed in \citep{paquay2016mixed} with the inclusion of various practical constraints like vertical support through vertex support, containers of different size and shape, weight distribution, item rotations and load bearing.
+Since the proposed model was complex, only small instances were solved to optimality in a reasonable time frame. The work was extended in \citep{paquay2007} where three meta-heuristics were provided to reduce the solve time.
+In \citep{kurpel2020exact} several new formulations of CLP are presented with various extensions for practical constraints such as box orientations, stability (including vertical support) end the separation of boxes.
+Vertical Support is formulated by a discretization of space along each axis and with the help of an overlap matrix to encode the ammount of area support each item can give to the others.
+The work also presents heuristic approaches and upper and lower bound techniques.
+\citep{Alonso2020} %TODO
+In \citep{GAJDA2022102559} a constructive randomized heuristic for solving the CLP is proposed with constraints including vertical support ensured by area support, customer priorities, load balancing, stacking constraints, and positioning constraints.
+In the proposed constructive heuristic a subset of extreme points are evaluated starting from two corners of the cargo to ensure a better weight distribution.
