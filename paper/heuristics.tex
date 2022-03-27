@@ -69,7 +69,7 @@ Both sets $q_b.J$ and $q_b.T$ contain the items packed in $b$ but adding and acc
 
 To determine the feasibility of a given state, checking for overlaps with items already placed is needed.
 Since every item is a cuboid and our problem formulation only allows for $90\deg$ rotations over the z-axis, each item is contained inside a bounding box, which is axis-aligned.
-An adequate structure to compute overlaps is then an Axis-Aligned Bounding Box Tree (AABB Tree) \cite{bergen1997efficient}.
+An adequate structure to compute overlaps is then an Axis-Aligned Bounding Box Tree (AABB Tree) \citep{bergen1997efficient}.
 
 AABB Trees are bounding volume hierarchies typically used for fast collision detection, and they usually offer a few operations:
 \begin{itemize}
@@ -200,7 +200,7 @@ The evaluation of new insertions can then be done with two different approaches:
     \item \textbf{PS}: where we evaluate only the possible insertion of a single item per item type, which would generate insertions of at most 1 item,
     \item \textbf{PM}: where we evaluate the biggest possible insertion of a group of items of the same shape, which would generate insertions of at most the size of the group of items with the same shape.
 \end{itemize}
-Creating insertions of groups of similar items is usually used in Pallet Loading Problems (as for ex. \cite{elhedhli2019three}) to create better bases of support for upper layers.
+Creating insertions of groups of similar items is usually used in Pallet Loading Problems (as for ex. \citep{elhedhli2019three}) to create better bases of support for upper layers.
 With a similar intuition, the idea of placing groups of items of the same shape is to facilitate the creation of uniform planes (not necessarily layers) to use for further insertions.
 
 Given a set of items $I$ and a tolerance $\beta_s$ we can introduce an algorithm to group them by their shape and produce a set $G$ of tuples $(h, I^\prime)$ where $h$ is the hash summurizing the shape of the group and $I^\prime$ is the set of items grouped as in algo. \ref{algo:group_by_hash}.
@@ -254,7 +254,7 @@ Each support plane is characterized by the tuple $(z, I_{support}, I_{upper})$ w
 
 Every item placed in the bin can either generate a new support plane or be part of the supporting items of other planes. 
 Items placed above a particular plane, such that $z_i + h_i > z$, are considered obstacles and are added to the $I_{upper}$ set.
-When evaluating a new possible insertion, given a set of items to place $I$, SP selects the first feasible insertion starting from the lowest plane by using a modified version of Extreme Point in two dimensions (introduced in \cite{crainic2008extreme}).
+When evaluating a new possible insertion, given a set of items to place $I$, SP selects the first feasible insertion starting from the lowest plane by using a modified version of Extreme Point in two dimensions (introduced in \citep{crainic2008extreme}).
 Once no more insertions can be made on the lowest available support plane, it's removed from the set of planes.
 Since insertions always happen in the lowest possible planes, the set of obstacles of those planes is composed of items that have only their top face above the $z$ of the evaluated plane, such that $z_i \le z < z_i + h_i$.
 
@@ -270,7 +270,7 @@ New planes have the origin of space $(0,0)$ as an available reference point.
 
 Since reference points are usually ordered based on the euclidean distance from the bottom left corner of the plane and the corner points are usually generated and projected towards the origin of each axis, the placements over one plane are usually biased towards the bottom left corner.
 To address the problem, we evaluate four instances of EP where each has a different coordinate change applied to every item that moves the plane's origin to each corner of the bin.
-This addition is based on similar approaches from the literature where it is usually used to more uniformly fill the space (ex. \citeauthor{GAJDA2022102559}) and was verified to yield better cage ratio results in our internal testing.
+This addition is based on similar approaches from the literature where it is usually used to more uniformly fill the space (ex. \citep{GAJDA2022102559}) and was verified to yield better cage ratio results in our internal testing.
 %TODO: Check the above
 
 The EP procedure is called for each item to pack on a given plane. 
@@ -349,5 +349,5 @@ We can then sort an insertion $p$, given the AABB tree of the bin where the inse
     \item $f_5(p) = -\sum\limits_{i \in p.I}{CloseItems(i, T)} - |p.I|$: maximize the number of items inserted that are close to already packed items.
 \end{itemize}
 It is noted that prefering feasible insertions that minimize the supported area of each item as in $f_4$ is inspired by other works on spacing from the literature.
-As shown in \cite{elhedhli2019three}, overly satisfying the support constraint can lead to unbalanced bins.
+As shown in \citep{elhedhli2019three}, overly satisfying the support constraint can lead to unbalanced bins.
 Minimizing the supported area of each item leads to minimizing the perimeter of overlap between items which in turn results in more balanced bins and with better spacing between items.

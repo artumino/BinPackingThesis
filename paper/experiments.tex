@@ -9,7 +9,7 @@ Out of the 100 instances used for our case study experiments, only 80 were freel
 We compared our heuristic to the proposed MILP model of \cref{sec:milp} with a single bin and with no limit on the height of the bin (also referred to as the 3D strip packing problem).
 The heuristic was configured to run without vertex support, using only area support rules for its feasibility checks, and $k$ was set to $200$.
 The configured parameters for the test were $\alpha_s = 0.7$, $\beta_s = 5$, and the discretization unit for the model was $\delta = 10$. 
-Tests were run on the first generated instance of the class 1 problems from \cite{martello2000three} which we used for literature tests. These classes of problem have a bin base of $100 \times 100$.
+Tests were run on the first generated instance of the class 1 problems from \citep{martello2000three} which we used for literature tests. These classes of problem have a bin base of $100 \times 100$.
 The test were run with an iterative approach by selecting only a limited amount of items from the selected instance, starting from the first item and increasing the number of items to pack by one at each iteration.
 The problem created with each iteration was saved as a test instance in the same format as the one used for literature tests.
 All the generated instances are available at \url{https://github.com/artumino/BinPackingThesis/tree/main/tests/instances/model}.
@@ -26,18 +26,18 @@ The solution to instance number 5 and instance number 7 is also shown in \cref{f
 
 \clearpage
 \section{Literature results}
-The heuristic was also evaluated against instances from the literature defined by \cite{martello2000three}.
+The heuristic was also evaluated against instances from the literature defined by \citep{martello2000three}.
 Since these instances were designed for heuristics without the vertical support constraint and orthogonal rotations, we ran the experiments with a relaxed version of our heuristic.
 The heuristic was configured to ignore the support constraint with $\alpha_s = 0$ and $\beta_s = 1$. We also disabled orthogonal rotations and stopped scoring insertions based on the support area available (as described in \cref{ssec:scoring_insertions}).
 
 \label{def:class1_instances}
 The literature instances are divided into classes from 1 to 8, with each class having a different bin size and various distributions of types of items.
-Instances were generated with the C++ instance generator provided by \cite{martello2000three} at \url{http://hjemmesider.diku.dk/~pisinger/new3dbpp/test3dbpp.c} which allows the generation of problem instances with a given problem class and number of items to use.
+Instances were generated with the C++ instance generator provided by \citep{martello2000three} at \url{http://hjemmesider.diku.dk/~pisinger/new3dbpp/test3dbpp.c} which allows the generation of problem instances with a given problem class and number of items to use.
 We generated 10 instances for each pair of problem class and number of items $n \in \{50, 100, 150, 200\}$ for a total of $320$ instances.
 
 In \cref{exp:literature_bins} we compare the average number of opened bins across 10 instances for each problem class and $n$ number of items combinations.
 The results are then compared to the most effective methods from the literature ordered by publishing date and listed as TS3 \citep{lodi2002heuristic}, GLS \citep{faroe2003guided}, GASP \citep{crainic2009ts2pack}, GVND \citep{parreno2010hybrid}, EHGH2 \citep{hifi2014hybrid}, BRKGA \citep{gonccalves2013biased}, BRKGA-VD \citep{zudio2018brkga}.
-It is noted that values for other heuristics are reported as in their publications, and our generated instances weren't the same ones which, as indicated in \cite{hifi2014hybrid}, could have different optimal values.
+It is noted that values for other heuristics are reported as in their publications, and our generated instances weren't the same ones which, as indicated in \citep{hifi2014hybrid}, could have different optimal values.
 The best values of all the heuristics are marked in bold. Best scoring values across different configurations of our heuristic are marked in italic instead.
 Results show an average gap of $4.1\%$ compared to the average value across the other heuristics and an average gap of $5.32\%$ with respect to the best performing one.
 

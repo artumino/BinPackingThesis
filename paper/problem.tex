@@ -114,8 +114,8 @@ Given the set of tuples $(i, j) \in I^{OR}$ where $i$ is the original item with 
 \label{subsec:vertical_support_formulation}%
 
 We now extend the model to address the constraint of vertical support. 
-In the literature, some mathematical formulations tackle the concept of area support and, in some cases, vertex support. For example, in \citeauthor{elhedhli2019three} a SOCP formulation of the support constraint was used but was limited to the problem of spacing between layers with one of them being fixed in position relative to the other. A similar formulation would lead to a non-linear support constraint in our case.
-By introducing a discretization over the XY-plane a linear version of the constraint can be formulated similar to the one proposed in \citeauthor{kurpel2020exact} without the need to discretize the z-axis as well.
+In the literature, some mathematical formulations tackle the concept of area support and, in some cases, vertex support. For example, in \citep{elhedhli2019three} a SOCP formulation of the support constraint was used but was limited to the problem of spacing between layers with one of them being fixed in position relative to the other. A similar formulation would lead to a non-linear support constraint in our case.
+By introducing a discretization over the XY-plane a linear version of the constraint can be formulated similar to the one proposed in \citep{kurpel2020exact} without the need to discretize the z-axis as well.
 
 Let us introduce some additional parameters to the model, let $0 \le \alpha_s \le 1$ be the amount of area that an item needs to have supported by other items. Let $\beta_s$ be the tolerance to consider one item as being close enough to support another item (as seen in \cref{fig:support}).
 In addition to the support parameters, a parameter $\delta$, which represents the discretization unit used to partition the XY-plane, is given. Let $I^B$ be the set of all the tuples $(i, j, b)$ such that $(i,j) \in I \land i \neq j$ and $b \in B$.
