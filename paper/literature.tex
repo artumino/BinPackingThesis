@@ -1,5 +1,24 @@
 %Overview of section
+In this section we review the relevant literature to our problem. 
+In \cref{sec:literature:2dbpp} we do a brief review of the most relevant two-dimensional bin packing placement heuristics in the context of this thesis.
+Finally, in \cref{sec:literature:3dbpp} we review the literature on the 3D-BPP with a focus on the heuristics used to solve the single bin-size bin packing problem, while in \cref{sec:literature:support} we do a brief review of the literature on practical constraints in cutting and packing problems with a focus on the vertical support constraint.
+
+\section{Two-Dimensional Bin Packing Problem}
+\label{sec:literature:2dbpp}%
+
+The most used classical algorithm to determine placements is the bottom-left algorithm introduced in \citep{Baker1980}. 
+It packs items in the lowest possible position closest to the bottom-left corner of the considered rectangle. 
+This algorithm serves as the base of a lot of 2D-BPP heuristics.
+In \citep{burke2004new} the best-fit algorithm was introduced where placements of items that fit the lowest available area are made first.
+In \citep{Martello1998} a branch-and-bound algorithm based on the left-most downward strategy was proposed to solve the 2D-OPP and was embedded in an enumeration algorithm for the 2D-BPP.
+A set of 10 classical instances to benchmark heuristics against was also proposed.
+In \citep{martello2003exact} a branch-and-bound algorithm for the 2D-SPP was proposed, based on the staircase placement algorithm \citep{scheithauer1995equivalence}.
+Staircase placement consist in identifying boundary which separates the already packed items from the free area that is touching either the side of an item or the bin. This boundary has a staircase-like shape, the corner points which are then selected for new item placements.
+
+For a recent review of the literature related to the 2D-BPP we refer the reader to \citep{IORI2021399} which conducted a survey of two dimensional packing problem with formulations of the problem, heuristic and exact methods, relaxations and open problems.
+
 \section{Three-Dimensional Bin Packing Problem}
+\label{sec:literature:3dbpp}%
 
 %Corner Point 
 \citep{martello2000three}
@@ -24,6 +43,7 @@
 
 %Space Defrag in BPP {Zhu and Lim (2012)}
 \citep{ZHU2012452}
+The work was then used in \citep{ZHU2012408} in combination with a greedy-lookahead tree search to solve the single container loading problem.
 
 %Hybrid greedy LP 
 \citep{hifi2014hybrid}
@@ -35,22 +55,23 @@
 \citep{zudio2018brkga}
 
 \section{Vertical Support}
+\label{sec:literature:support}%
 Vertical support (or static stability) received most of its contributions from the fields of Pallet Loading Problems (PLP) and Cargo Loading Problems (CLP).
 In recent years there has been lots of pubblications addressing various practical constraints dictated by the industry needs.
 In this section we focus on pubblications related to these two problems that dealt with the concept of vertical support.
 
 Considering Pallet Loading Problems, in \citep{elhedhli2019three} a column-generation framework and a branch-and-price solution to the mixed-case pallet loading problem was proposed with a two-dimensional layer generation problem as the pricing subproblem.
 The subproblem was then solved with exact methods and heuristically with additions including item groupings, item replacement the reoganization of layers and spacing.
-A new instance generator for instances that better reppresent industry instances was provided. The paper didn't directly address vertical support although given the layering approach used solutions had implicitly favored solutions with support.
-The work was later extended by \citep{GZARA20201062} to explicitly address practical constraints such as vertical support, load bearing, pallet weight limits and planogram sequencing.  
-In addition, a second-order cone programming formulation was provided as a solution to a spacing problem between layers of a pallet and further extensions to the previously introduced instance generator were made.
-
-%PLP problem with Reactive GRASP
-\citep{Calzavara2021}
+A new instance generator for instances that better reppresent industry instances was provided. The paper didn't directly address vertical support although the layering approach used implicitly favored solutions with support.
+The work was later extended by \citep{GZARA20201062} to explicitly address practical constraints such as vertical support, load bearing, pallet weight limits and planogram sequencing.
+A second-order cone programming formulation was provided as a solution to a spacing problem between layers of a pallet and further extensions to the previously introduced instance generator were made.
+In \citep{Calzavara2021} a mathematical formulation for a layer and a pallet generation problem are defined together with heuristics and metaheuristics algorithms designed to solve the PLP with constraints on item groupings, layering, and visibility of items.
+The work is based on previous papers on PLP by the same authors \citep{Iori2020a, Iori2020b, Iori2021} that proposed a raective GRASP metaheuristic to solve the general problem.
+Stability of the solutions is implicitly ensured with layering and the use of filler boxes to increase the density of problematic layers.
 
 Considering Container Loading Problems, a MIP formulation was proposed in \citep{paquay2016mixed} with the inclusion of various practical constraints like vertical support through vertex support, containers of different size and shape, weight distribution, item rotations and load bearing.
 Since the proposed model was complex, only small instances were solved to optimality in a reasonable time frame. The work was extended in \citep{paquay2007} where three meta-heuristics were provided to reduce the solve time.
-In \citep{kurpel2020exact} several new formulations of CLP are presented with various extensions for practical constraints such as box orientations, stability (including vertical support) end the separation of boxes.
+In \citep{kurpel2020exact} several new formulations of CLP are presented with various extensions for practical constraints such as box orientations, stability (including vertical support) and the separation of boxes.
 Vertical Support is formulated by a discretization of space along each axis and with the help of an overlap matrix to encode the ammount of area support each item can give to the others.
 The work also presents heuristic approaches and upper and lower bound techniques.
 \citep{Alonso2020} %TODO

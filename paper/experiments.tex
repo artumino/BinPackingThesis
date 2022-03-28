@@ -8,7 +8,7 @@ Out of the 100 instances used for our case study experiments, only 80 were freel
 \section{Model validation}
 We compared our heuristic to the proposed MILP model of \cref{sec:milp} with a single bin and with no limit on the height of the bin (also referred to as the 3D strip packing problem).
 The heuristic was configured to run without vertex support, using only area support rules for its feasibility checks, and $k$ was set to $200$.
-The configured parameters for the test were $\alpha_s = 0.7$, $\beta_s = 5$, and the discretization unit for the model was $\delta = 10$. 
+The configured parameters for the test were $\alpha_s = 0.7$, $\beta_s = 5$, and the discretization unit for the model was $\delta = 10$.
 Tests were run on the first generated instance of the class 1 problems from \citep{martello2000three} which we used for literature tests. These classes of problem have a bin base of $100 \times 100$.
 The test were run with an iterative approach by selecting only a limited amount of items from the selected instance, starting from the first item and increasing the number of items to pack by one at each iteration.
 The problem created with each iteration was saved as a test instance in the same format as the one used for literature tests.
@@ -66,7 +66,7 @@ We identified four ranges of interest and generated 20 instances for each range 
 
 Given an input $n$ (the size of the test instance), the generation procedure uniformly sampled an item type from a population of real-world products.
 The quantity of items of that type to add to the test instance was then sampled from a normal distribution $\mathcal{N}(\mu = 4.6, \sigma = 1.8)$ with parameters calculated from the real-world instances.
-The sampled quantity was then floored to be an integer value and clamped to avoid generating more items than $n$. 
+The sampled quantity was then floored to be an integer value and clamped to avoid generating more items than $n$.
 This uniform sampling of item types was done until the instance was composed of $n$ items.
 
 Real-world instances are listed as \textbf{Class 81-100} and have a variable number of items between $[25, 345]$, a variable bin size (although similar to the one used for the generated instances), and a variable number of items of the same type. Some instances were homogeneous with only a few unique items, and some were heterogeneous with every item of a different type.
@@ -77,7 +77,7 @@ The results shown include the total execution time in milliseconds (TT), the num
 It is clear that although the "PS" method had better results when dealing with a relaxed version of the problem, grouping items by type shows considerable improvements under all measured metrics when taking vertical support into account.
 Most of the configurations lead to an average cage ratio of more than $70\%$, which was the target value for our case study. %FIXME: rephrase this to address the previous solution for our clients which was 60% CR on average
 It is also possible to see that increasing the value of $k$ improves the quality of the solutions, on average, at the expense of a higher execution time.
-By doing a case-by-case analysis of each experiment, we discovered that increasing $k$ can temporarily worsen the solution in some instances. 
+By doing a case-by-case analysis of each experiment, we discovered that increasing $k$ can temporarily worsen the solution in some instances.
 A further study of the problematic instances highlighted that the current greedy scoring mechanism of the states leads to cutting out good solutions too early. %FIXME: more explaining, count better ks
 Further improvements are proposed in \cref{chapther:conclusions}.
 \label{exp:usecase_results}

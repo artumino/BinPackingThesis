@@ -20,7 +20,7 @@
 \RequirePackage[bf, font=onehalfspacing]{caption} % caption: FIG in bold, 1.5 line spacing in figure and table captions
 \newcommand{\thesisspacing}{\onehalfspacing}
 
-% Define new command: numbered and un-numbered chapter in Polimi style. 
+% Define new command: numbered and un-numbered chapter in Polimi style.
 
 \let\latexchapter\chapter
 \renewcommand{\chapter}{\@ifstar{\polimichapterstar}{\polimichapter}}

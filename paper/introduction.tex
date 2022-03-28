@@ -1,14 +1,47 @@
-The problem addressed by our contribution is the 3D-SBSBPP (3D Single Bin-Size Bin Packing Problem) which is strongly NP-hard and is the generalization of the one-dimensional bin packing problem \citep{martello2000three}.
+The three-dimensional bin packing problem (3D-BPP) involves packing, without any overlap, a set of small items into the minimum number of bins.
+In its most standard form, each item $i$ is a cuboid of dimensions $(w_i, d_i, h_i)$ and each bin is a cuboid with fixed dimensions across all bins $(W, D, H)$.
+Items can only be placed with their sides parallel to the sides of the bin and can be rotated $90$ degrees along their vertical axis.
 
-\section*{Case study}
+The 3D-BPP is part of the Cutting and Packing problems where a set of small items (boxes) needs to be packed inside a set of large ones (bins).
+Based on the dimensionality of the problem and the number of items with different shapes, different typologies of the problem were identified by \citep{WASCHER20071109}.
+Versions of the problem with strongly heterogeneous item sets are classified as three-dimensional single bin-size bin packing problems (3D-SBSBPP). %TODO: Maybe talk a bit about the possibility to reppresent scheduling as a bin packing problem?
+When considering the real-world instances of the problem, additional constraints need to be considered.
+In this thesis, the problem that we address is a variation of the 3D-SBSBPP, the three-dimensional bin packing problem with vertical support (3D-BPPWS).
+In addition to the standard formulation of the 3D-SBSBPP, each item needs to be supported by other items inside the bin.
+This constraint ensures that items in the bin will not fall in a real-world scenario.
+The support constraint is usually defined based on the amount of area of an item that is supported by others or the number of corners of an item that rest on top of others as, for example, in \citep{GZARA20201062, paquay2016mixed, kurpel2020exact}.
+
+The standard 3D-SBSBPP is strongly NP-hard since it is the generalization of the one-dimensional bin packing problem \citep{martello2000three}.
+Since our problem is a generalization of the 3D-SBSBPP, exact solutions are only able to solve small instances of the problem, which means that heuristic approaches need to be used for larger instances.
+Heuristics designed to solve the 3D-SBSBPP do not address the concept of static stability and allow solutions with unsupported items.
+The concept of static stability has received most of its contributions in Pallet Loading Problems and Container Loading Problems \citep{Calzavara2021, kurpel2020exact}.
+In these publications, other practical constraints are also accounted for, which derive from each particular use case of each approach.
+Most of them implicitly address the concept of support by explicitly building layers or walls of items with a high density, which allows them to reduce the problem to a one-dimensional packing problem.
+When considering mixed palletization cases, layer-based solutions stack layers ordered by density until the density of the generated layers falls below a certain threshold.
+Once no more layers can be generated, more simple techniques are employed to pack the remaining items (as for ex. \citep{elhedhli2019three}) or the use of filler boxes is employed to increase the layer's density (as for ex. \citep{Calzavara2021}).
+
+In this thesis, we approach the constraint of support in the mixed case palletizing setting by introducing a constructive heuristic that fills bins without explicitly building layered solutions or filler boxes.
+We then introduce a beam search heuristic that expands the constructive heuristic's solution space by exploring different orders of item palletization.
+We also provide a formulation for the 3D-BPPWS with a discretized version of the support constraint that we use to validate our heuristic on small instances of the problem.
+We then provide a generated dataset based on real-world instances that we use to benchmark our heuristic.
+
+\section{Case study}
 \label{sec:intro:case_study}%
-The work in this thesis stems from the case study of 
+The work of this thesis stems from the case study of a logistic company in northern Italy.
+The company manages large warehouses where automated lines bring boxes to different stations where they are loaded onto pallets of standard size.
+Each box is loaded by a robot or an operator. Each pallet is wrapped as soon as a certain palletization height has been reached.
+This wrapping improves the stability of the pallet while boxes are still being loaded at the top. To avoid uneven surfaces during the wrapping, the palletized height of each bin needs to have a high fill rate.
+Boxes that need to be stored in the warehouse are strongly heterogeneous, so layer-based pallet loading solutions have sub-optimal results.
+The company measures this level of fill rate with a metric called cage ratio.
+To increase the efficiency of the wrapping and to allow for the stacking of pallets, solutions with a high cage ratio are then required.
+The cage ratio of commercial solutions currently implemented by the company is around $60\%$, and a target cage ratio for our case study was set at $70\%$.
 
-\section*{Overview}
+\newpage
+\section{Overview}
 \label{sec:intro:overview}%
-The thesis is structured as follows. 
+The thesis is structured as follows.
 In \cref{chapter:literature} we review the relevant literature on the three-dimensional bin packing problem and the cutting and packing problems dealing with vertical support.
 In \cref{chapter:problem} we give a formal definition of the problem and formulate a mixed-integer linear programming model that we'll use to validate the proposed solutions of the thesis.
-Since the model can not be used to solve real instances in \cref{chapter:heuristics} we proposed an heuristic algorithm that addresses the problem.
-Results from comparing our heuristic to relevant heuristics from the literature, validation with a direct comparison to the solutions from the proposed MILP model and solutions to real-world instances are described in \cref{chapther:experiments}, together with sources to new benchmark instances generated.
+Since the model can not be used to solve real-world instances in \cref{chapter:heuristics} we proposed a heuristic algorithm that addresses the problem.
+Results from comparing our heuristic to relevant heuristics from the literature, validation with a direct comparison to the solutions from the proposed MILP model, and solutions to real-world instances are described in \cref{chapther:experiments}, together with sources to new benchmark instances generated.
 In \cref{chapther:conclusions} we give final remarks and list further developments about the work of the thesis.

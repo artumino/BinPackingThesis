@@ -55,11 +55,11 @@ Cage ratio isn't directly included in the proposed MILP formulation since the ev
 \section{3D single bin-size bin packing problem}
 \label{sec:milp}%
 Let $I = \{1,\dots, n \}$ be the set of items that need to be packed, $B = \{1,\dots, m \}$ the set of bins to evaluate of fixed dimensions $W \times D \times H$.
-Each item $i \in I$ is characterized by a given width, depth, and height $(w_i, d_i, h_i)$. 
+Each item $i \in I$ is characterized by a given width, depth, and height $(w_i, d_i, h_i)$.
 Let us introduce three continuous variables that identify the position of an item's bottom front left corner $(x_i, y_i, h_i)$ as seen in \cref{fig:coordinate_system}.
 We can now introduce a set of integer variables $v_{b}$ which will be 1 if bin $b \in B$ will be used in the solution and 0 otherwise. A set of integer variables $u_{ib}$ which will be 1 if item $i \in I$ will be placed in bin $b \in B$ and 0 otherwise.
 To check for overlaps, we introduce three sets of integer variables for each axis of possible overlap to determine if there is a clear order of precedence on at least one axis. This formulation is also usually used in scheduling problems.
-One of the introduced sets is the set $x^p_{ij}$, which will take the value of 1 if item $i \in I$ precedes item $j \in I$ over axis $x$ and 0 otherwise. This condition is verified if $x_i + w_i \le x_j$. 
+One of the introduced sets is the set $x^p_{ij}$, which will take the value of 1 if item $i \in I$ precedes item $j \in I$ over axis $x$ and 0 otherwise. This condition is verified if $x_i + w_i \le x_j$.
 The other two sets are defined in a similar way over the remaining axis $y^p_{ij}$ and $z^p_{ij}$.
 An additional set of continuous variables $z_b^\text{max}$ is introduced which will assume the value of the maximum $x_i + h_i$ of the items $i \in I$ placed in bin $b \in B$.
 
@@ -113,7 +113,7 @@ Given the set of tuples $(i, j) \in I^{OR}$ where $i$ is the original item with 
 \subsection{Discrete vertical support formulation}
 \label{subsec:vertical_support_formulation}%
 
-We now extend the model to address the constraint of vertical support. 
+We now extend the model to address the constraint of vertical support.
 In the literature, some mathematical formulations tackle the concept of area support and, in some cases, vertex support. For example, in \citep{GZARA20201062} a second-order cone programming formulation of the support constraint was used but was limited to the problem of spacing between layers with one of them being fixed in position relative to the other. A similar formulation would lead to a non-linear support constraint in our case.
 By introducing a discretization over the XY-plane a linear version of the constraint can be formulated similar to the one proposed in \citep{kurpel2020exact} without the need to discretize the z-axis as well.
 
@@ -149,7 +149,7 @@ Since some items could be left out of the solution due to the formulation of ort
 Constraint \ref{cons:grounded} ensures that $g_i$ will assume value 1 if item $i$ is on the ground
 Constraints from \ref{cons:discretized_support_same} to \ref{cons:discretized_support_right_bin_j} ensure that if a discretized support decision $s_{ijb}^{hk}$ is 1 then every subscript of that variable must be true in the non-discretized model, so item $i$ can give discretized support to item $j$ in in bin $b$ if both items are are assinged to bin $b$ and if $i$ can give support to item $j$. They also force the selection of only one possible combination of $(h,k) \in \Delta$ for which $i$ gives support to $j$ in bin $b$.
 
-We can then define a set of constraints which given a discretized placement $s^{k h}_{i j b}$ limits the distance between $i$ and $j$ to a given continuous region in space delimited by a square of the dimension of our discretization unit $\delta$. 
+We can then define a set of constraints which given a discretized placement $s^{k h}_{i j b}$ limits the distance between $i$ and $j$ to a given continuous region in space delimited by a square of the dimension of our discretization unit $\delta$.
 Given every tuple of possible discretized distances between items $ (k, h) \in \Delta$ and every tuple of different pairs of items in the same bin $(i, j, b) \in I^B$ such they have a non-zero discretized overlap over the XY-plane ($O(i, j, k, h) \neq 0$). The resulting constraints are defined in \cref{cons:discretized_support_limit_x_1,cons:discretized_support_limit_x_2,cons:discretized_support_limit_y_1,cons:discretized_support_limit_y_2}.
 \begin{align}
     & x_j - x_i \ge \gamma k - 2W( 1 - s^{k h}_{i j b}) &  \label{cons:discretized_support_limit_x_1} \\

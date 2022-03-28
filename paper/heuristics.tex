@@ -109,9 +109,9 @@ In the heuristic, we generate new states by applying insertions starting from an
     Let $p$ be an insertion over a state $s$, we define $s^\prime = Next(s, p)$ as a "copy" of state $s$ where $p$ is the pending insertion ($s^\prime.p = p$).
 \end{definition}
 
-We evaluate the changes to the score of a state based on its pending insertion. 
-In this way, we don't have to update all the structures for every evaluated state. 
-In addition, this property let us do fewer memory clones of states that would have been discarded either way (as seen in \cref{sec:beamsearch}). 
+We evaluate the changes to the score of a state based on its pending insertion.
+In this way, we don't have to update all the structures for every evaluated state.
+In addition, this property let us do fewer memory clones of states that would have been discarded either way (as seen in \cref{sec:beamsearch}).
 We can then define an algorithm that applies a pending insertion $p$ on a given state $s$ with the help of a function $OpenBin(b)$ which initializes a new structure $q_b$ with every element at its empty value.
 The proposed algorithm is shown in \ref{algo:state_commit}.
 
@@ -123,7 +123,7 @@ Given an item from the set of the inserted items $i \in p.I$, and the AABB tree 
 Let $I_{\text{support}}$ be the set of items that could support item $i$ when placed in the bin, which could be saved in an appropriate structure or computed through the AABB tree as defined in \cref{aabb:get_supporting}.
 
 Let $HasSupport(i, I_{\text{support}})$ be the function that returns true if the considered item would verify at least one of the conditions of support (cond. \ref{support:area_support} or cond. \ref{support:vertex_support}) or false otherwise.
-We can define a function $IsFeasible(i, I_{\text{support}}, T)$ which returns true if the insertion of $i$ in bin $b$ for state $s$ is feasible and false otherwise. 
+We can define a function $IsFeasible(i, I_{\text{support}}, T)$ which returns true if the insertion of $i$ in bin $b$ for state $s$ is feasible and false otherwise.
 If every item $i \in p.I$ is feasible and every item in $I$ is not overlapping the others, then insertion $p$ is feasible.
 In case some items in $p$ aren't feasible we can always define a function $RemoveInfeasibleItems(p, I_{\text{support}}, T)$ which removes every unfeasible item and returns a new insertion $p^\prime = (b, I^\prime)$ where $I^\prime = p.I \setminus \{i \in p.I : \lnot IsFeasible(i, I_{\text{support}}, T)\}$. \label{algo:remove_infeasible}
 
@@ -152,20 +152,18 @@ Checking if a state is feasible can then be done by iteratively applying all the
 From a given state, it's possible to apply two different sequences of insertions and end up with two states that have all the items in the same positions.
 This undesirable behavior was observed during our computational experiments.
 A hashing mechanism needs to be introduced to enable checking if two states are likely the same in constant time.
-In a state $s$ we can identify a packed item $i \in I$ in a given position $(x_i, y_i, z_i)$ with its given dimensions $(w_i, d_i, z_i)$ in a given bin $b \in s.B$ with a non-commutative hashing function $hash\_nc$. 
+In a state $s$ we can identify a packed item $i \in I$ in a given position $(x_i, y_i, z_i)$ with its given dimensions $(w_i, d_i, z_i)$ in a given bin $b \in s.B$ with a non-commutative hashing function $hash\_nc$.
 The resulting hash $hash_{ib} = hash\_nc(b, x_i, y_i, z_i, w_i, d_i, h_i)$ can identify every similar packing of an item of the same shape in that specific bin spot.
 Since $hash_{ib}$ identifies one item with the shape of $i$ in the same spot as $i$, we can use a commutative function to combine every hash for every packed item in every bin to ignore the order with which items were added to the solution.
-The combined hash can then be saved inside the state structure as follows. 
+The combined hash can then be saved inside the state structure as follows.
 \begin{equation}
     s.hash = \sum\limits_{b \in s.B}{\sum\limits_{i \in q_b.J}{hash_{ib}}}
 \end{equation}
 In our tests, by filtering states with the proposed hash as seen in algo. \ref{algo:beamsearch}, with a simple 64-bit hashing function, this mechanism allowed us to filter out all equal states between iterations with a low amount of collisions.
 Since the combining of hashes is a simple sum with modulus, the hashing of the state can also be kept updated in constant time at each iteration by simply adding the inserted hashes in the $Commit$ function (algo. \ref{algo:state_commit}).
 
-%TODO: Do a grammar pass
 \section{Beam Search}
 \label{sec:beamsearch}%
-%TODO: maybe add info on literature  (search about Bisiani)
 Beam Search (BS) is a heuristic tree search algorithm designed for systems with limited memory where expanding every possible node is unfeasible.
 The idea behind BS is to conduct an iterative truncated breadth-first search where, at each iteration, only a limited number of $k$ nodes is expanded.
 After the expansion, every new node needs to be evaluated and sorted to prune the number of nodes down to the $k$ best ones. The algorithm keeps exploring until no further node can be expanded.
@@ -252,13 +250,13 @@ Each support plane is characterized by the tuple $(z, I_{support}, I_{upper})$ w
     \item $I_{upper}$: the set of items that will be obstacles to potential new items placed on the plane.
 \end{itemize}
 
-Every item placed in the bin can either generate a new support plane or be part of the supporting items of other planes. 
+Every item placed in the bin can either generate a new support plane or be part of the supporting items of other planes.
 Items placed above a particular plane, such that $z_i + h_i > z$, are considered obstacles and are added to the $I_{upper}$ set.
 When evaluating a new possible insertion, given a set of items to place $I$, SP selects the first feasible insertion starting from the lowest plane by using a modified version of Extreme Point in two dimensions (introduced in \citep{crainic2008extreme}).
 Once no more insertions can be made on the lowest available support plane, it's removed from the set of planes.
 Since insertions always happen in the lowest possible planes, the set of obstacles of those planes is composed of items that have only their top face above the $z$ of the evaluated plane, such that $z_i \le z < z_i + h_i$.
 
-The Extreme Point (EP) heuristic evaluates the placement of rectangles in a plane based on a set of reference points with a best-fit approach. 
+The Extreme Point (EP) heuristic evaluates the placement of rectangles in a plane based on a set of reference points with a best-fit approach.
 Each rectangle placement generates a new set of reference points which are usually introduced based on the projection of its corner points along the orthogonal axis of the plane.
 The corner points of an added rectangle $r$ placed in $(x_r, y_r)$ of dimensions $(w_r, d_r)$ are the top left corner $(x_r, y_r + d_r)$ and the bottom right corner $(x_r + w_r, y_r)$.
 In our version of the algorithm, the corner points of each item are introduced without projecting them to increase the likelihood of evaluating placements that verify the support constraint.
@@ -272,7 +270,7 @@ Since reference points are usually ordered based on the euclidean distance from 
 To address the problem, we evaluate four instances of EP where each has a different coordinate change applied to every item that moves the plane's origin to each corner of the bin.
 This addition is based on similar approaches from the literature where it is usually used to more uniformly distribute weight across a surface (ex. \citep{GAJDA2022102559}) and was verified to yield better cage ratio results in our internal testing.
 
-The EP procedure is called for each item to pack on a given plane. 
+The EP procedure is called for each item to pack on a given plane.
 In order to produce a valid insertion, every item in the insertion shouldn't overlap each other (as stated in \cref{def:insertion}).
 Since the AABB tree for a given state is shared by each evaluation of a possible insertion, it can't be modified to account for temporary placements of items.
 This means that we need to keep a temporary AABB tree updated composed of the items that are part of the current insertion $T^\prime$.
@@ -282,7 +280,7 @@ We can then define a function that uses the temporary tree and the feasibility f
     EPCanPack(i, I_{support}, T, T^\prime) = IsFeasible(i, I_{support}, T) \land \lnot AABBOverlaps(i, T^\prime)
 \end{equation}
 A graphical representation of a support plane is shown in \cref{fig:support_planes} with the reference points available. In \cref{fig:ep_coordinate_changes} the state of two extreme point instances for the bottom left and top left coordinate changes are shown.
-When a bin is opened the only support plane available is the one on the ground. 
+When a bin is opened the only support plane available is the one on the ground.
 In the figure different coordinate changes are marked with different colors.
 
 \begin{figure}[hp]
@@ -305,7 +303,7 @@ In the figure different coordinate changes are marked with different colors.
 %TODO: Proporre la versione ibrida maxrect/extreme points?
 
 Given \cref{eq:ep_can_pack} to check if a considered placement would lead to a feasible insertion, the set of items to pack $I$, the AABB tree of the currently packed items $T$ and the set of currently available support planes $Z$.
-The heuristic that will output the new best possible feasible insertion for the given set of items or an empty object can be summarized in alg. \ref{algo:sp_bestinsertion}. 
+The heuristic that will output the new best possible feasible insertion for the given set of items or an empty object can be summarized in alg. \ref{algo:sp_bestinsertion}.
 
 \input{algorithms/supportplane}
 \input{algorithms/ep_insert_rect}
@@ -313,7 +311,7 @@ The heuristic that will output the new best possible feasible insertion for the 
 \paragraph*{Commit Extension}
 We now describe an extension to $Commit$ (algo. \ref{algo:state_commit}) to update the structures needed by SP.
 
-When a plane is filled, new insertions become less likely to be feasible. 
+When a plane is filled, new insertions become less likely to be feasible.
 To avoid evaluating planes where no insertion is possible a mechanism to prune dead planes can be introduced.
 
 Since best insertions for a bin are always evaluated by considering lower planes first, if all the insertions in $Expand$ (algo. \ref{algo:state_successor}) happened over a $z_{min}$ then we can safely remove the opened planes with $z < z_{min}$ for that bin.

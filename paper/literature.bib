@@ -232,6 +232,21 @@
   abstract = {One of main difficulties of multi-dimensional packing problems is the fragmentation of free space into several unusable small parts after a few items are packed. This study proposes a defragmentation technique to combine the fragmented space into a continuous usable space, which potentially allows the packing of additional items. We illustrate the effectiveness of this technique using the two- and three-dimensional bin packing problem, where the aim is to load all given items (represented by rectangular boxes) into the minimum number of identical bins. Experimental results based on well-known 2D and 3D bin packing data sets show that our defragmentation technique alone is able to produce solutions approaching the quality of considerably more complex meta-heuristic approaches for the problem. In conjunction with a bin shuffling strategy for incremental improvement, our resultant algorithm outperforms all leading meta-heuristic approaches based on the commonly used benchmark data by a significant margin.}
 }
 
+@article{ZHU2012408,
+  title = {A new iterative-doubling Greedy–Lookahead algorithm for the single container loading problem},
+  journal = {European Journal of Operational Research},
+  volume = {222},
+  number = {3},
+  pages = {408-417},
+  year = {2012},
+  issn = {0377-2217},
+  doi = {https://doi.org/10.1016/j.ejor.2012.04.036},
+  url = {https://www.sciencedirect.com/science/article/pii/S0377221712003529},
+  author = {Wenbin Zhu and Andrew Lim},
+  keywords = {Packing, 3D packing, Block building, Tree search},
+  abstract = {The aim of the Single Container Loading Problem (SCLP) is to pack three-dimensional boxes into a three-dimensional container so as to maximize the volume utilization of the container. We propose a new block building approach that constructs packings by placing one block (of boxes) at a time until no more boxes can be loaded. The key to obtaining high quality solutions is to select the right block to place into the right free space cuboid (or residual space) in the container. We propose a new heuristic for evaluating the fitness of residual spaces, and use a tree search to decide the best residual space-block pair at each step. The resultant algorithm outperforms the best known algorithms based on the 1600 commonly used benchmark instances even when given fewer computational resources. We also adapted our approach to address the full support constraint. The computational results for the full support support variant on the 1600 instances similarly show a significant improvement over existing techniques even when given substantially fewer computational resources.}
+}
+
 @article{Calzavara2021,
   author={Calzavara, Gabriele and Iori, Manuel and Locatelli, Marco and Moreira, Mayron C. O. and Silveira, Tiago},
   title={Mathematical models and heuristic algorithms for pallet building problems with practical constraints},
@@ -288,4 +303,122 @@
   doi = {10.1080/00207543.2017.1355577},
   URL = { https://doi.org/10.1080/00207543.2017.1355577 },
   eprint = { https://doi.org/10.1080/00207543.2017.1355577 }
+}
+
+@article{IORI2021399,
+  title = {Exact solution techniques for two-dimensional cutting and packing},
+  journal = {European Journal of Operational Research},
+  volume = {289},
+  number = {2},
+  pages = {399-415},
+  year = {2021},
+  issn = {0377-2217},
+  doi = {https://doi.org/10.1016/j.ejor.2020.06.050},
+  url = {https://www.sciencedirect.com/science/article/pii/S0377221720306111},
+  author = {Manuel Iori and Vinícius L. {de Lima} and Silvano Martello and Flávio K. Miyazawa and Michele Monaci},
+  keywords = {Two-dimensional rectangle cutting and packing, Exact methods, Relaxations},
+  abstract = {We survey the main formulations and solution methods for two-dimensional orthogonal cutting and packing problems, where both items and bins are rectangles. We focus on exact methods and relaxations for the four main problems from the literature: finding a packing with minimum height, packing the items into the minimum number of bins, finding a packing of maximum value, and determining the existence of a feasible packing.}
+}
+
+@InProceedings{Iori2020a,
+  author="Iori, Manuel and Locatelli, Marco and Moreira, Mayron C. O. and Silveira, Tiago",
+  editor="Lalla-Ruiz, Eduardo and Mes, Martijn and Vo{\ss}, Stefan",
+  title="Reactive GRASP-Based Algorithm for Pallet Building Problem with Visibility and Contiguity Constraints",
+  booktitle="Computational Logistics",
+  year="2020",
+  publisher="Springer International Publishing",
+  address="Cham",
+  pages="651--665",
+  abstract="In this paper, we study a pallet building problem that originates from a case study in a company that produces robotized systems for freight transportation and logistics. The problem takes into account well-known constraints, such as rotation and stackability, and other specific constraints such as visibility and contiguity among items belonging to the same family. We formalize the problem and then solve it by means of a GRASP metaheuristic. The algorithm is based on an Extreme Points heuristic and a reactive mechanism. It uses a two-step strategy, in which items are first grouped into horizontal layers, and then layers are stacked one over the other to form pallets. The performance of the algorithm is assessed through extensive computational tests on real-world instances. The results show that the GRASP is able to create very compact packings for most of the instances with a limited computational effort.",
+  isbn="978-3-030-59747-4"
+}
+
+@conference{Iori2020b,
+  author={Manuel Iori. and Marco Locatelli. and Mayron Moreira. and Tiago Silveira.},
+  title={Solution of a Practical Pallet Building Problem with Visibility and Contiguity Constraints},
+  booktitle={Proceedings of the 22nd International Conference on Enterprise Information Systems - Volume 1: ICEIS,},
+  year={2020},
+  pages={327-338},
+  publisher={SciTePress},
+  organization={INSTICC},
+  doi={10.5220/0009351703270338},
+  isbn={978-989-758-423-7},
+  issn={2184-4992},
+}
+
+@InProceedings{Iori2021,
+  author="Iori, Manuel and Locatelli, Marco and Moreira, Mayron C. O. and Silveira, Tiago",
+  editor="Filipe, Joaquim and {\'{S}}mia{\l}ek, Micha{\l} and Brodsky, Alexander and Hammoudi, Slimane",
+  title="A Mixed Approach for Pallet Building Problem with Practical Constraints",
+  booktitle="Enterprise Information Systems",
+  year="2021",
+  publisher="Springer International Publishing",
+  address="Cham",
+  pages="122--139",
+  abstract="We study a pallet building problem that originates from a case study in a company that produces robotized systems for freight transportation and logistics. We generalize the problem by including the concept of family of items, which allows us to consider specific constraints such as visibility and contiguity. We solve the problem with an algorithm based on a two-step strategy: an Extreme Points heuristic is used to group items into horizontal layers and an exact method is invoked to stack layers one over the other to form pallets. The performance of the algorithm is assessed through extensive computational tests on real-world instances. The results show that the exact model considerably increases the solution quality, creating very compact packings with a limited computational effort.",
+  isbn="978-3-030-75418-1"
+}
+
+@article{Baker1980,
+  author = {Baker, Brenda S. and Coffman, Jr., E. G. and Rivest, Ronald L.},
+  title = {Orthogonal Packings in Two Dimensions},
+  journal = {SIAM Journal on Computing},
+  volume = {9},
+  number = {4},
+  pages = {846-855},
+  year = {1980},
+  doi = {10.1137/0209064},
+
+  URL = { 
+          https://doi.org/10.1137/0209064
+      
+  },
+  eprint = { 
+          https://doi.org/10.1137/0209064
+      
+  }
+  ,
+      abstract = { We consider problems of packing an arbitrary collection of rectangular pieces into an open-ended, rectangular bin so as to minimize the height achieved by any piece. This problem has numerous applications in operations research and studies of computer operation. We devise efficient approximation algorithms, study their limitations, and derive worst-case bounds on the performance of the packings they produce. }
+}
+
+@article{burke2004new,
+  title={A new placement heuristic for the orthogonal stock-cutting problem},
+  author={Burke, Edmund K and Kendall, Graham and Whitwell, Glenn},
+  journal={Operations Research},
+  volume={52},
+  number={4},
+  pages={655--671},
+  year={2004},
+  publisher={INFORMS}
+}
+
+@ARTICLE{Martello1998,
+  title = {Exact Solution of the Two-Dimensional Finite Bin Packing Problem},
+  author = {Martello, Silvano and Vigo, Daniele},
+  year = {1998},
+  journal = {Management Science},
+  volume = {44},
+  number = {3},
+  pages = {388-399},
+  abstract = {Given a set of rectangular pieces to be cut from an unlimited number of standardized stock pieces (bins), the Two-Dimensional Finite Bin Packing Problem is to determine the minimum number of stock pieces that provide all the pieces. The problem is NP-hard in the strong sense and finds many practical applications in the cutting and packing area. We analyze a well-known lower bound and determine its worst-case performance. We propose new lower bounds which are used within a branch-and-bound algorithm for the exact solution of the problem. Extensive computational testing on problem instances from the literature involving up to 120 pieces shows the effectiveness of the proposed approach.},
+  keywords = {Cutting and Packing; Branch-and-Bound; Worst-Case Analysis},
+  url = {https://EconPapers.repec.org/RePEc:inm:ormnsc:v:44:y:1998:i:3:p:388-399}
+}
+
+@book{scheithauer1995equivalence,
+  title={Equivalence and dominance for problems of optimal packing of rectangles},
+  author={Scheithauer, Guntram},
+  year={1995},
+  publisher={Citeseer}
+}
+
+@article{martello2003exact,
+  title={An exact approach to the strip-packing problem},
+  author={Martello, Silvano and Monaci, Michele and Vigo, Daniele},
+  journal={INFORMS journal on Computing},
+  volume={15},
+  number={3},
+  pages={310--319},
+  year={2003},
+  publisher={INFORMS}
 }
