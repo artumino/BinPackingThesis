@@ -15,7 +15,7 @@ The problem created with each iteration was saved as a test instance in the same
 All the generated instances are available at \url{https://github.com/artumino/BinPackingThesis/tree/main/tests/instances/model}.
 A python script then loaded each generated instance sequentially and evaluated the solutions from the MILP problem and the heuristic.
 Each instance was run with a time limit of 1 hour. All instances with a MIP gap lower than $4\%$ were accepted.
-All instances resolved to optimality, except for instance 8, which terminated with a mip gap of $0.02\%$.
+All instances resolved to optimality, except for instance 8, which terminated with a MIP gap of $0.02\%$.
 
 Table \ref{exp:model} shows the obtained $z_{\text{max}}$ value of the heuristic and the MILP solution, the runtime in seconds, and the number of items.
 Since the underlying problem is NP-Hard, it is shown that starting from instances of size bigger than 8 items; the MILP model becomes too slow for practical use while our heuristic maintains negligible execution time.
