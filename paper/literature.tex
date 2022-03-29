@@ -10,57 +10,60 @@ In the two-dimensional bin packing problem two major tasks constitute the area o
 The first task is to identify the smallest set of points where a placement can be made.
 The second task consists in evaluating which point to select for a placement, the main strategies are divided in first-fit and best-fit approaches.
 In first-fit approaches the first valid positions are selected while in best-fit approaches positions are selected based on a metric.
-The most common classical algorithm to select placements inside a two-dimensional bin given a set of points is the bottom-most left-most algorithm introduced in \citep{Baker1980}. 
+The most common classical algorithm to select placements inside a two-dimensional bin given a set of points is the bottom-most left-most algorithm introduced in \cite{Baker1980}. 
 It packs items in the lowest possible position closest to the bottom-left corner of the free area. 
 This algorithm serves as the base of a lot of heuristics that address the two-dimensional bin packing problem (2D-BPP).
-In \citep{burke2004new} a best-fit algorithm is introduced where placements of items that fit the lowest available area are made first.
-In \citep{lodi1999heuristic} a maximum touching perimeter approach is used instead.
+In \cite{burke2004new} a best-fit algorithm is introduced where placements of items that fit the lowest available area are made first.
+In \cite{lodi1999heuristic} a maximum touching perimeter approach is used instead.
 
-Considering the identification of possible packing positions, in \citep{Martello1998} a branch-and-bound algorithm was proposed to solve the two-dimensional orthogonal packing problem (2D-OPP).
+Considering the identification of possible packing positions, in \cite{Martello1998} a branch-and-bound algorithm was proposed to solve the two-dimensional orthogonal packing problem (2D-OPP).
 The selection of the positions is done with a left-most downwards strategy where items are placed in a way such that their left and bottom edges touch either other items or the bin.
 The algorithm is based on a tree-search that packs items in every possible position.
 It was also embedded in an enumeration algorithm to solve the 2D-BPP, and a set of 10 classical instances to benchmark heuristics against were presented.
-In \citep{martello2003exact} a branch-and-bound algorithm for the two-dimensional strip packing problem (2D-SPP) was proposed, based on the idea of staircase placements introduced in \citep{scheithauer1995equivalence}.
+In \cite{martello2003exact} a branch-and-bound algorithm for the two-dimensional strip packing problem (2D-SPP) was proposed, based on the idea of staircase placements introduced in \cite{scheithauer1995equivalence}.
 In staircase placements a boundary is identified which separates the already packed items from the area that is still free.
 This boundary, called the envelope, is composed of segments that touch either the side of an item or the bin.
 In the formed staircase-like shape, the corner points are then points where the envelope changes from horizontal to vertical.
-A similar approach was then used in \citep{crainic2008extreme} where an extension to the staircase approach was introduced with the concept of extreme points.
+A similar approach was then used in \cite{crainic2008extreme} where an extension to the staircase approach was introduced with the concept of extreme points.
 In the proposed method, each packed item introduces a fixed number of extreme points which are the projection of his corner points along the orthogonal axis onto the sides of either the bin or its closest packed neighbour.
 This allowed to identify niches that were previously discarded by the staircase method.
 Both the extreme point and corner point strategies were adapted to the three-dimensional bin packing case as seen in \cref{sec:literature:3dbpp}.
 
-For a recent review of the literature related to the 2D-BPP we refer the reader to \citep{IORI2021399} which conducted a survey of two dimensional packing problem with formulations of the problem, heuristic and exact methods, relaxations and open problems.
+For a recent review of the literature related to the 2D-BPP we refer the reader to \cite{IORI2021399} which conducted a survey of two dimensional packing problem with formulations of the problem, heuristic and exact methods, relaxations and open problems.
 
 \section{Three-Dimensional Single Bin-Size Bin Packing Problem}
 \label{sec:literature:3dbpp}%
 
-An exact approach to the 3D-SBSBPP was proposed in \citep{martello2000three} through a two-level branch-and-bound search and the use of a staircase placement method derived from the 2D-BPP field.
-The algorithm was initially limited to robot packable solutions, and was then extended to the general problem in \citep{martello2007exact}.
-In \citep{faroe2003guided} proposed a Guided Local Search for both the 2D-SBSBPP and 3D-SBSBPP.
+An exact approach to the 3D-SBSBPP was proposed in \cite{martello2000three} through a two-level branch-and-bound search and the use of a staircase placement method derived from the 2D-BPP field.
+The algorithm was initially limited to robot packable solutions, and was then extended to the general problem in \cite{martello2007exact}.
+\cite{faroe2003guided} proposed a Guided Local Search for both the 2D-SBSBPP and 3D-SBSBPP.
 Starting from a upper bound on the number of bins calulated through a greedy heuristic it iteratively improved the solutions by searching for new feasible solutions thanks to the proposed GLS method.
 The process terminated when either a computed lower bound was reached or a certain time limit had expired.
-In \citep{lodi2002heuristic} a tabu search procedure was proposed based on two constructive heuristics which addressed the two-dimensional and three-dimensional case.
-In \citep{Lodi2004} code for a unified tabu search was provided for the multi-dimensional bin packing problem.
-A two-level tabu search for the multi-dimensional bin packing problem was provided in \citep{crainic2009ts2pack} using the representation of the problem introduced in \citep{fekete2004combinatorial} based on interval graphs. 
-A packing was represented as an interval graphs of the overlaps of items along each axis.
-%GRASP 
-\citep{parreno2010hybrid}
-
-%Genetic
-\citep{WU2010347}
+In \cite{lodi2002heuristic} a tabu search procedure that addresses the two-dimensional and three-dimensional bin packing case was proposed.
+The search was based on two steps, starting with one item per bin a certain number of bins were merged together. 
+Two constructive heuristics were then used to create layers in each bin.
+Between each step a 1D-BPP was solved to stack the generated layers into bins.
+\cite{Lodi2004} later provided code for a unified tabu search addressing the multi-dimensional bin packing problem.
+A two-level tabu search for the multi-dimensional bin packing problem was provided in \cite{crainic2009ts2pack}.
+The algorithm started from a greedy feasible solution based on the extreme point heuristic introduced in \cite{crainic2008extreme}.
+In the first step of the algorithm they built a neighbourhood by swapping or moving items between bins while relaxing the bin constraints.
+In the second step they searched for feasible solutions by changing the relative positions of items inside of the bin. %TODO: maybe fekete here?
+In \cite{fekete2004combinatorial} a new model for bin packing problem based on interval graphs was introduced. 
+A packing was represented as an interval graph of the overlaps of items along each axis.
+A GRASP-based algorithm for the 3D-SBSBPP and 2D-SBSBPP was proposed by \cite{parreno2010hybrid}, the algorithm uses a maximal-space heuristich designed for container loading problems during its constructive phase.
+Serveral moves were then designed and combined in an improvement phase with a variable neighbourhood descent approach.
+In \cite{WU2010347} a genetic algorithm was presented which varied the relative positions of items in a mixed-integer linear programming model. The chromosomes represented the order of items to be packed and their orientation.
+\cite{hifi2014hybrid} proposed a hybrid greedy heuristic which solves the 3D-SBSBPP in two phases; 
+a selection phase where a subset of items to pack as a solution to a knapsack problem and a positioning phase the fixes the position of each item inside the bins.
+In both phases an integer linear programming model is employed. An additional optimization phase can also introduced at the cost of computational times.
+\cite{gonccalves2013biased} presented a biased random-key genetic algorithm for the 3D-SBSBPP (BRKGA).
+The chromosomes reppresented the encoding for the sequence of packing of each item.
+The packing was done with an underlying heuristic that uses the same maximal-space rapresentation as \citet{parreno2010hybrid}.
+\cite{zudio2018brkga} later proposed a variable neighbourhood descent variation of BRKGA which improved the evolving process of BRKGA by finding high quality individuals in earlier generations.
 
 %Space Defrag in BPP {Zhu and Lim (2012)}
-\citep{ZHU2012452}
-The work was then used in \citep{ZHU2012408} in combination with a greedy-lookahead tree search to solve the single container loading problem.
-
-%Hybrid greedy LP 
-\citep{hifi2014hybrid}
-
-%BRKGA 
-\citep{gonccalves2013biased}
-
-%BRKGA-VND 
-\citep{zudio2018brkga}
+%A column-generation approach was proposed in \cite{ZHU2012452}
+%The work was then used in \cite{ZHU2012408} in combination with a greedy-lookahead tree search to solve the single container loading problem.
 
 %TODO: Bounds?
 \section{Vertical Support}
@@ -69,24 +72,24 @@ Vertical support (or static stability) received most of its contributions from t
 In recent years there has been lots of pubblications addressing various practical constraints dictated by the industry needs.
 In this section we focus on pubblications related to these two problems that dealt with the concept of vertical support.
 
-Considering Pallet Loading Problems, in \citep{elhedhli2019three} a column-generation framework and a branch-and-price solution to the mixed-case pallet loading problem was proposed with a two-dimensional layer generation problem as the pricing subproblem.
-The subproblem was then solved with exact methods and heuristically with additions including item groupings, item replacement the reoganization of layers and spacing.
-A new instance generator for instances that better reppresent industry instances was provided. The paper didn't directly address vertical support although the layering approach used implicitly favored solutions with support.
-The work was later extended by \citep{GZARA20201062} to explicitly address practical constraints such as vertical support, load bearing, pallet weight limits and planogram sequencing.
-A second-order cone programming formulation was provided as a solution to a spacing problem between layers of a pallet and further extensions to the previously introduced instance generator were made.
-In \citep{Calzavara2021} a mathematical formulation for a layer and a pallet generation problem are defined together with heuristics and metaheuristics algorithms designed to solve the PLP with constraints on item groupings, layering, and visibility of items.
-The work is based on previous papers on PLP by the same authors \citep{Iori2020a, Iori2020b, Iori2021} that proposed a raective GRASP metaheuristic to solve the general problem.
-Stability of the solutions is implicitly ensured with layering and the use of filler boxes to increase the density of problematic layers.
-
-As noted in \citep{BORTFELDT20131}, static stability is one of the most important constraints in Cargo Loading Problems but it is usually implicitly enforced as a consequence of load compactness or explicitly guaranteed by using filler material as a postprocessing step.
-A MIP formulation was proposed in \citep{paquay2016mixed} with the inclusion of various practical constraints like vertical support through vertex support, containers of different size and shape, weight distribution, item rotations and load bearing.
-Since the proposed model was complex, only small instances were solved to optimality in a reasonable time frame. The work was extended in \citep{paquay2007} where three meta-heuristics were provided to reduce the solve time.
-In \citep{GALRAORAMOS2016565} the single container CLP is solved with static mechanical stability by combining a multi-polulation random key genetic algorithm (BRKGA) with a constructive heuristich which determins a two-dimensional box placement strategy.
+As noted in \cite{BORTFELDT20131}, static stability is one of the most important constraints in Cargo Loading Problems but it is usually implicitly enforced as a consequence of load compactness or explicitly guaranteed by using filler material as a postprocessing step.
+A MIP formulation was proposed in \cite{paquay2016mixed} with the inclusion of various practical constraints like vertical support through vertex support, containers of different size and shape, weight distribution, item rotations and load bearing.
+Since the proposed model was complex, only small instances were solved to optimality in a reasonable time frame. The work was extended in \cite{paquay2007} where three meta-heuristics were provided to reduce the solve time.
+In \cite{GALRAORAMOS2016565} the single container CLP is solved with static mechanical stability by combining a multi-polulation random key genetic algorithm (BRKGA) with a constructive heuristich which determins a two-dimensional box placement strategy.
 The pubblication also proposed a procedure to fill maximal-spaces based on mechanichal equilibrium conditions applyed to rigidbodies.
-In \citep{kurpel2020exact} several new formulations of CLP are presented with various extensions for practical constraints such as box orientations, stability (including vertical support) and the separation of boxes.
+In \cite{kurpel2020exact} several new formulations of CLP are presented with various extensions for practical constraints such as box orientations, stability (including vertical support) and the separation of boxes.
 Vertical Support is formulated by a discretization of space along each axis and with the help of an overlap matrix to encode the ammount of area support each item can give to the others.
 The work also presents heuristic approaches and upper and lower bound techniques.
-In \citep{Alonso2020} a multi container loading problem is solved by using a GRASP meta-heuristich where pallets are built from a set of layers and then positioned inside a container. 
+In \cite{Alonso2020} a multi container loading problem is solved by using a GRASP meta-heuristich where pallets are built from a set of layers and then positioned inside a container. 
 Practical constraints are considered like weight limits, weight distribution, dynamic stability, delivery dates. The constraint of static stability is implicitly ensured by building dense layers.
-In \citep{GAJDA2022102559} a constructive randomized heuristic for solving the CLP is proposed with constraints including vertical support ensured by area support, customer priorities, load balancing, stacking constraints, and positioning constraints.
+In \cite{GAJDA2022102559} a constructive randomized heuristic for solving the CLP is proposed with constraints including vertical support ensured by area support, customer priorities, load balancing, stacking constraints, and positioning constraints.
 In the proposed constructive heuristic a subset of extreme points are evaluated starting from two corners of the cargo to ensure a better weight distribution.
+
+Considering Pallet Loading Problems, in \cite{elhedhli2019three} a column-generation framework and a branch-and-price solution to the mixed-case pallet loading problem was proposed with a two-dimensional layer generation problem as the pricing subproblem.
+The subproblem was then solved with exact methods and heuristically with additions including item groupings, item replacement the reoganization of layers and spacing.
+A new instance generator for instances that better reppresent industry instances was provided. The paper didn't directly address vertical support although the layering approach used implicitly favored solutions with support.
+The work was later extended by \cite{GZARA20201062} to explicitly address practical constraints such as vertical support, load bearing, pallet weight limits and planogram sequencing.
+A second-order cone programming formulation was provided as a solution to a spacing problem between layers of a pallet and further extensions to the previously introduced instance generator were made.
+In \cite{Calzavara2021} a mathematical formulation for a layer and a pallet generation problem are defined together with heuristics and metaheuristics algorithms designed to solve the PLP with constraints on item groupings, layering, and visibility of items.
+The work is based on previous papers on PLP by the same authors \cite{Iori2020a, Iori2020b, Iori2021} that proposed a raective GRASP metaheuristic to solve the general problem.
+Stability of the solutions is implicitly ensured with layering and the use of filler boxes to increase the density of problematic layers.
