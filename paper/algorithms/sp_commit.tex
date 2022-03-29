@@ -4,19 +4,18 @@
     \SetKwInOut{Input}{input}
     \SetKwInOut{Output}{output}
     \SetSideCommentRight
-    \Input{$s, p, z, z_{min}, \beta_s$}
+    \Input{$s, p, z, \beta_s$}
     \Output{$s$}
-    $q_b \gets (q_i \in s.Q: i = p.b)$\;
-    \CommentSty{//Filter bad planes}\;
-    $q_b.Z \leftarrow q_b.Z \setminus \{ (z^\prime, I_{support}, I_{upper}) \in q_b.Z : z^\prime < z_{min} \}$\;
+    \CommentSty{//Filter dead planes}\;
+    $Z^s_{b_p} \leftarrow Z^s_{b_p} \setminus \{ (z^\prime, I_{support}, I_{upper}) \in Z^s_{b_p} \mid z^\prime < z^s_{min} \}$\;
     \CommentSty{//Apply insertion}\;
-    \ForAll{$i \in p.I$}{
-        $q_b.T \leftarrow InsertAABB(i, q_b.T)$\;
+    \ForAll{$i \in I_p$}{
+        $T^s_{b_p} \leftarrow InsertAABB(i, T^s_{b_p})$\;
         $generate \leftarrow true$\;
         % O(|P'|)
-        \ForAll{$(z^\prime, I_{support}, I_{upper}) \in q_b.Z$}{
+        \ForAll{$(z^\prime, I_{support}, I_{upper}) \in Z^s_{b_p}$}{
             \CommentSty{//Based on the distance from the top of the item}\;
-            $dz \leftarrow z^\prime - (z_i + h_i)$\;
+            $dz \leftarrow z^\prime - (z^s_i + h_i)$\;
             \If{$0 \le dz \le \beta_s$}{
                 $generate \leftarrow false$\;
                 $I_{support} \leftarrow I_{support} \cup i$\;
@@ -26,7 +25,7 @@
         }
 
         \If{$generate$}{
-            $q_b.Z \leftarrow q_b.Z \cup (z_i + h_i, \{i\}, \emptyset)$\;
+            $Z^s_{b_p} \leftarrow Z^s_{b_p} \cup (z^s_i + h_i, \{i\}, \emptyset)$\;
         }
     }
     \Return{$s$}

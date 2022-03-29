@@ -5,18 +5,20 @@
     \SetKwInOut{Output}{output}
     \Input{$s$}
     \Output{$s^\prime$}
-    $(b, I) \gets s.p$\;
     $s^\prime \gets Clone(s)$\CommentSty{ //Memory clone of $s$}\;
-    \If{$b \in s^\prime.B$}{
-        $q_b \gets (q_i \in s^\prime.Q : i = b)$\;
-        $q_b.J \gets q_b.J \cup I$\;
-        $s^\prime.U \gets s^\prime.U \setminus I$\;
+    $(b, I) \gets p^{s'}$\;
+    \uIf{$b \in B^{s'}$}{
+        $J^{s'}_b \gets J^{s}_b \cup I$\;
+        $T^{s'}_{b} \gets T^{s}_{b} \cup I$\;
+        $U^{s'} \gets U^{s} \setminus I$\;
+    }\Else{
+        \CommentSty{// Open a new bin}\;
+        $B^{s'} \gets B^{s} \cup b$\;
+        $J^{s'}_b \gets I$\;
+        $T^{s'}_b \gets I$\;
+        $U^{s'} \gets U^{s} \setminus I$\;
     }
-    \Else(Open a new bin){
-        $s^\prime.B \gets s^\prime.B \cup b$\;
-        $s^\prime.Q \gets s^\prime.Q \cup OpenBin(b)$\;
-    }
-    $s^\prime.p \gets \text{none}$\;
+    $p^{s'} \gets \varnothing$\;
     \Return{$s^\prime$}
     \caption{Commit \label{algo:state_commit}}
 \end{algorithm}

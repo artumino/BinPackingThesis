@@ -7,11 +7,11 @@
     \Output{$S_{new}$}
     \ForAll{$s \in S$}{
         $S_{new} \leftarrow \emptyset$\;
-        $G \leftarrow GroupByHash(s.U)$ (algo. \ref{algo:group_by_hash})\;
+        $G \leftarrow GroupByHash(U^s)$ (Algo. \ref{algo:group_by_hash})\;
         $placed \leftarrow false$\;
         \ForAll{$(h, I) \in G$}{
-            \ForAll{$q_b \in s.Q$}{
-                $P \leftarrow SPBestInsertion(q_b.Z, I, q_b.T)$ (\cref{sec:support_planes})\;
+            \ForAll{$b \in B^s$}{
+                $P \leftarrow SPBestInsertion(Z^s_b, I, T^s_b)$ (\cref{sec:support_planes})\;
                 \If{$P \neq \emptyset$}{
                     $placed \leftarrow true$\;
                     \ForAll{$p \in P$}{
@@ -21,10 +21,10 @@
             }
         }
         \If{$placed = false$}{
-            \CommentSty{// Open a new bin with index $|s.B|$ (oss. \ref{oss:state_bin_open})}\;
-            $S_{new} \leftarrow S_{new} \cup Next(s, (|s.B|, \emptyset))$\;
+            \CommentSty{Open a new bin $b' \notin B^s$ (oss. \ref{oss:state_bin_open})}\;
+            $S_{new} \leftarrow S_{new} \cup Next(s, (b', \emptyset))$\;
         }
     }
     \Return{$S_{new}$}
     \caption{Expand}
-\end{algorithm}
+  \end{algorithm}

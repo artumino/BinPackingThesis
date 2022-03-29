@@ -16,11 +16,11 @@
         $i \gets 0$\;
         $seen \gets \emptyset$\;
         \ForAll{$s \in S^{t+1}$}{
-            \If{$s.hash \in seen$}{
+            \If{$hash^s \in seen$}{
                 continue\;
             }
             $S^t \gets S^t \cup Commit(s)$ (algo. \ref{algo:state_commit})\;
-            $seen \gets seen \cup \{ s.hash \}$\;
+            $seen \gets seen \cup \{ hash^s \}$\;
             $i \gets i+1$\;
             \If{$i > k$}{
                 break\;
@@ -28,6 +28,6 @@
         }
     }
     $S_{final} \gets Sort(S_{final})$\;
-    \Return{first element of $S_{final}$}
+    \Return{best element of $S_{final}$}
     \caption{Beam search}
 \end{algorithm}

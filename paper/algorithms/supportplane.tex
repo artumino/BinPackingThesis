@@ -3,9 +3,9 @@
     \SetAlgoLined
     \SetKwInOut{Input}{input}
     \SetKwInOut{Output}{output}
-    \Input{$Z, I, T$}
+    \Input{$s, b, I$}
     \Output{$p$}
-    \ForAll{$(z, I_{support}, I_{upper}) \in Z$}{
+    \ForAll{$(z, I_{support}, I_{upper}) \in Z^s_b$}{
         $P \gets \emptyset$\;
         \ForAll{possible coordinate changes}{
             $p \leftarrow (z, \emptyset)$\;
@@ -13,28 +13,28 @@
             \CommentSty{//Initialize reference points}\;
             $refPoints \gets (0,0)$\;
             \ForAll{$i \in I_{support}$}{
-                $refPoints \gets refPoints \cup \{(x_i, y_i)\}$\;
+                $refPoints \gets refPoints \cup \{(x^s_i, y^s_i)\}$\;
             }
             \ForAll{$i \in I_{upper}$}{
-                $refPoints \gets refPoints \cup \{(x_i + w_i, y_i), (x_i, y_i + d_i)\}$\;
+                $refPoints \gets refPoints \cup \{(x^s_i + w^s_i, y^s_i), (x^s_i, y^s_i + d^s_i)\}$\;
             }
             $sort(refPoints)$ \CommentSty{// Based on euclidean distance from $(0,0)$}\;
-
+  
             \CommentSty{//Create a feasible insertion for the given items}\;
             \ForAll{$i \in I$}{
                 \CommentSty{//Evaluate first possible placement}\;
                 \ForAll{$(x,y) \in refPoints$}{
                     $(x_i, y_i, z_i) \gets (x, y, z)$\;
-                    \If{$EPCanPlace(i, T, T^\prime)$}{
-                        $EPInsertRect(p, i, T^\prime, refPoints)$ \CommentSty{// alg. \ref{algo:ep_insert_rect}}\;
+                    \If{$EPCanPlace(i, T^s_b, T^\prime)$}{
+                        $EPInsertRect(p, i, T^\prime, refPoints)$ \CommentSty{// Algo. \ref{algo:ep_insert_rect}}\;
                         break\;
                     }
-                    $(w_i, d_i) \gets (d_i, w_i)$ \CommentSty{//Try rotating $i$}\;
-                    \If{$EPCanPlace(i, T, T^\prime)$}{
-                        $EPInsertRect(p, i, T^\prime, refPoints)$ \CommentSty{// alg. \ref{algo:ep_insert_rect}}\;
+                    $(w^s_i, d^s_i) \gets (d^s_i, w^s_i)$ \CommentSty{//Try rotating $i$}\;
+                    \If{$EPCanPlace(i, T^s_b, T^\prime)$}{
+                        $EPInsertRect(p, i, T^\prime, refPoints)$ \CommentSty{// Algo. \ref{algo:ep_insert_rect}}\;
                         break\;
                     }
-                    $(w_i, d_i) \gets (d_i, w_i)$ \CommentSty{//Restore original $i$ rotation}\;
+                    $(w^s_i, d^s_i) \gets (d^s_i, w^s_i)$ \CommentSty{//Restore original rotation}\;
                 }
             }
             \If{$p \neq (z, \emptyset)$}{
@@ -48,4 +48,4 @@
     }
     \Return{none}
     \caption{SP Best Insertion \label{algo:sp_bestinsertion}}
-\end{algorithm}
+  \end{algorithm}
