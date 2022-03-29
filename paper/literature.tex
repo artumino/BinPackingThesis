@@ -34,32 +34,32 @@ For a recent review of the literature related to the 2D-BPP, we refer the reader
 \section{Three-Dimensional Single Bin-Size Bin Packing Problem}
 \label{sec:literature:3dbpp}%
 
-An exact approach to the 3D-SBSBPP was proposed in \cite{martello2000three} through a two-level branch-and-bound search and the use of a staircase placement method derived from the 2D-BPP field.
-The algorithm was initially limited to robot packable solutions, and was then extended to the general problem in \cite{martello2007exact}.
-\cite{faroe2003guided} proposed a Guided Local Search for both the 2D-SBSBPP and 3D-SBSBPP.
-Starting from a upper bound on the number of bins calulated through a greedy heuristic it iteratively improved the solutions by searching for new feasible solutions thanks to the proposed GLS method.
-The process terminated when either a computed lower bound was reached or a certain time limit had expired.
-In \cite{lodi2002heuristic} a tabu search procedure that addresses the two-dimensional and three-dimensional bin packing case was proposed.
-The search was based on two steps, starting with one item per bin a certain number of bins were merged together. 
-Two constructive heuristics were then used to create layers in each bin.
-Between each step a 1D-BPP was solved to stack the generated layers into bins.
+An exact approach to the 3D-SBSBPP was proposed in \cite{martello2000three} through a two-level branch-and-bound search and a staircase placement approach derived from the 2D-BPP field.
+The algorithm was initially limited to robot packable solutions and later extended to the general problem in \cite{martello2007exact}.
+\cite{faroe2003guided} proposed a Guided Local Search for 2D-SBSBPP and 3D-SBSBPP.
+The algorithm started from an upper bound on the number of bins calculated through a greedy heuristic and iteratively improved the solutions by searching for new feasible solutions thanks to the proposed GLS method.
+The process terminated when it reached a computed lower bound or a specific time limit had expired.
+In \cite{lodi2002heuristic}, a tabu search procedure was proposed to address the two-dimensional and three-dimensional bin packing case.
+The search was based on two steps, starting with one item per bin.
+In the first phase, it merged bins, and then two constructive heuristics were used to create layers in each bin.
+Between each step, a 1D-BPP was solved to stack the generated layers into bins.
 \cite{Lodi2004} later provided code for a unified tabu search addressing the multi-dimensional bin packing problem.
-A two-level tabu search for the multi-dimensional bin packing problem was provided in \cite{crainic2009ts2pack}.
+A two-level tabu search for the multi-dimensional bin packing problem was also provided in \cite{crainic2009ts2pack}.
 The algorithm started from a greedy feasible solution based on the extreme point heuristic introduced in \cite{crainic2008extreme}.
-In the first step of the algorithm they built a neighbourhood by swapping or moving items between bins while relaxing the bin constraints.
-In the second step they searched for feasible solutions by changing the relative positions of items inside of the bin. %TODO: maybe fekete here?
-In \cite{fekete2004combinatorial} a new model for bin packing problem based on interval graphs was introduced. 
-A packing was represented as an interval graph of the overlaps of items along each axis.
-A GRASP-based algorithm for the 3D-SBSBPP and 2D-SBSBPP was proposed by \cite{parreno2010hybrid}, the algorithm uses a maximal-space heuristich designed for container loading problems during its constructive phase.
-Serveral moves were then designed and combined in an improvement phase with a variable neighbourhood descent approach.
-In \cite{WU2010347} a genetic algorithm was presented which varied the relative positions of items in a mixed-integer linear programming model. The chromosomes represented the order of items to be packed and their orientation.
-\cite{hifi2014hybrid} proposed a hybrid greedy heuristic which solves the 3D-SBSBPP in two phases; 
-a selection phase where a subset of items to pack as a solution to a knapsack problem and a positioning phase the fixes the position of each item inside the bins.
-In both phases an integer linear programming model is employed. An additional optimization phase can also introduced at the cost of computational times.
+In the algorithm's first step, they built a neighborhood by swapping or moving items between bins while relaxing the bin constraints.
+In the second step, they searched for feasible solutions by changing the relative positions of items inside the bin. %TODO: maybe fekete here?
+In \cite{fekete2004combinatorial} a new model for bin packing problems based on interval graphs was introduced. 
+Each packing was represented as an interval graph derived from the overlaps of items along each axis.
+A GRASP-based algorithm for the 3D-SBSBPP and 2D-SBSBPP was proposed by \cite{parreno2010hybrid}. During its constructive phase, the algorithm used a maximal-space heuristic designed for container loading problems.
+Then, several moves were designed and combined in an improvement phase with a variable neighborhood descent approach.
+In \cite{WU2010347}, a genetic algorithm was presented that varied the relative positions of items in a mixed-integer linear programming model. The chromosomes represented the order of items to be packed and their orientation.
+\cite{hifi2014hybrid} proposed a hybrid greedy heuristic that solves the 3D-SBSBPP in two phases.
+A selection phase identifies a subset of items to pack by solving a knapsack problem. Subsequently, a positioning phase fixes each item's position inside the bins.
+In both phases, an integer linear programming model is employed. An additional optimization phase can also be introduced at the cost of computational times.
 \cite{gonccalves2013biased} presented a biased random-key genetic algorithm for the 3D-SBSBPP (BRKGA).
-The chromosomes reppresented the encoding for the sequence of packing of each item.
-The packing was done with an underlying heuristic that uses the same maximal-space rapresentation as \citet{parreno2010hybrid}.
-\cite{zudio2018brkga} later proposed a variable neighbourhood descent variation of BRKGA which improved the evolving process of BRKGA by finding high quality individuals in earlier generations.
+The chromosomes represented the encoding for the sequence of items to pack in the solution.
+The packing was done with an underlying heuristic that uses the same maximal-space representation as \cite{parreno2010hybrid}.
+\cite{zudio2018brkga} later proposed a variable neighborhood descent variation of BRKGA that improved the evolving process of BRKGA by finding high-quality individuals in earlier generations.
 
 %Space Defrag in BPP {Zhu and Lim (2012)}
 %A column-generation approach was proposed in \cite{ZHU2012452}
