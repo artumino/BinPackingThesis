@@ -1,8 +1,15 @@
-A final chapter containing the main conclusions of your research/study
-and possible future developments of your work have to be inserted in this chapter.
+In this thesis, we studied the problem of three-dimensional single bin-size bin packing with support by providing two heuristics. 
+The first contribution is a constructive heuristic that uses a modified version of the first-fit two-dimensional extreme points heuristic of \citet{crainic2008extreme} that includes the notion of area and vertex support.
+The heuristic builds solutions to the single bin 3D-BPP by filling planes called support planes generated based on the inserted items; these structures are then used to facilitate support constraint calculations. 
+Although we do not explicitly build layers, we evaluate insertions in two different placement modes, allowing for placements of groups of similar objects.
+We also propose a beam-search algorithm as an expansion step. It uses multiple instances of our constructive heuristic and evaluates different sequences of insertions with a hashing mechanism to avoid considering insertions that lead to the same solutions.
 
-%Dev.
+We validated our heuristic against small instances solved with our MILP formulation, where we got results that were on par with the model in significantly less computation time.
+We then compared the results of a relaxed version of our heuristic against other heuristics from the literature on classical benchmark instances from \citet{martello2000three} where we detected an average gap of $5.32\%$ against the best values across all heuristics.
+Finally, we generated a data set of problem instances based on real-world products from our case study, which we used to evaluate our heuristic. In most configurations, the heuristic exceeded the target metric of $70\%$ cage ratio, with some configurations having a negligible execution time.
 
-%1. Introduction of new practical constraints, weight by introducing a DAG to include in the feasibility checks
-%2. Introduction of space defrag techniques with awareness for the support constraint
-%3. Better selection of reference points with the extension of Extreme Points to project points onto the frontiers of unsupported space
+Further research could introduce new practical constraints considered in the literature like family groupings, load-bearing, and compatibilities between items.
+The scoring function used to sort states can also be improved to avoid lexicographic ordering, which in some problem instances caused a temporary worsening of solutions in our computational tests.
+As an alternative to changing the scoring mechanism, some backtracking could be added to the beam-search algorithm.
+Our extreme points variant could be extended with the same projection logic of the standard formulation of \citet{crainic2008extreme} while adding special cuboids accounting for empty spaces in the set of supporting items.
+Finally, improvement heuristics could be adapted to account for the support constraint like, for example, space defragmentation techniques introduced by \cite{ZHU2012452}.
