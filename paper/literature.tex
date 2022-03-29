@@ -1,35 +1,35 @@
 %Overview of section
-In this section we review the relevant literature to our problem. 
-In \cref{sec:literature:2dbpp} we do a brief review of the most relevant two-dimensional bin packing placement heuristics in the context of this thesis.
-In \cref{sec:literature:3dbpp} we review the literature on the 3D-BPP with a focus on the heuristics used to solve the single bin-size bin packing problem.
-Finally, in \cref{sec:literature:support} we do a brief review of the literature on practical constraints in cutting and packing problems with a focus on the vertical support constraint.
+In this section, we review the relevant literature to our problem. 
+In \cref{sec:literature:2dbpp}, we do a brief review of the most relevant two-dimensional bin packing placement heuristics in the context of this thesis.
+In \cref{sec:literature:3dbpp}, we review the literature on the 3D-BPP, focusing on the heuristics used to solve the single bin-size bin packing problem.
+Finally, in \cref{sec:literature:support}, we do a brief review of the literature on practical constraints in cutting and packing problems, focusing on the vertical support constraint.
 
 \section{Two-Dimensional Bin Packing Problem}
 \label{sec:literature:2dbpp}%
-In the two-dimensional bin packing problem two major tasks constitute the area of study which is relevant to constructive heuristic. 
-The first task is to identify the smallest set of points where a placement can be made.
-The second task consists in evaluating which point to select for a placement, the main strategies are divided in first-fit and best-fit approaches.
-In first-fit approaches the first valid positions are selected while in best-fit approaches positions are selected based on a metric.
+In the two-dimensional bin packing problem, two major tasks constitute the area of study relevant to constructive heuristics. 
+The first task is to identify the smallest set of points where placements can be made.
+The second task consists in evaluating which point to select for placements. The main strategies used in selecting points are divided into first-fit and best-fit approaches.
+The first valid positions are selected in first-fit approaches, while in best-fit approaches, positions are selected based on a metric.
 The most common classical algorithm to select placements inside a two-dimensional bin given a set of points is the bottom-most left-most algorithm introduced in \cite{Baker1980}. 
 It packs items in the lowest possible position closest to the bottom-left corner of the free area. 
-This algorithm serves as the base of a lot of heuristics that address the two-dimensional bin packing problem (2D-BPP).
-In \cite{burke2004new} a best-fit algorithm is introduced where placements of items that fit the lowest available area are made first.
-In \cite{lodi1999heuristic} a maximum touching perimeter approach is used instead.
+This algorithm serves as the base of many heuristics that address the two-dimensional bin packing problem (2D-BPP).
+In \cite{burke2004new}, a best-fit algorithm is introduced where placements of items that fit the lowest available area are made first.
+In \cite{lodi1999heuristic}, a maximum touching perimeter approach is used instead.
 
-Considering the identification of possible packing positions, in \cite{Martello1998} a branch-and-bound algorithm was proposed to solve the two-dimensional orthogonal packing problem (2D-OPP).
-The selection of the positions is done with a left-most downwards strategy where items are placed in a way such that their left and bottom edges touch either other items or the bin.
-The algorithm is based on a tree-search that packs items in every possible position.
-It was also embedded in an enumeration algorithm to solve the 2D-BPP, and a set of 10 classical instances to benchmark heuristics against were presented.
-In \cite{martello2003exact} a branch-and-bound algorithm for the two-dimensional strip packing problem (2D-SPP) was proposed, based on the idea of staircase placements introduced in \cite{scheithauer1995equivalence}.
-In staircase placements a boundary is identified which separates the already packed items from the area that is still free.
-This boundary, called the envelope, is composed of segments that touch either the side of an item or the bin.
-In the formed staircase-like shape, the corner points are then points where the envelope changes from horizontal to vertical.
-A similar approach was then used in \cite{crainic2008extreme} where an extension to the staircase approach was introduced with the concept of extreme points.
-In the proposed method, each packed item introduces a fixed number of extreme points which are the projection of his corner points along the orthogonal axis onto the sides of either the bin or its closest packed neighbour.
-This allowed to identify niches that were previously discarded by the staircase method.
+Considering the identification of possible packing positions, in \cite{Martello1998}, a branch-and-bound algorithm was proposed to solve the two-dimensional orthogonal packing problem (2D-OPP).
+The selection of the positions is made in a left-most downwards strategy. Items are placed so that their left and bottom edges touch either other items or the bin.
+The algorithm is based on a tree search that packs items in every possible position.
+A set of 10 classical instances to benchmark heuristics against were also presented.
+In \cite{martello2003exact}, a branch-and-bound algorithm for the two-dimensional strip packing problem (2D-SPP) was proposed, based on the idea of staircase placements introduced in scheithauer1995equivalence.
+In staircase placements, a boundary is identified which separates the already packed items from the area of the bin that is still free.
+The boundary is an envelope composed of segments that touch either the side of an item or the bin.
+The resulting envelope has a staircase-like shape; the corner points are points where the envelope changes from horizontal to vertical (as noted in \citep{martello2000three}).
+A similar approach was used in \cite{crainic2008extreme}, where an extension to the staircase approach was introduced.
+In the proposed method, each packed item introduces a fixed number of extreme points, which are the projections of his corner points along the orthogonal axis of the bin onto the sides of either the bin or its closest packed neighbor.
+New niches were identified that were previously discarded by the staircase method.
 Both the extreme point and corner point strategies were adapted to the three-dimensional bin packing case as seen in \cref{sec:literature:3dbpp}.
 
-For a recent review of the literature related to the 2D-BPP we refer the reader to \cite{IORI2021399} which conducted a survey of two dimensional packing problem with formulations of the problem, heuristic and exact methods, relaxations and open problems.
+For a recent review of the literature related to the 2D-BPP, we refer the reader to \cite{IORI2021399}, which surveyed two-dimensional packing problems with mathematical formulations, heuristic and exact methods, relaxations, and open problems.
 
 \section{Three-Dimensional Single Bin-Size Bin Packing Problem}
 \label{sec:literature:3dbpp}%
