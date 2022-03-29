@@ -68,28 +68,28 @@ The packing was done with an underlying heuristic that uses the same maximal-spa
 %TODO: Bounds?
 \section{Vertical Support}
 \label{sec:literature:support}%
+In recent years, many publications have addressed various practical constraints dictated by industry needs.
 Vertical support (or static stability) received most of its contributions from the fields of Pallet Loading Problems (PLP) and Cargo Loading Problems (CLP).
-In recent years there has been lots of pubblications addressing various practical constraints dictated by the industry needs.
-In this section we focus on pubblications related to these two problems that dealt with the concept of vertical support.
+In this section, we focus on publications related to these two problems that dealt with the concept of vertical support.
 
-As noted in \cite{BORTFELDT20131}, static stability is one of the most important constraints in Cargo Loading Problems but it is usually implicitly enforced as a consequence of load compactness or explicitly guaranteed by using filler material as a postprocessing step.
-A MIP formulation was proposed in \cite{paquay2016mixed} with the inclusion of various practical constraints like vertical support through vertex support, containers of different size and shape, weight distribution, item rotations and load bearing.
-Since the proposed model was complex, only small instances were solved to optimality in a reasonable time frame. The work was extended in \cite{paquay2007} where three meta-heuristics were provided to reduce the solve time.
-In \cite{GALRAORAMOS2016565} the single container CLP is solved with static mechanical stability by combining a multi-polulation random key genetic algorithm (BRKGA) with a constructive heuristich which determins a two-dimensional box placement strategy.
-The pubblication also proposed a procedure to fill maximal-spaces based on mechanichal equilibrium conditions applyed to rigidbodies.
-In \cite{kurpel2020exact} several new formulations of CLP are presented with various extensions for practical constraints such as box orientations, stability (including vertical support) and the separation of boxes.
-Vertical Support is formulated by a discretization of space along each axis and with the help of an overlap matrix to encode the ammount of area support each item can give to the others.
-The work also presents heuristic approaches and upper and lower bound techniques.
-In \cite{Alonso2020} a multi container loading problem is solved by using a GRASP meta-heuristich where pallets are built from a set of layers and then positioned inside a container. 
+As noted in \cite{BORTFELDT20131}, static stability is one of the most critical constraints in Cargo Loading Problems, but it is usually implicitly enforced as a consequence of load compactness or explicitly guaranteed by using filler material as a postprocessing step.
+A MIP formulation was proposed in \cite{paquay2016mixed} with the inclusion of various practical constraints like vertical support through vertex support, containers of different sizes and shapes, weight distribution, item rotations, and load-bearing.
+Since the proposed model was complex, only small instances were solved to optimality in a reasonable time frame. Therefore, the work was extended in \cite{paquay2007} where three meta-heuristics were provided to reduce the solve time.
+In \cite{GALRAORAMOS2016565} the single container CLP is solved with static mechanical stability by combining a multi-population random key genetic algorithm (BRKGA) with a constructive heuristic that determines a two-dimensional box placement strategy.
+The publication also proposed a procedure to fill maximal-spaces based on mechanical equilibrium conditions applied to rigid bodies.
+In \cite{kurpel2020exact} several new formulations of CLP are presented with various extensions for practical constraints such as box orientations, stability (including vertical support), and the separation of boxes.
+Vertical support is formulated through the discretization of space along each axis and with the help of an overlap matrix that encodes the amount of area support each item can give to the others.
+The work also presents heuristic approaches and upper and lower bounding techniques.
+In \cite{Alonso2020} a multi-container loading problem is solved using a GRASP meta-heuristic where pallets are built from a set of layers and then positioned inside a container. 
 Practical constraints are considered like weight limits, weight distribution, dynamic stability, delivery dates. The constraint of static stability is implicitly ensured by building dense layers.
 In \cite{GAJDA2022102559} a constructive randomized heuristic for solving the CLP is proposed with constraints including vertical support ensured by area support, customer priorities, load balancing, stacking constraints, and positioning constraints.
-In the proposed constructive heuristic a subset of extreme points are evaluated starting from two corners of the cargo to ensure a better weight distribution.
+In the proposed constructive heuristic, a subset of extreme points is evaluated starting from two corners of the cargo to ensure a better weight distribution.
 
 Considering Pallet Loading Problems, in \cite{elhedhli2019three} a column-generation framework and a branch-and-price solution to the mixed-case pallet loading problem was proposed with a two-dimensional layer generation problem as the pricing subproblem.
-The subproblem was then solved with exact methods and heuristically with additions including item groupings, item replacement the reoganization of layers and spacing.
-A new instance generator for instances that better reppresent industry instances was provided. The paper didn't directly address vertical support although the layering approach used implicitly favored solutions with support.
-The work was later extended by \cite{GZARA20201062} to explicitly address practical constraints such as vertical support, load bearing, pallet weight limits and planogram sequencing.
-A second-order cone programming formulation was provided as a solution to a spacing problem between layers of a pallet and further extensions to the previously introduced instance generator were made.
-In \cite{Calzavara2021} a mathematical formulation for a layer and a pallet generation problem are defined together with heuristics and metaheuristics algorithms designed to solve the PLP with constraints on item groupings, layering, and visibility of items.
-The work is based on previous papers on PLP by the same authors \cite{Iori2020a, Iori2020b, Iori2021} that proposed a raective GRASP metaheuristic to solve the general problem.
-Stability of the solutions is implicitly ensured with layering and the use of filler boxes to increase the density of problematic layers.
+The subproblem was then solved with exact methods and heuristically with additions, including item groupings, item replacement, layers' reorganization, and spacing.
+A new instance generator for instances that better represent industry instances was provided. Although the layering approach used implicitly favored solutions with support, the paper did not directly address vertical support.
+The work was later extended by \cite{GZARA20201062} to explicitly address practical constraints such as vertical support, load-bearing, pallet weight limits, and planogram sequencing.
+A second-order cone programming formulation was provided as a solution to a spacing problem between layers of a pallet, and further extensions to the previously introduced instance generator were made.
+In \cite{Calzavara2021} a mathematical formulation for a layer and a pallet generation problem is defined together with heuristics and metaheuristics algorithms designed to solve the PLP with constraints on item groupings, layering, and visibility of items.
+The work is based on previous papers on PLP by the same authors (\cite{Iori2020a, Iori2020b, Iori2021}) that proposed a reactive GRASP metaheuristic to solve the general problem.
+The stability of the solutions is implicitly ensured with layering and the use of filler boxes to increase the density of problematic layers.
