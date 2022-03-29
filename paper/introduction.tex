@@ -3,14 +3,15 @@ In its most standard form, each item $i$ is a cuboid of dimensions $(w_i, d_i, h
 Items can only be placed with edges that are parallel to the sides of the bin and can be rotated by $90$ degrees along their vertical axis.
 
 The 3D-BPP is part of the family of Cutting and Packing problems, where a set of small items (boxes) needs to be packed inside a set of large ones (bins).
-Based on the dimensionality of the problem and on the number of items with different shapes, \cite{WASCHER20071109} identifier proposed typology of cutting and packing problems. Versions of the 3D-BPP with strongly heterogeneous items are classified as three-dimensional single bin-size bin packing problems (3D-SBSBPP). 
+Based on the dimensionality of the problem and on the number of items with different shapes, \cite{WASCHER20071109} identified several typologies of cutting and packing problems.
+Versions of the 3D-BPP with strongly heterogeneous items are classified as three-dimensional single bin-size bin packing problems (3D-SBSBPP). 
 
 In this thesis, we address a variation of the 3D-SBSBPP stemming from a real case study of mixed-case palletization: the Three-Dimensional Bin Packing Problem With Vertical Support (3D-BPPWS).
 Modeling real-world case studies with the 3D-SBSBPP requires additional constraints to be considered. We extend the standard formulation of the 3D-SBSBPP by ensuring that all items that are packed inside a bin will not fall, and we refer to this property as the vertical support constraint.
 Support constraints are usually defined based on the amount of area of an item that lies on top of other items, or by the number of corners of an item that rest on top of other items (\cite{GZARA20201062, paquay2016mixed, kurpel2020exact}).
 
 The standard 3D-SBSBPP is strongly NP-hard since it is a generalization of the one-dimensional bin packing problem \citep{martello2000three}.
-Since our problem is a generalization of the 3D-SBSBPP, exact solution algorithms are only able to solve small instances of the problem, therefore heuristic approaches need to be used to solve larger instances.
+Since our problem is a generalization of the 3D-SBSBPP, exact solution algorithms are only able to solve small instances of the problem; therefore, heuristic approaches need to be used to solve larger instances.
 Heuristics designed to solve the 3D-SBSBPP do not address the concept of static stability and allow solutions with unsupported items.
 The concept of static stability has received most of its contributions in Pallet Loading Problems and Container Loading Problems (\cite{Calzavara2021, kurpel2020exact}).
 In these publications, the concept of support is addressed explicitly by building layers or walls of items with high density, which allows them to reduce the problem to a one-dimensional packing problem (\cite{BORTFELDT20131}).
