@@ -6,7 +6,7 @@ The 3D-BPP is part of the family of Cutting and Packing problems, where a set of
 Based on the dimensionality of the problem and on the number of items with different shapes, \cite{WASCHER20071109} identified several typologies of cutting and packing problems.
 Versions of the 3D-BPP with strongly heterogeneous items are classified as three-dimensional single bin-size bin packing problems (3D-SBSBPP). 
 
-In this thesis, we address a variation of the 3D-SBSBPP stemming from a real case study of mixed-case palletization: the Three-Dimensional Bin Packing Problem With Vertical Support (3D-BPPWS).
+In this thesis, we address a variation of the 3D-SBSBPP stemming from a real case study of mixed-case palletization: the Three-Dimensional Bin Packing Problem with Vertical Support (3D-BPPVS).
 Modeling real-world case studies with the 3D-SBSBPP requires additional constraints to be considered. We extend the standard formulation of the 3D-SBSBPP by ensuring that all items that are packed inside a bin will not fall, and we refer to this property as the vertical support constraint.
 Support constraints are usually defined based on the amount of area of an item that lies on top of other items, or by the number of corners of an item that rest on top of other items (\cite{GZARA20201062, paquay2016mixed, kurpel2020exact}).
 
@@ -20,7 +20,7 @@ Once no more layers can be generated, simpler techniques are employed to pack th
 
 In this thesis, we approach the constraint of support by developing a constructive heuristic that fills bins without explicitly building layered solutions or using filler boxes.
 We then introduce a beam search heuristic that expands the constructive heuristic's solution space by exploring different orders of item palletization.
-We also provide a formulation for the 3D-BPPWS with a discretized version of the support constraint. Such a formulation is used to validate our heuristic on small instances of the problem.
+We also provide a formulation for the 3D-BPPVS with a discretized version of the support constraint. Such a formulation is used to validate our heuristic on small instances of the problem.
 Finally, we provide a generated data set based on real-world instances that we use to benchmark our heuristic.
 
 \section{Case study}

@@ -1,4 +1,4 @@
-In this thesis, we address the 3D single bin-size bin packing problem with vertical support (3D-BPPWS).
+In this thesis, we address the Three-Dimensional Single Bin-Size Bin Packing Problem with Vertical Support (3D-BPPVS).
 Starting from a set of items of different sizes, the goal is to arrange them in the least amount of fixed-size bins without any overlap between each other.
 In addition to the standard formulation of the 3D-SBSBPP, three practical constraints are taken into account:
 \begin{itemize}
@@ -50,13 +50,13 @@ Given the definitions of our practical constraints, a conceptual formulation of 
                                       & \text{all items have vertical support} \\
 \end{eqnarray*}
 
-To the best of our knowledge no formulations for the 3D-BPPWS exists.
+To the best of our knowledge no formulations for the 3D-BPPVS exists.
 In \cref{sec:milp} a mixed-integer linear programming model for the 3D-SBSBPP is presented and it's later extended to include orthogonal rotations in \cref{subsec:orthogonal_rotations}.
 Vertical support constraints limited to condition \ref{support:area_support} (area support) are developed in \cref{subsec:vertical_support_formulation}.
 Cage ratio isn't directly included in the proposed MILP formulation since it was able to handle only instances of the problem with one bin.
 In a single bin setting minimizing the maximum height of the bin is equivalent to minimizing the cage ratio.
 
-\section{3D single bin-size bin packing problem}
+\section{Three-Dimensional Single Bin-Size Bin Packing Problem}
 \label{sec:milp}%
 Let $I = \{1,\dots, n \}$ be the set of items that need to be packed, $B = \{1,\dots, m \}$ the set of bins to evaluate of fixed dimensions $W \times D \times H$.
 Each item $i \in I$ is characterized by a given width, depth, and height $(w_i, d_i, h_i)$.
@@ -114,7 +114,7 @@ Given the set of tuples $(i, j) \in I^{OR}$ where $i$ is the original item with 
     & \sum\limits_{b \in B} u_{ib} + \sum\limits_{b \in B} u_{jb} = 1 & \forall (i, j) \in I^{OR} \label{cons:all_items_in_bin_with_rotation}
 \end{align}
 
-\subsection{Discrete vertical support formulation}
+\subsection{Discrete vertical support}
 \label{subsec:vertical_support_formulation}%
 
 We now extend the model to address the constraint of vertical support.

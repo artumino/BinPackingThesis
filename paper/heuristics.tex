@@ -1,10 +1,10 @@
-In this chapter we present our heuristic algorithm to solve the 3D-BPPWS. 
+In this chapter we present our heuristic algorithm to solve the 3D-BPPVS. 
 Since the 3D-BPP is NP-Hard, an exhaustive search for a solution is not practical, therefore a heuristic search is conducted by combining the beam search algorithm described in \cref{sec:beamsearch} with the constructive heuristic described in \cref{sec:support_planes}.
 In section \ref{sec:problem_state} we define the preliminary concepts that will be used in the algorithm: states, insertions and solution's feasibility.
 
 \section{States}
 \label{sec:problem_state}%
-States are partial solutions of the 3D-BPPWS. Since our heuristic is based on a constructive method, starting from a state representing an empty solution we'll iteratively build new states that are always closer to a complete solution of the problem.
+States are partial solutions of the 3D-BPPVS. Since our heuristic is based on a constructive method, starting from a state representing an empty solution we'll iteratively build new states that are always closer to a complete solution of the problem.
 Being a partial solution, a state $s$ can be represented as the set of all variables present in the MILP model (\ref{sec:milp}), where some values have been fixed. We move closer to a complete solution of the problem by packing more items and opening new bins, i.e. fixing more variables.
 
 In order to simplify the algorithm's description, we introduce a few new definitions.
@@ -255,7 +255,7 @@ We use the following objective functions (considering a minimization direction):
 
 \section{Support Planes}
 \label{sec:support_planes}%
-Support Planes (SP) is a constructive heuristic for the 3D-BPPWS which is based on an underlying 2D-BPP heuristic. The latter is used to generate feasible insertions inside a bin starting from a set of items to pack.
+Support Planes (SP) is a constructive heuristic for the 3D-BPPVS which is based on an underlying 2D-BPP heuristic. The latter is used to generate feasible insertions inside a bin starting from a set of items to pack.
 Since insertions must be feasible, SP maintains an internal data structure to facilitate feasibility checks.
 The idea at the base of SP is to build a solution to the 3D-BPP by filling 2D planes called \textit{support planes}.
 
