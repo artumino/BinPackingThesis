@@ -77,11 +77,18 @@ An example of real-world instances is shown in \cref{fig:usecase_tests} where it
 Table \ref{exp:usecase_results} shows the average results over the 20 instances per class, divided by each configuration of the heuristic with different values of $k$.
 The results shown include the total execution time in milliseconds (TT), the number of opened bins (B), and the average cage ratio between the opened bins (CR).
 It is clear that although the PS method had better results when dealing with a relaxed version of the problem, grouping items by type shows considerable improvements under all measured metrics when taking vertical support into account.
-Most of the configurations lead to an average cage ratio of more than $70\%$, which was the target value for our case study. %FIXME: rephrase this to address the previous solution for our clients which was 60% CR on average
+
 It is also possible to see that increasing the value of $k$ improves the quality of the solutions, on average, at the expense of a higher execution time.
 By doing a case-by-case analysis of each experiment, we discovered that increasing $k$ can temporarily worsen the solution in some instances.
 A further study of the problematic instances highlighted that the current greedy scoring mechanism of the states leads to cutting out good solutions too early. %FIXME: more explaining, count better ks
 Further improvements are proposed in \cref{chapther:conclusions}.
+
+Previous commercial methods used by our case study partner had an average cage ratio of $60\%$.
+Our heuristic reached or exceeded the new imposed target of $70\%$ cage ratio in most of its configurations.
+Since our heuristic consistently reached the target even for low values of $k$, a good tradeoff between execution time and cage ratio values was identified in PM placement mode with values of $k \in \{ 20, 50 \}$.
+Table \ref{exp:usecase_tradeoff} shows for each configuration the average increase from the lowest execution time (\textbf{TT - TT*}) compared to the average difference from the best cage ratio (\textbf{CR* - CR}).
+The selected configurations are then marked in bold.
 \label{exp:usecase_results}
-\input{tests/use_case_avg.tex}
+\input{tests/use_case_avg}
+\input{tests/use_case_tradeoff}
 \input{Images/tests/usecase/usecase}
