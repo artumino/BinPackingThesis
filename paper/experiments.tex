@@ -80,8 +80,12 @@ It is clear that although the PS method had better results when dealing with a r
 
 It is also possible to see that increasing the value of $k$ improves the quality of the solutions, on average, at the expense of a higher execution time.
 By doing a case-by-case analysis of each experiment, we discovered that increasing $k$ can temporarily worsen the solution in some instances.
-A further study of the problematic instances highlighted that the current greedy scoring mechanism of the states leads to cutting out good solutions too early. %FIXME: more explaining, count better ks
-Further improvements are proposed in \cref{chapther:conclusions}.
+A further study of the problematic instances highlighted that the current greedy scoring mechanism of the states leads to cutting out good solutions too early.
+This is evident, for example, in instance number 4 by comparing the configurations $k=1$ and $k=20$ in PM placement mode.
+By checking the difference between the graphs, which represent the visited states by the beam-search, it is possible to see that the two solutions diverge at the third iteration of the algorithm.
+When following only one branch ($k=1$), the heuristic happens to greedily follow a branch where a few insertions of big items are made and a series of very small objects are placed afterward.
+When considering more possible branches per iteration ($k=20$), the selected path is where the volume increased more uniformly. The third iteration leads to discarding the path identified with $k=1$ because 20 states produced solutions with more packed volume.
+Increasing the value of $k$ to higher values will eventually lead to reconsidering the path taken by $k=1$. Other proposed solutions involve possible backtracking methods or a population management mechanism where an amount of non-elite solutions are kept in the evaluated states across iterations.
 
 Previous commercial methods used by our case study partner had an average cage ratio of $60\%$.
 Our heuristic reached or exceeded the new imposed target of $70\%$ cage ratio in most of its configurations.
