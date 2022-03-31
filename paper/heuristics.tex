@@ -5,7 +5,7 @@ In section \ref{sec:problem_state} we define the preliminary concepts that will 
 \section{States}
 \label{sec:problem_state}%
 States are partial solutions of the 3D-BPPVS. Since our heuristic is based on a constructive method, starting from a state representing an empty solution we'll iteratively build new states that are always closer to a complete solution of the problem.
-Being a partial solution, a state $s$ can be represented as the set of all variables present in the MILP model (\ref{sec:milp}), where some values have been fixed. We move closer to a complete solution of the problem by packing more items and opening new bins, i.e. fixing more variables.
+Being a partial solution, a state $s$ can be represented as the set of all variables present in the MILP model (\ref{sec:milp}), where some values have been fixed. We move closer to a complete solution of the problem by packing more items and opening new bins, i.e., fixing more variables.
 
 In order to simplify the algorithm's description, we introduce a few new definitions.
 
@@ -28,7 +28,7 @@ In order to simplify the algorithm's description, we introduce a few new definit
     \begin{equation*}
         \sum_{b \in B} u^{s}_{ib} = 0
     \end{equation*}
-    i.e. it has yet to be assigned to an open bin.
+    ,i.e., it has yet to be assigned to an open bin.
 \end{definition}
 
 \begin{definition}[Set of unpacked items]

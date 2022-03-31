@@ -7,19 +7,19 @@ Finally, in \cref{sec:literature:support}, we do a brief review of the literatur
 \section{Two-Dimensional Bin Packing Problem}
 \label{sec:literature:2dbpp}%
 
-The two-dimensional bin packing problem (2D-BPP) can be seen as a specialization of the three-dimensional bin packing problem where all items all bins have the same height.
-In the contest of our thesis we review placement heuristics for the 2D-BPP since they are relevant to the formulation of our constructive heuristich in \cref{sec:support_planes}.
-For a recent review of the literature related to the 2D-BPP, we refer the reader to \cite{IORI2021399}, which surveyed two-dimensional bin packing problems with mathematical formulations, heuristic and exact methods, relaxations, and open problems.
+The two-dimensional bin packing problem (2D-BPP) can be seen as a special case of the three-dimensional bin packing problem where all items and all bins have the same height.
+In the context of our thesis we review placement heuristics for the 2D-BPP since they are relevant to the formulation of our constructive heuristich in \cref{sec:support_planes}.
+For a recent review of the literature related to the 2D-BPP, we refer the reader to \cite{IORI2021399}, who surveyed two-dimensional bin packing problems with mathematical formulations, heuristic and exact methods, relaxations, and open problems.
 Since the 2D-BPP is a generalization of the 1D-BPP it is strongly NP-Hard and exact approaches can only solve small instances of the problem \cite{martello2000three}.
 Constructive heuristics for the 2D-BPP are algorithms that sequentially place rectangular items in a rectangular bin, until no more items can be packed.
 The process of placing an item in a bin is usually divided in two tasks: the identification of the smallest set of points where an item insertion is possible, and the selection of a point where the item will actually be placed. 
 The latter task is usually performed with two approaches: first-fit selection, where items are placed in the first available point, and best-fit selection, where items are placed in the best point according to some metric. 
 Given a set of insertion points, the classical algorithm to select points for placements inside a two-dimensional bin is the bottom-most left-most algorithm of \cite{Baker1980}. 
-It packs items in the valid point that is closest to the bottom-left corner of the free area. This algorithm serves as the base of many heuristics that address the two-dimensional bin packing problem (2D-BPP).
-In \cite{burke2004new}, a best-fit algorithm is introduced, where placements of items that fit the lowest available area are made first.
+It packs items in the valid point that is closest to the bottom-left corner of the free area. This algorithm serves as a basis for many heuristics that address the two-dimensional bin packing problem (2D-BPP).
+In \cite{burke2004new}, a best-fit algorithm is introduced, where placements of items that fit in the lowest available area are made first.
 \cite{lodi1999heuristic} developed a best-fit algorithm based on a maximum touching perimeter approach.
 
-Considering the identification of possible packing points, i.e. the first task of a constructive heuristic, \cite{Martello1998} developed a branch-and-bound algorithm to solve the two-dimensional orthogonal packing problem (2D-OPP).
+Considering the identification of possible packing points, i.e., the first task of a constructive heuristic, \cite{Martello1998} developed a branch-and-bound algorithm to solve the two-dimensional orthogonal packing problem (2D-OPP).
 The selection of the positions is made in a left-most downwards strategy. Items are placed in such a way that their left and bottom edges are touching other items or the bin.
 Their algorithm is based on a tree search that packs items in every possible position.
 They also present a set of 10 classical instances that can be used as a benchmark for other heuristics.
@@ -27,7 +27,7 @@ In \cite{martello2003exact}, a branch-and-bound algorithm for the two-dimensiona
 In staircase placements, the algorithm identifies a boundary which separates the already packed items from the area of the bin that is still free.
 Such a boundary is an envelope composed of segments that touch either the side of an item or the bin.
 The resulting envelope has a staircase-like shape and corner points are the points where the envelope changes its "direction" from horizontal to vertical (\cite{martello2000three}).
-A similar approach was used in \cite{crainic2008extreme}, where an extension to the staircase approach was introduced.
+A similar approach was used by \cite{crainic2008extreme}, where an extension to the staircase approach was introduced.
 In their method, each packed item introduces a fixed number of extreme points, which are the projections of its corners along the orthogonal axis of the bin onto the sides of either the bin or its closest packed neighbor.
 This approach was able to identify new niches that were previously discarded by the staircase method.
 Both the extreme point and corner point strategies were adapted to the three-dimensional bin packing case as seen in \cref{sec:literature:3dbpp}.
@@ -35,19 +35,19 @@ Both the extreme point and corner point strategies were adapted to the three-dim
 \section{Three-Dimensional Single Bin-Size Bin Packing Problem}
 \label{sec:literature:3dbpp}%
 
-An exact approach to the 3D-SBSBPP was proposed in \cite{martello2000three} through a two-level branch-and-bound search and a staircase placement approach derived from the 2D-BPP.
+An exact approach to the 3D-SBSBPP was proposed by \cite{martello2000three} through a two-level branch-and-bound algorithm and a staircase placement approach derived from the 2D-BPP.
 The algorithm was initially limited to robot packable solutions and later extended to the general problem in \cite{martello2007exact}.
-\cite{faroe2003guided} proposed a Guided Local Search for 2D-SBSBPP and 3D-SBSBPP.
-Their algorithm started from an upper bound on the number of bins calculated through a greedy heuristic and iteratively improved the solution by searching for new feasible solutions thanks to the proposed GLS method.
+\cite{faroe2003guided} proposed a GLS heuristic for 2D-SBSBPP and 3D-SBSBPP.
+Their algorithm starts from an upper bound on the number of bins calculated through a greedy heuristic and iteratively improves the solution by searching for new feasible solutions using to the proposed GLS.
 The process terminates when it reaches a computed lower bound or a specific time limit.
 In \cite{lodi2002heuristic}, a tabu search procedure was proposed to address the two-dimensional and three-dimensional bin packing problem.
 Their solution was based on two steps, starting with one item per bin.
-The first phase aimed at reducing the number of bins by packing items from different bins together, the second optimized the packing of each bin by trying to group items in layers.
+The first step aimed at reducing the number of bins by packing items from different bins together, the second step optimized the packing of each bin by trying to group items in layers.
 Between each step, a 1D-BPP was solved to stack the generated layers into bins.
-\cite{Lodi2004} later provided code for a unified tabu search addressing the multi-dimensional bin packing problem.
+\cite{Lodi2004} later prposed a unified tabu search heuristic addressing the multi-dimensional bin packing problem.
 A two-level tabu search for the multi-dimensional bin packing problem was also provided in \cite{crainic2009ts2pack}.
 Their algorithm started from a greedy feasible solution based on the extreme point heuristic introduced in \cite{crainic2008extreme}.
-In the algorithm's first step, they built a neighborhood by swapping or moving items between bins while relaxing the bin constraints.
+In the algorithm's first step, a neighborhood built by swapping or moving items between bins was considered while relaxing the bin constraints.
 In the second step, they searched for feasible solutions by changing the relative positions of items inside the bin.
 In \cite{fekete2004combinatorial} a new model for bin packing problems based on interval graphs was introduced.
 Each packing was represented as an interval graph derived from the overlaps of items along each axis.
@@ -56,7 +56,7 @@ Then, several moves were designed and combined in an improvement phase with a va
 In \cite{WU2010347}, a genetic algorithm was presented that varied the relative positions of items in a mixed-integer linear programming model. The chromosomes represented the order of items to be packed and their orientation.
 \cite{hifi2014hybrid} proposed a hybrid greedy heuristic that solves the 3D-SBSBPP in two phases.
 A first selection phase identifies a subset of items to pack by solving a knapsack problem. Subsequently, a positioning phase fixes each item's position inside the bins.
-In both phases, an integer linear programming model is employed. An additional optimization phase can also be introduced at the cost of computational times.
+In both phases, an integer linear programming model is employed.
 \cite{gonccalves2013biased} presented a biased random-key genetic algorithm for the 3D-SBSBPP (BRKGA).
 The chromosomes represented the encoding for the sequence of items to pack in the solution.
 The packing was done with a heuristic that uses the same maximal-space representation as \cite{parreno2010hybrid}.
@@ -64,15 +64,16 @@ The packing was done with a heuristic that uses the same maximal-space represent
 
 \section{Vertical Support}
 \label{sec:literature:support}%
-Vertical support (or static stability) received most of its contributions from the fields of Pallet Loading Problems (PLP) and Cargo Loading Problems (CLP).
-In recent years there has been lots of pubblications addressing various practical constraints dictated by the industry needs.
-In this section we focus on pubblications related to these two problems that dealt with the concept of vertical support.
+Vertical support (or static stability) received most of its contributions from the fields of Pallet Loading Problems (PLPs) and Cargo Loading Problems (CLPs).
+To the best of our knowledge, no 3D-BPP heuristic was proposed that explicitely deals with the subject of vertical support.
+In recent years there have been many pubblications addressing various practical constraints dictated by the industry needs.
+In this section we focus on pubblications related to these two problems that deal with the concept of vertical support.
 
-Cargo Loading Problems are a generalization of the three-dimensional bin packing problem that arises when considering the packing of items inside a set of cargo containers used for shipping on freighters and trucks.
-As noted in \cite{BORTFELDT20131}, static stability is one of the most important constraints in Cargo Loading Problems but it is usually implicitly enforced as a consequence of load compactness, or explicitly guaranteed by using filler material in a postprocessing step.
-A MIP formulation for the CLP was proposed in \cite{paquay2016mixed}. Their formulation includes various practical constraints like vertical support through vertex support, containers of different size and shape, weight distribution, item rotations and load bearing.
+Cargo Loading Problems are a generalization of the three-dimensional bin packing problem that arise when considering the packing of items inside a set of cargo containers used for shipping on freighters and trucks.
+As noted in \cite{BORTFELDT20131}, static stability is one of the most important constraints in CLPs but it is usually implicitly enforced as a consequence of load compactness, or explicitly guaranteed by using filler material in a postprocessing step.
+A MIP formulation for one CLP was proposed in \cite{paquay2016mixed}. Their formulation includes various practical constraints like vertical support through vertex support, containers of different size and shape, weight distribution, item rotations and load bearing.
 Since the proposed model was complex, only small instances were solved to optimality in a reasonable time frame. Their work was extended in \cite{paquay2007}, where three meta-heuristics were provided to address larger problem instances in a shorter time.
-In \cite{GALRAORAMOS2016565} the single-container CLP is solved with static mechanical stability by combining a multi-polulation random key genetic algorithm (BRKGA) with a constructive heuristich that determins a two-dimensional box placement strategy.
+In \cite{GALRAORAMOS2016565} the single-container CLP is solved with static mechanical stability by combining the multi-polulation random key genetic algorithm (BRKGA) with a constructive heuristich that determins a two-dimensional box placement strategy.
 They also proposed a procedure to fill maximal-spaces based on mechanical equilibrium conditions applied to rigid bodies.
 In \cite{kurpel2020exact}, several new formulations of CLP are presented with various extensions for practical constraints such as box orientations, stability (including vertical support), and the separation of boxes.
 Vertical support is formulated through the discretization of space along each axis and with the help of an overlap matrix that encodes the amount of support area that each item can give to the others.
@@ -82,7 +83,7 @@ Practical constraints are considered like weight limits, weight distribution, dy
 In \cite{GAJDA2022102559} a constructive randomized heuristic for solving the CLP is proposed with constraints including vertical support ensured by area support, customer priorities, load balancing, stacking constraints, and positioning constraints.
 In the proposed constructive heuristic, a subset of extreme points is evaluated starting from two corners of the cargo to ensure a better weight distribution.
 
-Pallet Loading Problems are a generalization of the three-dimensional bin packing problem that usually accounts for constraints related to the loading and unloading of items of various degrees of heterogeneity onto pallets.
+Pallet Loading Problems are a generalization of the three-dimensional bin packing problem that usually account for constraints related to the loading and unloading of items of various degrees of heterogeneity onto pallets.
 In \cite{elhedhli2019three} a heuristic column-generation framework and a branch-and-price solution to the mixed-case pallet loading problem was proposed, with a two-dimensional layer generation problem as the pricing subproblem.
 The subproblem was solved with exact methods and heuristically with additional features such as item grouping and spacing.
 A new instance generator for instances that better represent industry instances was provided. Although the layering approach used implicitly favored solutions with support, the paper did not directly address vertical support.
