@@ -123,7 +123,7 @@ In our algorithm, starting from a feasible state $s$, we generate multiple new s
 
 Let us define the concept of pending insertion.
 \begin{definition}[Pending insertion]
-    We define $p^s$ as the insertion that is pending on state $s$. A pending insertion is an insertion that in future will be applied to its state.
+    We define $p^s$ as the insertion that is pending on state $s$. A pending insertion is an insertion that in the future will be applied to its state.
 \end{definition}
 The first phase of the insertion process consists in the application of the $Next$ operator.
 \begin{definition}[Next]
@@ -171,7 +171,7 @@ This proposition is true by construction of insertions $p$, and combined with ob
 From a given state, it is possible to apply two different sequences of insertions and end up with two states that have the same items in the same positions.
 This undesirable behavior was observed during our computational experiments.
 We develop a hashing mechanism that enables checking if two states are likely the same in constant time.
-In a state $s$, we can uniquely identify a packed item $i \in J^s_b$ in a given position $(x^s_i, y^s_i, z^s_i)$ with its given dimensions $(w^s_i, d^s_i, z_i)$ with a non-commutative hashing function $hash\_nc$. The resulting hash $hash_{ib} = hash\_nc(b, x^s_i, y^s_i, z^s_i, w^s_i, d^s_i, h_i)$ can identify every equivalent packing of an item of the same shape in that specific bin spot.
+In a state $s$, we can uniquely identify a packed item $i \in J^s_b$ in a given position $(x^s_i, y^s_i, z^s_i)$ with its given dimensions $(w^s_i, d^s_i, h_i)$ with a non-commutative hashing function $hash\_nc$. The resulting hash $hash_{ib} = hash\_nc(b, x^s_i, y^s_i, z^s_i, w^s_i, d^s_i, h_i)$ can identify every equivalent packing of an item of the same shape in that specific bin spot.
 Since $hash_{ib}$ identifies one item with the shape of $i$ in the same spot as $i$, we can use a commutative function to combine every hash for every packed item in every bin to ignore the order with which items were added to the solution.
 The combined hash can then be saved inside our state structures as follows.
 \begin{equation}
@@ -272,7 +272,7 @@ When creating new insertion, given a set of items to place $I$, SP selects the f
 Once no more insertions can be made on the lowest available support plane, it is removed from the set of planes.
 Since insertions always happen in the lowest possible planes, the set of obstacles of those planes is composed of items that have only their top face above the $z$ of the evaluated plane, such that $z_i \le z < z_i + h_i$.
 
-The modified Extreme Point (EP) heuristic evaluates the placement of rectangles in a plane based on a set of reference points with a best-fit approach.
+The standard Extreme Point (EP) heuristic evaluates the placement of rectangles in a plane based on a set of reference points with a best-fit approach.
 Each rectangle placement generates a new set of reference points which are usually introduced based on the projection of its corner points along the orthogonal axis of the plane.
 The corner points of an added rectangle $r$ placed in $(x_r, y_r)$ of dimensions $(w_r, d_r)$ are the top left corner $(x_r, y_r + d_r)$ and the bottom right corner $(x_r + w_r, y_r)$.
 In our version of the algorithm, however, the corner points of each item are introduced without projecting them to increase the likelihood of generating placements that verify the support constraint.
