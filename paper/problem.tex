@@ -12,8 +12,8 @@ Given a certain set of items placed inside a generic bin $b$ of base $W \times D
     \label{eq:cage_ratio}
     \text{CR}_b = \frac{V_b}{W \cdot D \cdot z_b^\text{max}}
 \end{equation}
-A high cage ratio means that even if a bin isn't fully occupied, it could be used as a base for other structures. This property is desirable in some industrial settings.
-It is also noted that in a single bin configuration, maximizing cage ratio is equivalent to minimizing $z_b^\text{max}$. Finally, a visual representation of the cage ratio metric is provided in \cref{fig:cage_ratio}.
+%A high cage ratio means that even if a bin isn't fully occupied, it could be used as a base for other structures. This property is desirable in some industrial settings.
+We note that in a single bin configuration, maximizing cage ratio is equivalent to minimizing $z_b^\text{max}$. Finally, a visual representation of the cage ratio metric is provided in \cref{fig:cage_ratio}.
 
 \begin{figure}[H]
     \scalebox{0.60}{%
@@ -24,26 +24,26 @@ It is also noted that in a single bin configuration, maximizing cage ratio is eq
 \end{figure}
 
 Vertical stability is usually ensured between horizontal or vertical slices of items as a constraint on the minimum amount of area which rests on other items (e.g., \cite{GZARA20201062,kurpel2020exact,paquay2016mixed}).
-Given a support area threshold $\alpha_s$ and a vertical tolerance $\beta_s$ we can define an item as supported if one of the following holds
+Specifically, given a support area threshold $\alpha_s$ and a maximum vertical gap below which an item can be considered as effectively supporting another one $\beta_s$. We can define an item as supported if one of the following holds
 \begin{enumerate}
     \item the sum of the overlap area over the XY-plane with every other item on which it is resting is greater than $\alpha_s$ times its base area. (area support) \label{support:area_support}
-    \item the number of its corners resting on another item is greater or equal to 3, and condition \ref{support:area_support} holds with a lower threshold $\alpha^\prime_s < \alpha_s$. (vertex support) \label{support:vertex_support}
+    \item the number of its corners resting on another item is greater or equal to 3, and condition \ref{support:area_support} holds with a lower threshold $\alpha^\prime_s$ where $\alpha^\prime_s < \alpha_s$. (vertex support) \label{support:vertex_support}
 \end{enumerate}
-A visual representation of the condition of support is illustrated in \cref{fig:support}.
+A visual representation of the conditions \ref{support:area_support} and \ref{support:vertex_support} of support is illustrated in \cref{fig:support}.
 
 \begin{figure}[H]
     \scalebox{0.55}{%
     \input{Images/support}
     }
-    \caption{Representation of an item with vertical support given $\alpha_s = 0.5, \beta_s$}
+    \caption{Representation of an item with conditions \ref{support:area_support} and \ref{support:vertex_support} of vertical support given $\alpha_s = 0.5, \beta_s$}
     \label{fig:support}
 \end{figure}
 
 \newpage
-Given the definitions of our practical constraints, a conceptual formulation of our model is
+Given the definitions of our practical constraints, a conceptual formulation of the 3D-BPPVS is
 \begin{eqnarray*}
     \textbf{minimize} & \text{number of used bins} \\
-    \textbf{maximize} & \text{cage ratio of used bins} \\
+    \textbf{then, maximize} & \text{average cage ratio of used bins} \\
     \textbf{subject to} & \text{all items assigned to one and only one bin} \\
                                       & \text{all items inside the bin's bounds} \\
                                       & \text{no overlaps between items in the same bin} \\
@@ -53,19 +53,18 @@ Given the definitions of our practical constraints, a conceptual formulation of 
 To the best of our knowledge no formulations for the 3D-BPPVS exists.
 In \cref{sec:milp} a mixed-integer linear programming model for the 3D-SBSBPP is presented and it's later extended to include orthogonal rotations in \cref{subsec:orthogonal_rotations}.
 Vertical support constraints limited to condition \ref{support:area_support} (area support) are developed in \cref{subsec:vertical_support_formulation}.
-Cage ratio isn't directly included in the proposed MILP formulation since it was able to handle only instances of the problem with one bin.
-In a single bin setting minimizing the maximum height of the bin is equivalent to minimizing the cage ratio.
+Cage ratio isn't directly included in the proposed MILP formulation since it was able to handle only instances of the problem with a single bin.
+As previously mentioned, in a single bin setting minimizing the maximum height of the bin is equivalent to minimizing the cage ratio.
 
 \section{Three-Dimensional Single Bin-Size Bin Packing Problem}
 \label{sec:milp}%
-Let $I = \{1,\dots, n \}$ be the set of items that need to be packed, $B = \{1,\dots, m \}$ the set of bins to evaluate of fixed dimensions $W \times D \times H$.
+Let $I = \{1,\dots, n \}$ be the set of items that need to be packed in a set of $B = \{1,\dots, m \}$ bins, each with fixed dimensions $W \times D \times H$.
 Each item $i \in I$ is characterized by a given width, depth, and height $(w_i, d_i, h_i)$.
 Let us introduce three continuous variables that identify the position of an item's bottom front left corner $(x_i, y_i, h_i)$ as seen in \cref{fig:coordinate_system}.
-We can now introduce a set of integer variables $v_{b}$ which will be 1 if bin $b \in B$ will be used in the solution and 0 otherwise. A set of integer variables $u_{ib}$ which will be 1 if item $i \in I$ will be placed in bin $b \in B$ and 0 otherwise.
+We can now introduce a binary variable $v_{b}$ takes the value of one if $b \in B$ is used and zero otherwise. Binary variable $u_{ib}$ takes the value of one if item $i \in I$ is placed in bin $b \in B$ and zero otherwise.
 To check for overlaps, we introduce three sets of integer variables for each axis of possible overlap to determine if there is a clear order of precedence on at least one axis. This formulation is also usually used in scheduling problems.
-One of the introduced sets is the set $x^p_{ij}$, which will take the value of 1 if item $i \in I$ precedes item $j \in I$ over axis $x$ and 0 otherwise. This condition is verified if $x_i + w_i \le x_j$.
+Let $x^p_{ij}$ take the value of one if item $i \in I$ precedes item $j \in I$ over axis $x$ and zero otherwise.
 The other two sets are defined in a similar way over the remaining axis $y^p_{ij}$ and $z^p_{ij}$.
-An additional set of continuous variables $z_b^\text{max}$ is introduced which will assume the value of the maximum $x_i + h_i$ of the items $i \in I$ placed in bin $b \in B$.
 
 \begin{figure}
     \scalebox{0.62}{%
@@ -78,14 +77,13 @@ An additional set of continuous variables $z_b^\text{max}$ is introduced which w
 The 3D-SBSBPP can then be formulated as a mixed-integer linear programming problem:
 \label{par:standard_const}
 \begin{align}
-   \min       \qquad& \sum\limits_{b \in B} (H v_b + z^{max}_b) & \label{eq:objective} \\
+   \min       \qquad& \sum\limits_{b \in B} v_b & \label{eq:objective} \\
    \text{s.t.} \qquad& \sum\limits_{b \in B}{u_{ib}} = 1 & \forall i \in I  \label{cons:all_items_in_bin} \\
                     & u_{ib} \le v_b & \forall i \in I, \forall b \in B \label{cons:items_in_used_bins} \\
                     & v_b \ge v_c & \forall (b,c) \in B : b < c  \label{cons:bin_breaking} \\
                     & x_i + w_i \le W & \forall i \in I \label{cons:inside_x} \\ 
                     & y_i + d_i \le D & \forall i \in I \label{cons:inside_y} \\ 
                     & z_i + h_i \le H & \forall i \in I \label{cons:inside_z} \\ 
-                    & z^{max}_b \ge (z_i + h_i) - H(1-u_{ib}) & \forall i \in I, \forall b \in B \label{cons:maxz} \\
                     & (x_i + w_i) - x_j\le W(1 - x^p_{ij}) & \forall i,j \in I \label{cons:x_prec_1} \\
                     & x_j - (x_i + w_i) + 1 \le W x^p_{ij} & \forall i,j \in I \label{cons:x_prec_2} \\
                     & (y_i + d_i) - y_j \le D(1 - y^p_{ij}) & \forall i,j \in I \label{cons:y_prec_1} \\
@@ -95,18 +93,30 @@ The 3D-SBSBPP can then be formulated as a mixed-integer linear programming probl
                     & x^p_{ij} + x^p_{ji} + y^p_{ij} + y^p_{ji} + z^p_{ij} + z^p_{ji} \ge u_{ib} + u_{jb} - 1 & \forall i,j \in I, \forall b \in B \label{cons:no_overlap}
 \end{align}
 
-The objective function \ref{eq:objective} seeks to minimize the number of opened bins and the maximum height at which items were placed across bins.
-In a single bin configuration, since all the volume mass is concentrated inside one bin, it maximizes the cage ratio.
+The objective function \ref{eq:objective} seeks to minimize the number of opened bins.
+
 Constraints \ref{cons:all_items_in_bin} ensure that each item is packed in one and only one bin, while constraints \ref{cons:items_in_used_bins} ensure that items are only packed in bins used in the solution.
 Since the solution has lots of symmetries with respect to the number of bins, symmetry-breaking constraints \ref{cons:bin_breaking} are added on the opening of bins to improve solve times.
 Each item is also ensured to be placed inside the bin thanks to constraints \ref{cons:inside_x} to \ref{cons:inside_z}.
-The value of $z^{max}_b$ is forced to converge to the maximum height of a given bin due to constraints \ref{cons:maxz}.
-Constraints \ref{cons:x_prec_1} to \ref{cons:z_prec_2} are used to define the precedence binary variables $x^p_{ij}$, $y^p_{ij}$, $z^p_{ij}$ over each axis as described in the problem formulation.
+Constraints \ref{cons:x_prec_1} to \ref{cons:z_prec_2} are used to define the precedence binary variables $x^p_{ij}$, $y^p_{ij}$, $z^p_{ij}$ over each axis. Given that on axis $x$ and item $i \in I$ precedes an item $j \in I$ if $x_i + w_i \le x_j$.
 Constraints \ref{cons:no_overlap} then ensure that if two items are in the same bin, there needs to be at least one axis with a clear order of precedence; otherwise, the two items would overlap.
-\subsection{Orthogonal rotations}
+
+\section{Three-Dimensional Bin Packing Problem with Vertical Support}
+In this section we extend the 3D-SBSBPP formulation of \cref{sec:milp} with constraints to introduce rotations of items and vertical support. Since our model only handles small instances we'll use it in a single bin setting so, to account for the cage ratio, we change objective function \ref{eq:objective} with \ref{eq:objective_2}.
+This allows us to define a proxy of the 3D-BPPVS that is valid for the single bin case.
+We also introduce an additional continuous variable $z_b^\text{max}$ that takes the value of the maximum height used in bin $b \in B$.
+The proxy problem formulation than becomes:
+\begin{align}
+    \min       \qquad& \sum\limits_{b \in B} (H v_b + z^{max}_b) & \label{eq:objective_2} \\
+    \text{s.t.} \qquad& \text{(\ref{cons:all_items_in_bin}) to (\ref{cons:no_overlap})} \\ 
+                     & z^{max}_b \ge (z_i + h_i) - H(1-u_{ib}) & \forall i \in I, \forall b \in B \label{cons:maxz}
+\end{align}
+Where the objective function \ref{eq:objective_2} seeks to minimize the number of opened bins and the maximum height at which items were placed across bins and the value of $z^{max}_b$ is forced to converge to the maximum height of a given bin due to constraints \ref{cons:maxz}.
+As previously noted, in a single bin configuration, since all the volume mass is concentrated inside one bin, objective \ref{eq:objective_2} also maximizes the cage ratio.
+\subsection*{Orthogonal rotations}
 \label{subsec:orthogonal_rotations}%
 
-Let us extend the definition of the bin packing problem without rotations with a new formulation that allows $90$ degrees rotations of each item.
+Let us extend the definition of the problem without rotations with a new formulation that allows $90$ degrees rotations of each item.
 Let $I = I^O \cup I^R$ be the new set of items where $I^O$ is the set of original non-rotated items, and $I^R$ is the set of items rotated by $90$ degrees.
 Given the set of tuples $(i, j) \in I^{OR}$ where $i$ is the original item with dimensions $(w_i, d_i, h_i)$ and $j$ is the corresponding rotated clone with dimensions $(w_j, d_j, h_j) = (d_i, w_i, h_i)$, we can now rewrite constraints \ref{cons:all_items_in_bin} as \ref{cons:all_items_in_bin_with_rotation} to force only one of them to be part of the solution.
 
@@ -114,7 +124,7 @@ Given the set of tuples $(i, j) \in I^{OR}$ where $i$ is the original item with 
     & \sum\limits_{b \in B} u_{ib} + \sum\limits_{b \in B} u_{jb} = 1 & \forall (i, j) \in I^{OR} \label{cons:all_items_in_bin_with_rotation}
 \end{align}
 
-\subsection{Discrete vertical support}
+\subsection*{Discrete vertical support}
 \label{subsec:vertical_support_formulation}%
 
 We now extend the model to address the constraint of vertical support.
