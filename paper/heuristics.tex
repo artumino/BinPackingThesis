@@ -2,12 +2,14 @@ In this chapter we present our heuristic algorithm to solve the 3D-BPPVS.
 Since the 3D-BPP is NP-Hard, an exhaustive search for a solution is not practical, therefore a heuristic search is conducted by combining the beam search algorithm described in \cref{sec:beamsearch} with the constructive heuristic described in \cref{sec:support_planes}.
 In section \ref{sec:problem_state} we define the preliminary concepts that will be used in the algorithm: states, insertions and solution's feasibility.
 
+%TODO: Explain a bit why support planes instead of layers
 \section{States}
 \label{sec:problem_state}%
 States are partial solutions of the 3D-BPPVS. Since our heuristic is based on a constructive method, starting from a state representing an empty solution we'll iteratively build new states that are always closer to a complete solution of the problem.
 Being a partial solution, a state $s$ can be represented as the set of all variables present in the MILP model (\ref{sec:milp}), where some values have been fixed. We move closer to a complete solution of the problem by packing more items and opening new bins, i.e., fixing more variables.
 
 In order to simplify the algorithm's description, we introduce a few new definitions.
+Without loss of generality we modify the problem formulation to include the index $s$ to the variables that we are using. %TODO
 
 \begin{definition}[Open bin]
     A bin $b \in B$ is open in state $s$ \textbf{iff}
@@ -75,14 +77,16 @@ The proposed heuristic also stores additional data for each state, which will be
     \item $Z^s_b$: the set of planes inside $b$ in state $s$. This will be described in detail in section \ref{sec:support_planes}.
     \item $T^s_b$: the AABB Tree of items packed inside $b$ in $s$. This will be described in detail in section \ref{sec:problem_state:aabbtree}.
 \end{itemize}
-Given a well formed state $s$ and a bin $b \in B^s$, both $J^s_b$ and $T^s_b$ contain the items packed in $b$, however adding and accessing items in $J^s_b$ has a time complexity of $O(1)$ (supposing an implementation as a hash set) while maintaining $T^s_b$ usually has a time complexity of $O(log(|J^s_b|))$. The cost of maintaining $T^s_b$ is repaid by the gain in performing checks on overlapping items, as described in the next section.
+Given a state $s$ and a bin $b \in B^s$, both $J^s_b$ and $T^s_b$ contain the items packed in $b$, however adding and accessing items in $J^s_b$ has a time complexity of $O(1)$ (supposing an implementation as a hash set) while maintaining $T^s_b$ usually has a time complexity of $O(log(|J^s_b|))$. The cost of maintaining $T^s_b$ is repaid by the gain in performing checks on overlapping items, as described in the next section.
 
-\subsection{AABB Tree}
+\subsection{Axis-Aligned Bounding Box Tree}
 \label{sec:problem_state:aabbtree}%
 
 To determine the feasibility of a given state, one needs to check if no placed items overlap.
 Since every item is a cuboid and our problem formulation only allows for $90\deg$ rotations over the z-axis, each item is contained inside a bounding box, which is axis-aligned.
 An adequate structure to compute overlaps is then an Axis-Aligned Bounding Box Tree (AABB Tree) \citep{bergen1997efficient}.
+%TODO: Maybe new?
+%TODO: Add conceptual figure
 
 AABB Trees are bounding volume hierarchies typically used for fast collision detection, and they usually offer a few operations:
 \begin{itemize}
@@ -108,11 +112,11 @@ Our algorithm is based on the constructive heuristic described in section \ref{s
 \end{definition}
 \begin{observation}
     \label{oss:state_bin_open}
-    Given a state $s$ and an insertion $p = (b, \emptyset)$ where $b \notin B^s$, $p$ is an insertion that opens a new bin $b$ in $s$.
+    Given a state $s$ and an insertion $p = (b, \emptyset)$ where $b \notin B^s$ and $b = |B^s| + 1$, $p$ is an insertion that opens a new bin $b$ in $s$.
 \end{observation}
 \begin{observation}[Same z insertion]
     \label{obs:same_z_insertion}
-    In our algorithm we will always insert items on the same "plane", that is with the same z coordinate. Let $p = (b_p, I_p)$ be an insertion, then:
+    In our algorithm we will always insert items on the same "plane", that is with the same $z$ coordinate. Let $p = (b_p, I_p)$ be an insertion, then:
     \begin{equation}
         \exists z (z \in \{0,..,H\} \land \forall i ( i \in I_p \implies z^s_i = z))
     \end{equation}
@@ -150,17 +154,17 @@ Let $I_{\text{support}}$ be the set of items that could support item $i$, comput
 Let $HasSupport(i, I_{\text{support}})$ be a function that returns true if the considered item would verify at least one of the support conditions (cond. \ref{support:area_support} or cond. \ref{support:vertex_support}) and false otherwise.
 We define a function $IsFeasible(i, I_{\text{support}}, T^s_{b_p})$ which returns true if the insertion of $i$ in bin $b_p$ for state $s$ is feasible, and false otherwise.
 If every item $i \in I_p$ is feasible then insertion $p$ is feasible.
-In case the insertions of some items in $I_p$ aren't feasible, we can always define a function $RemoveInfeasibleItems(p, I_{\text{support}}, T^s_{b_p})$ which removes every unfeasible item from $I_p$ and returns a new insertion $p^\prime = (b_p, I_{p^\prime})$ where:
+In case the insertions of some items in $I_p$ aren't feasible, we define a function $RemoveInfeasibleItems(p, I_{\text{support}}, T^s_{b_p})$ which removes every unfeasible item from $I_p$ and returns a new insertion $p^\prime = (b_p, I_{p^\prime})$ where:
 \begin{equation*}
     I_{p^\prime} = I_p \setminus \{i \in I_p : \lnot IsFeasible(i, I_{\text{support}}, T^s_{b_p})\}. \label{algo:remove_infeasible}
 \end{equation*}
 
 Checking if a state is feasible can then be done by iteratively applying all the insertions ordered by z and updating the proper data structures.
-\begin{proposition}
+\begin{observation}
     \label{prop:feasible_expansion}
     A state $s^\prime$ derived by committing a feasible insertion $p$ to a feasible state $s$ is always feasible.
-\end{proposition}
-This proposition is true by construction of insertions $p$, and combined with observation \ref{def:empty_state_feasible} it proves that our constructive heuristic always maintains feasible solutions. 
+\end{observation}
+This observation is true by construction of insertions $p$, and combined with observation \ref{def:empty_state_feasible} it proves that our constructive heuristic always maintains feasible solutions. 
 \begin{observation}
     \label{def:empty_state_feasible}
     Let $s_e$ be an empty state as stated in definition \ref{def:empty_state}, then it is feasible.
@@ -187,7 +191,7 @@ The idea behind BS is to conduct an iterative truncated breadth-first search whe
 After the expansion, every new node is evaluated and the $k$ best nodes are retained for the next iteration. The algorithm keeps exploring the solution tree until no further node can be expanded.
 
 To perform BS one must define the node structure, an expansion function to generate new nodes from existing ones, a ranking between nodes, and a function to determine if a node is final.
-
+%TODO: Merge these in bullet list
 A node in the tree can be represented as a state, as described in  \cref{sec:problem_state}, and \cref{algo:state_final} can be used to determine if a state is final. We also know that a new state $s^\prime$ derived by $s$ by applying a feasible insertion $p$ can be computed as in \cref{sec:problem_state:insertions}.
 This state expansion procedure, with the exception of empty insertions, will generate new states in our tree which will add a positive number of bins or packed items to the solution. This procedure, eventually, will converge and generate a final state.
 
@@ -208,6 +212,7 @@ An expansion of a state $s$ is a new set of states $S_{new}$ obtained by applyin
 The main idea in this phase of the algorithm is to find feasible insertions in all the bins in $B^s$ at the lowest possible height, for each item in $U^s$. 
 To reduce the number of possible expansions to evaluate, we limit the search only to insertions of items with unique shapes.
 With a similar concept to the one used in \cref{sec:state_uniqueness}, we compute an hash for each item's dimensions and then use it to group items that have the same shape.
+%TODO: unique shapes
 The evaluation of new insertions can then be done with two different approaches:
 \begin{itemize}
     \label{def:placement_modes}%
@@ -217,23 +222,28 @@ The evaluation of new insertions can then be done with two different approaches:
 Creating insertions of groups of similar items is a common strategy in Pallet Loading Problems (e.g., \cite{elhedhli2019three}) to create better bases of support for upper layers.
 With a similar intuition, the idea of placing groups of items of the same shape is to facilitate the creation of uniform planes to be used to support future insertions.
 
+%TODO: define clearly in PM that we are considering at most |I'| placements and if they don't fit
 Given a set of items $I$ and a tolerance $\beta_s$, we can introduce an algorithm to group the items by their shape and produce a set $G$ of tuples $(h, I^\prime)$, where $h$ is the hash summarizing the shape of the group and $I^\prime$ is the set of items grouped. This procedure is described in Algo. \ref{algo:group_by_hash}.
 Once items are grouped by shape, the best insertion for each class of items is computed for each open bin. If no insertion is possible in any bin, then the only viable insertion is the bin opening insertion (\cref{oss:state_bin_open}).
 The state expansion procedure is detailed in Algo. \ref{algo:state_successor}. The algorithm is described in PM mode, however minor modifications are needed to switch to PS mode.
+%TODO: just describe it
 
 \input{algorithms/state_successor}
 \input{algorithms/group_by_height}
 
 
-\subsection{Sorting States}
+\subsection{Ranking States}
 \label{ssec:scoring_states}%
 In order to sort states, an ordering needs to be defined over them.
 Since the selection of a state over another is what will influence the final solution the most, parameters that are directly related to minimizing the objective function are used.
 
+%TODO: add generic fluff
+%TODO: talk about average volume which is constant
+
 In the proposed solution, we use lexicographic ordering to handle multiple objective functions.
 \begin{definition}
     \label{def:lexicographic_ordering}
-    Let $f_1(s), f_2(s), f_i(s), \dots, f_n(s)$ be objective functions ordered by precedence based on index $i \in \mathbb{Z}$, then 
+    Let $f_1(s), f_2(s), \dots, f_j(s), \dots, f_n(s)$ be objective functions ordered by precedence based on index $j \in \mathbb{Z}$, then 
     \begin{equation*}
         s < s^\prime \hspace{.2cm} \textbf{iff} \hspace{.2cm} \exists j \in \mathbb{Z} : \left\{
             \begin{aligned}
@@ -249,7 +259,7 @@ Scoring metrics for each state $s$ that we want to evaluate can then be computed
 We use the following objective functions (considering a minimization direction):
 \begin{itemize}
     \item $f_1(s) = |B^s|$: we prefer states that opened fewer bins.
-    \item $f_2(s) = -\text{avgvol}(s)$: we prefer states that have packed more average volume between bins.
+    \item $f_2(s) = -\text{avgvol}(s)$: we prefer states that have packed more average volume in all bins.
     \item $f_3(s) = -\text{avgcageratio}(s)$: we prefer states that have better average cage ratio (\cref{eq:cage_ratio}) between bins.
 \end{itemize}
 
@@ -339,9 +349,9 @@ This new algorithm can be used as the last step of the $Commit$ algorithm for ea
 
 \input{algorithms/sp_commit}
 
-\subsection{Sorting Insertions}
+\subsection{Ranking Insertions}
 \label{ssec:scoring_insertions}%
-Similarly to the sorting of states (\cref{ssec:scoring_states}), an ordering function is also needed to evaluate different insertions for the same set of items.
+Similarly to the ranking of states (\cref{ssec:scoring_states}), an ordering function is also needed to evaluate different insertions for the same set of items.
 Given the lexicographic ordering formulation in \cref{def:lexicographic_ordering}, a few new functions can be calculated and stored inside an insertion to help in the evaluation.
 Given $T$ as the AABB Tree that represents the bin where the insertion is going to happen, and given one of the inserted items $i \in I_p$, we define functions that use the tree to calculate useful metrics:
 \begin{itemize}
