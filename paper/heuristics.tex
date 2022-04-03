@@ -72,21 +72,14 @@ We can also define the empty state, which will be used as a starting point for o
 
 Given a state $s$, for each item $i \in I$ packed in $b \in B^s$ ($i \in J^s_b$), we let $(x^s_i, y^s_i, z^s_i)$ be the coordinates of its bottom front left corner. In order to simplify the algorithm representation, rotations are handled implicitly by swapping the dimensions $w_i$ and $d_i$ of item $i \in I$ when needed. An item can have different rotations if packed in different states, therefore we use its horizontal dimensions as variables and refer to them with $w^s_i$ and $d^s_i$.
 
-The proposed heuristic also stores additional data for each state, which will be used in the constructive heuristic described in \cref{sec:support_planes}. This additional information includes:
-\begin{itemize}
-    \item $Z^s_b$: the set of planes inside $b$ in state $s$. This will be described in detail in section \ref{sec:support_planes}.
-    \item $T^s_b$: the AABB Tree of items packed inside $b$ in $s$. This will be described in detail in section \ref{sec:problem_state:aabbtree}.
-\end{itemize}
-Given a state $s$ and a bin $b \in B^s$, both $J^s_b$ and $T^s_b$ contain the items packed in $b$, however adding and accessing items in $J^s_b$ has a time complexity of $O(1)$ (supposing an implementation as a hash set) while maintaining $T^s_b$ usually has a time complexity of $O(log(|J^s_b|))$. The cost of maintaining $T^s_b$ is repaid by the gain in performing checks on overlapping items, as described in the next section.
-
 \subsection{Axis-Aligned Bounding Box Tree}
 \label{sec:problem_state:aabbtree}%
 
 To determine the feasibility of a given state, one needs to check if no placed items overlap.
 Since every item is a cuboid and our problem formulation only allows for $90\deg$ rotations over the z-axis, each item is contained inside a bounding box, which is axis-aligned.
 An adequate structure to compute overlaps is then an Axis-Aligned Bounding Box Tree (AABB Tree) \citep{bergen1997efficient}.
-A conceptual image of an two-dimensional AABB tree which contains two elements can be seen in \cref{fig:aabb_tree}.
-%TODO: Maybe new?
+The concept of using AABB Trees in three-dimensional bin packing heuristics was already a studied in the literature (e.g., \cite{ALLEN2011219}).
+A conceptual image of a two-dimensional AABB Tree which contains three elements can be seen in \cref{fig:aabb_tree}.
 
 \begin{figure}
     \label{fig:aabb_tree}%
@@ -102,11 +95,14 @@ AABB Trees are bounding volume hierarchies typically used for fast collision det
 \end{itemize}
 
 If the tree is appropriately balanced, each operation has a worst-case time complexity of $O(log(n))$, where $n$ is the number of elements in the tree.
-Given a state $s$, maintaining an AABB Tree $T^s_b$ for each bin $b \in B^s$ allows us to do fast checks for feasibility during the construction of a solution (as detailed in \ref{ssec:scoring_insertions}) and fast feasibility checks on the final states for error detection.
+We introduce $T^s_b$, the AABB Tree of items packed inside bin $b$ in state $s$.
+Given a generic state $s$, maintaining an AABB Tree $T^s_b$ for each bin $b \in B^s$ allows us to do fast checks for feasibility during the construction of a solution (as detailed in \ref{ssec:scoring_insertions}) and fast feasibility checks on the final states for error detection.
+We note that with this new set, both $J^s_b$ and $T^s_b$ contain the items packed in $b$, however adding and accessing items in $J^s_b$ has a time complexity of $O(1)$ (supposing an implementation as a hash set) while maintaining $T^s_b$ usually has a time complexity of $O(log(|J^s_b|))$.
+The cost of maintaining $T^s_b$ is repaid by the gain in performing checks on overlapping items.
 
 \label{aabb:get_supporting}%
-An additional opertation $AABBGetSupporting(i, \beta_s)$ was added to compute the set of supporting boxes of item $i$ given a vertical tolerance $\beta_s$.
-This was possible by checking intersections over the XY-plane, similarly to the $AABBOverlaps$ implementation, and keeping items that are below $i$ with a distance within tolerance.
+We added an additional opertation $AABBGetSupporting(i, \beta_s)$ to compute the set of supporting boxes of item $i$ given a vertical tolerance $\beta_s$.
+This was possible by checking intersections over the XY-plane, similarly to the $AABBOverlaps$ implementation, and keeping items that are below $i$ with a distance within tolerance $\beta_s$.
 
 \subsection{Insertions}
 \label{sec:problem_state:insertions}%
@@ -120,9 +116,9 @@ Our algorithm is based on the constructive heuristic described in section \ref{s
     \label{oss:state_bin_open}
     Given a state $s$ and an insertion $p = (b, \emptyset)$ where $b \notin B^s$ and $b = |B^s| + 1$, $p$ is an insertion that opens a new bin $b$ in $s$.
 \end{observation}
-\begin{observation}[Same z insertion]
+\begin{observation}[Same $z$ insertion]
     \label{obs:same_z_insertion}
-    In our algorithm we will always insert items on the same "plane", that is with the same $z$ coordinate. Let $p = (b_p, I_p)$ be an insertion, then:
+    In our algorithm we will always simultaneously insert items on the same "plane", that is with the same $z$ coordinate. Let $p = (b_p, I_p)$ be an insertion, then:
     \begin{equation}
         \exists z (z \in \{0,..,H\} \land \forall i ( i \in I_p \implies z^s_i = z))
     \end{equation}
@@ -284,6 +280,7 @@ Each support plane is a tuple $(z, I_{support}, I_{upper})$ where
 
 Every item placed in the bin can either generate a new support plane or be part of the supporting items of other planes.
 Items placed above a particular plane, such that $z_i + h_i > z$, are considered obstacles and are added to the $I_{upper}$ set.
+We introduce $Z^s_b$, the set of support planes inside $b$ in state $s$.
 When creating new insertion, given a set of items to place $I$, SP selects the first feasible insertion starting from the lowest plane by using a modified version of the Extreme Point algorithm (\cite{crainic2008extreme}) that works in two dimensions.
 Once no more insertions can be made on the lowest available support plane, it is removed from the set of planes.
 Since insertions always happen in the lowest possible planes, the set of obstacles of those planes is composed of items that have only their top face above the $z$ of the evaluated plane, such that $z_i \le z < z_i + h_i$.
