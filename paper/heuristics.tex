@@ -129,7 +129,7 @@ In our algorithm, starting from a feasible state $s$, we generate multiple new s
 
 Let us define the concept of pending insertion.
 \begin{definition}[Pending insertion]
-    We define $p^s$ as the insertion that is pending on state $s$. A pending insertion is an insertion that in the future will be applied to its state.
+    We define $p^s$ as the insertion that is pending on state $s$. A pending insertion is an insertion that in the future may be applied to its state.
 \end{definition}
 The first phase of the insertion process consists in the application of the $Next$ operator.
 \begin{definition}[Next]
@@ -148,10 +148,10 @@ A state $s$ is feasible if, for each bin $b \in B^s$:
     \item all items in $J^s_b$ are placed within the bin's bounds,
     \item each item in $J^s_b$ is either on the ground or satisfies at least one of the support conditions (cond. \ref{support:area_support}, cond. \ref{support:vertex_support}).
 \end{itemize}
-Since the proposed heuristic is constructive, we start with an initial feasible state and generate new states by applying insertions that maintain feasibility. It is therefore more convenient to define the concept of feasibility relatively to an insertion.
+Since the proposed heuristic is constructive, we start with an initial feasible state and generate new states by applying insertions that maintain feasibility. It is therefore more convenient to define the concept of feasibility in relation to an insertion.
 
 \paragraph*{Insertion feasibility}
-An insertion $p = (b_p, I_p)$ that is pending on a given state $s$ is feasible if every inserted item $i \in I_p$ satisfies the constraint of non-overlap (\ref{cons:no_overlap}, both with items placed in $J^s_{b_p}$ and with other items in $I_p$), the constraint of support (\ref{cons:every_item_is_supported}) and if it is placed within the bin.
+An insertion $p = (b_p, I_p)$ that is pending on a given state $s$ is feasible if every inserted item $i \in I_p$ satisfies the constraint of non-overlap (\ref{cons:no_overlap}), both with items placed in $J^s_{b_p}$ and with other items in $I_p$, the constraint of support (\ref{cons:every_item_is_supported}) and if it is placed within the bin.
 Let $I_{\text{support}}$ be the set of items that could support item $i$, computed through the AABB tree $T^s_{b_p}$ as defined in \cref{aabb:get_supporting}.
 Let $HasSupport(i, I_{\text{support}})$ be a function that returns true if the considered item would verify at least one of the support conditions (cond. \ref{support:area_support} or cond. \ref{support:vertex_support}) and false otherwise.
 We define a function $IsFeasible(i, I_{\text{support}}, T^s_{b_p})$ which returns true if the insertion of $i$ in bin $b_p$ for state $s$ is feasible, and false otherwise.
@@ -189,7 +189,7 @@ Since the combination of hashes is a simple sum with modulus, the hashing of a s
 \section{Beam Search}
 \label{sec:beamsearch}%
 Beam Search (BS) is a heuristic tree search algorithm designed for systems with limited memory, where expanding every possible node is unfeasible.
-The idea behind BS is to conduct an iterative truncated breadth-first search where, at each iteration, only a limited number $k$ of nodes is expanded.
+The idea behind BS is to conduct an iterative truncated breadth-first search where, at each iteration, only a limited number of $k$ nodes is expanded.
 After the expansion, every new node is evaluated and the $k$ best nodes are retained for the next iteration. The algorithm keeps exploring the solution tree until no further node can be expanded.
 
 To perform BS one must define the node structure, an expansion function to generate new nodes from existing ones, a ranking between nodes, and a function to determine if a node is final.
