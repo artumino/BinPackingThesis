@@ -192,9 +192,15 @@ Beam Search (BS) is a heuristic tree search algorithm designed for systems with 
 The idea behind BS is to conduct an iterative truncated breadth-first search where, at each iteration, only a limited number of $k$ nodes is expanded.
 After the expansion, every new node is evaluated and the $k$ best nodes are retained for the next iteration. The algorithm keeps exploring the solution tree until no further node can be expanded.
 
-To perform BS one must define the node structure, an expansion function to generate new nodes from existing ones, a ranking between nodes, and a function to determine if a node is final.
-%TODO: Merge these in bullet list
-A node in the tree can be represented as a state, as described in  \cref{sec:problem_state}, and \cref{algo:state_final} can be used to determine if a state is final. We also know that a new state $s^\prime$ derived by $s$ by applying a feasible insertion $p$ can be computed as in \cref{sec:problem_state:insertions}.
+To perform BS one must define:
+\begin{itemize}
+    \item the node structure, which can be represented as a state (\cref{sec:problem_state}),
+    \item an expansion function, which generates new nodes from existing ones as \cref{def:state_next},
+    \item a ranking between nodes, that we will describe in \cref{ssec:scoring_states},
+    \item a function to determine if a node is final, which we previously defined as \cref{algo:state_final}.
+\end{itemize}
+
+We also know that a new state $s^\prime$ derived from $s$ by applying a feasible insertion $p$ can be computed as in \cref{sec:problem_state:insertions}.
 This state expansion procedure, with the exception of empty insertions, will generate new states in our tree which will add a positive number of bins or packed items to the solution. This procedure, eventually, will converge and generate a final state.
 
 If the starting state for the search is feasible, every new generated state will be feasible, and thus if a final state is found it will be feasible (\cref{prop:feasible_expansion}).
@@ -214,22 +220,20 @@ An expansion of a state $s$ is a new set of states $S_{new}$ obtained by applyin
 The main idea in this phase of the algorithm is to find feasible insertions in all the bins in $B^s$ at the lowest possible height, for each item in $U^s$. 
 To reduce the number of possible expansions to evaluate, we limit the search only to insertions of items with unique shapes.
 With a similar concept to the one used in \cref{sec:state_uniqueness}, we compute an hash for each item's dimensions and then use it to group items that have the same shape.
-%TODO: unique shapes
-The evaluation of new insertions can then be done with two different approaches:
+This grouping allows us to create subsets of items that have a unique shape. 
+Given a set of items $I$, we introduce an algorithm to group the items by their shape and produce a set $G$ of tuples $(h, I^\prime)$, where $h$ is the hash summarizing the shape of the group and $I^\prime$ is the set of items grouped. This procedure is described in Algo. \ref{algo:group_by_hash}.
+
+The evaluation of new insertions can then be done with two different approaches for each subset $I^\prime$ of uniquely shaped items:
 \begin{itemize}
     \label{def:placement_modes}%
-    \item \textbf{PS}: (single placement) where we evaluate only the insertion of a single item per item type. This generates insertions of at most 1 item.
-    \item \textbf{PM}: (multiple placement) where we evaluate the biggest possible insertion of a group of items of the same shape. This generate insertions of at most the size of the considered group of items with the same shape.
+    \item \textbf{PS}: (single placement) where we evaluate only the insertion of a single item per group. This generates insertions of at most 1 item.
+    \item \textbf{PM}: (multiple placement) where we evaluate the biggest possible insertion of a group of items of the same shape. This generate insertions of at most $|I^\prime|$ items, or less if not all the items of that particular shape would fit.
 \end{itemize}
 Creating insertions of groups of similar items is a common strategy in Pallet Loading Problems (e.g., \cite{elhedhli2019three}) to create better bases of support for upper layers.
 With a similar intuition, the idea of placing groups of items of the same shape is to facilitate the creation of uniform planes to be used to support future insertions.
 
-%TODO: define clearly in PM that we are considering at most |I'| placements and if they don't fit
-Given a set of items $I$ and a tolerance $\beta_s$, we introduce an algorithm to group the items by their shape and produce a set $G$ of tuples $(h, I^\prime)$, where $h$ is the hash summarizing the shape of the group and $I^\prime$ is the set of items grouped. This procedure is described in Algo. \ref{algo:group_by_hash}.
-
 Once items are grouped by shape, the best insertion for each class of items is computed for each open bin. If no insertion is possible in any bin, then the only viable insertion is the bin opening insertion (\cref{oss:state_bin_open}).
-The state expansion procedure is detailed in Algo. \ref{algo:state_successor}. The algorithm is described in PM mode, however minor modifications are needed to switch to PS mode.
-%TODO: just describe it
+The state expansion procedure is detailed in Algo. \ref{algo:state_successor}. The algorithm is described in PM mode, however switching to PS mode is possible by modifying Algo. \ref{algo:group_by_hash} to return only singletons for each different class of item shapes.
 
 \input{algorithms/state_successor}
 \input{algorithms/group_by_height}
@@ -356,6 +360,9 @@ This new algorithm can be used as the last step of the $Commit$ algorithm for ea
 \subsection{Ranking Insertions}
 \label{ssec:scoring_insertions}%
 Similarly to the ranking of states (\cref{ssec:scoring_states}), an ordering function is also needed to evaluate different insertions for the same set of items.
+We rank insertions to prefer the ones that will generate new states which have some properties.
+We facilitate the generation of large even surfaces by giving a higher ranking to insertions that have large areas covered by items of the same shape or height.
+Since the ranked insertions are always feasible, we try to avoid over satisfying the support constraint to allow for more balanced bins.
 Given the lexicographic ordering formulation in \cref{def:lexicographic_ordering}, a few new functions can be calculated and stored inside an insertion to help in the evaluation.
 Given $T$ as the AABB Tree that represents the bin where the insertion is going to happen, and given one of the inserted items $i \in I_p$, we define functions that use the tree to calculate useful metrics:
 \begin{itemize}

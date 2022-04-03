@@ -11,7 +11,7 @@
         $placed \leftarrow false$\;
         \ForAll{$(h, I) \in G$}{
             \ForAll{$b \in B^s$}{
-                $P \leftarrow SPBestInsertion(Z^s_b, I, T^s_b)$ (\cref{sec:support_planes})\;
+                $P \leftarrow SPBestInsertion(Z^s_b, I, T^s_b)$ (\cref{sec:support_planes}) \label{line:consider_insertion}\;
                 \If{$P \neq \emptyset$}{
                     $placed \leftarrow true$\;
                     \ForAll{$p \in P$}{
