@@ -5,12 +5,12 @@ In section \ref{sec:problem_state} we define the preliminary concepts that will 
 %TODO: Explain a bit why support planes instead of layers
 \section{States}
 \label{sec:problem_state}%
-States are partial solutions of the 3D-BPPVS. Since our heuristic is based on a constructive method, starting from a state representing an empty solution we'll iteratively build new states that are always closer to a complete solution of the problem.
-Being a partial solution, a state $s$ can be represented as the set of all variables present in the MILP model (\ref{sec:milp}), where some values have been fixed. We move closer to a complete solution of the problem by packing more items and opening new bins, i.e., fixing more variables.
+States are partial solutions of the 3D-BPPVS. Since our heuristic is based on a constructive method, starting from a state representing an empty solution we'll iteratively build new states that gradually change to become a complete solution of the problem.
+Being a partial solution, a state $s$ can be represented using the set of all variables present in the MILP model (\ref{sec:milp}), where some values have been fixed. 
+Without loss of generality some of the notation defined in \cref{chapter:problem} is modified to include an index $s$ of the state we are considering.
+We move closer to a complete solution of the problem by packing more items and opening new bins, i.e., by fixing more variables.
 
 In order to simplify the algorithm's description, we introduce a few new definitions.
-Without loss of generality we modify the problem formulation to include the index $s$ to the variables that we are using. %TODO
-
 \begin{definition}[Open bin]
     A bin $b \in B$ is open in state $s$ \textbf{iff}
     \begin{equation*}
@@ -47,7 +47,7 @@ Without loss of generality we modify the problem formulation to include the inde
     \end{equation*}
 \end{definition}
 
-Thanks to these new definitions, we can define a function that determines if a state is a final state.
+Due to these new definitions, we can define a function that determines if a state is a final state.
 \begin{definition}
     \label{def:state_final}
     A state $s$ is final if there are no more items to pack.
@@ -85,8 +85,14 @@ Given a state $s$ and a bin $b \in B^s$, both $J^s_b$ and $T^s_b$ contain the it
 To determine the feasibility of a given state, one needs to check if no placed items overlap.
 Since every item is a cuboid and our problem formulation only allows for $90\deg$ rotations over the z-axis, each item is contained inside a bounding box, which is axis-aligned.
 An adequate structure to compute overlaps is then an Axis-Aligned Bounding Box Tree (AABB Tree) \citep{bergen1997efficient}.
+A conceptual image of an two-dimensional AABB tree which contains two elements can be seen in \cref{fig:aabb_tree}.
 %TODO: Maybe new?
-%TODO: Add conceptual figure
+
+\begin{figure}
+    \label{fig:aabb_tree}%
+    \input{Images/aabb_tree}
+    \caption{Conceptual rappresentation of a two-dimensional AABB Tree with three elements}
+\end{figure}
 
 AABB Trees are bounding volume hierarchies typically used for fast collision detection, and they usually offer a few operations:
 \begin{itemize}
