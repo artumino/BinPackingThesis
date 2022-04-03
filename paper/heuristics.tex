@@ -5,7 +5,7 @@ In section \ref{sec:problem_state} we define the preliminary concepts that will 
 %TODO: Explain a bit why support planes instead of layers
 \section{States}
 \label{sec:problem_state}%
-States are partial solutions of the 3D-BPPVS. Since our heuristic is based on a constructive method, starting from a state representing an empty solution we'll iteratively build new states that gradually change to become a complete solution of the problem.
+States are partial solutions of the 3D-BPPVS. Since our heuristic is based on a constructive method, starting from a state representing an empty solution we will iteratively build new states that gradually change to become a complete solution of the problem.
 Being a partial solution, a state $s$ can be represented using the set of all variables present in the MILP model (\ref{sec:milp}), where some values have been fixed. 
 Without loss of generality some of the notation defined in \cref{chapter:problem} is modified to include an index $s$ of the state we are considering.
 We move closer to a complete solution of the problem by packing more items and opening new bins, i.e., by fixing more variables.
@@ -197,13 +197,13 @@ To perform BS one must define the node structure, an expansion function to gener
 A node in the tree can be represented as a state, as described in  \cref{sec:problem_state}, and \cref{algo:state_final} can be used to determine if a state is final. We also know that a new state $s^\prime$ derived by $s$ by applying a feasible insertion $p$ can be computed as in \cref{sec:problem_state:insertions}.
 This state expansion procedure, with the exception of empty insertions, will generate new states in our tree which will add a positive number of bins or packed items to the solution. This procedure, eventually, will converge and generate a final state.
 
-If the starting state for the search is feasible, every new generated state will be feasible and if a final state is found it will be feasible (\cref{prop:feasible_expansion}).
+If the starting state for the search is feasible, every new generated state will be feasible, and thus if a final state is found it will be feasible (\cref{prop:feasible_expansion}).
 States are expanded by generating insertions and applying such insertions to them, following the two phase procedure outlined in \cref{sec:problem_state:insertions}. In our BS, the first phase is performed before the evaluation of each new state while the second phase is performed only after the selection of the $k$ best states.
 As noted in \cref{sec:state_uniqueness}, since by evaluating different insertions on different states it is possible to end up having two equal states, a filtering mechanism based on hashing is introduced.
 During each iteration, it is possible to keep the hashes of the best selected states in a hash set and discard new states with the same hash.
 
-Given a set of initial states $S^0$ and the number of best states to expand at each iteration $k$, the described BS is described in Algorithm \ref{algo:beamsearch}.
-As observed in \cref{def:empty_state}, it's possible to start the search from $S^0 = \{ s_e \}$.
+Given a set of initial states $S^0$ and the number of $k$ best states to expand at each iteration, the BS is described in Algorithm \ref{algo:beamsearch}.
+As observed in \cref{def:empty_state}, it is possible to start the search from $S^0 = \{ s_e \}$.
 
 \input{algorithms/beamsearch}
 
@@ -225,7 +225,8 @@ Creating insertions of groups of similar items is a common strategy in Pallet Lo
 With a similar intuition, the idea of placing groups of items of the same shape is to facilitate the creation of uniform planes to be used to support future insertions.
 
 %TODO: define clearly in PM that we are considering at most |I'| placements and if they don't fit
-Given a set of items $I$ and a tolerance $\beta_s$, we can introduce an algorithm to group the items by their shape and produce a set $G$ of tuples $(h, I^\prime)$, where $h$ is the hash summarizing the shape of the group and $I^\prime$ is the set of items grouped. This procedure is described in Algo. \ref{algo:group_by_hash}.
+Given a set of items $I$ and a tolerance $\beta_s$, we introduce an algorithm to group the items by their shape and produce a set $G$ of tuples $(h, I^\prime)$, where $h$ is the hash summarizing the shape of the group and $I^\prime$ is the set of items grouped. This procedure is described in Algo. \ref{algo:group_by_hash}.
+
 Once items are grouped by shape, the best insertion for each class of items is computed for each open bin. If no insertion is possible in any bin, then the only viable insertion is the bin opening insertion (\cref{oss:state_bin_open}).
 The state expansion procedure is detailed in Algo. \ref{algo:state_successor}. The algorithm is described in PM mode, however minor modifications are needed to switch to PS mode.
 %TODO: just describe it
@@ -292,18 +293,18 @@ In our version of the algorithm, however, the corner points of each item are int
 Placements follow a first-fit approach where the algorithm selects the first point closest to the origin where a rectangle can fit with or without rotations.
 In order to facilitate the evaluation of reference points with support, we also generate a reference point in the bottom left corner of each item that belongs to the set of supporting items $I_{support}$.
 When a reference point is used for a placement, it is then removed from the pool of reference points.
-Before evaluating placements, the item to place are ordered based on their area (this is meaningful only in multiple placements PM mode).
+Before evaluating placements, the items to place are ordered based on their area (this is meaningful only in multiple placements PM mode).
 New planes have always the origin of space $(0,0)$ as a first reference point.
 
 Since reference points are usually ordered based on the euclidean distance from the bottom left corner of the plane and the corner points are usually generated and projected towards the origin of each axis, the placements over one plane are usually biased towards the bottom left corner.
-To address the problem, whenever we are generating 2D placements, we evaluate four instances of EP where each one has a different coordinate change that moves the plane's origin to a different corner of the bin.
-This addition is based on similar approaches from the literature where it is used to distribute weight more uniformly across a surface (ex. \cite{GAJDA2022102559}), and it was proved to yield better cage ratio results in our computational experiments.
+To address the problem, whenever we are generating 2D placements, we evaluate four instances of EP. Each instance has a different coordinate change that moves the plane's origin to a different corner of the bin.
+This addition is based on similar approaches from the literature where it is used to distribute weight more uniformly across a surface (e.g., \cite{GAJDA2022102559}), and it was proved to yield better cage ratio results in our computational experiments.
 
 The EP procedure is called for each item to pack on a given plane.
 In order to produce a valid insertion $p$, every item in $I_p$ should not overlap with other items in $I_p$ (as stated in \cref{def:insertion}).
 Since the AABB tree for a given state is shared by each evaluation of a possible insertion, it cannot be modified to account for temporary placements of items.
-This means that we need to keep a temporary AABB tree updated composed of the items that are part of the current insertion $T^\prime_p$.
-We can then define a function that uses the temporary tree and the feasibility function defined in \cref{sec:problem_state:feasibility} to ensure that we are producing a feasible insertion as \cref{eq:ep_can_pack}.
+This means that we need to keep a temporary AABB tree composed of the items that are part of the current insertion $T^\prime_p$.
+We then define a function that uses the temporary tree and the feasibility function defined in \cref{sec:problem_state:feasibility} to ensure that we are producing a feasible insertion as \cref{eq:ep_can_pack}.
 \begin{equation}
     \label{eq:ep_can_pack}
     EPCanPack(i, I_{support}, T^s_{b_p}, T^\prime_p) = IsFeasible(i, I_{support}, T^s_{b_p}) \land \lnot AABBOverlaps(i, T^\prime_p)
@@ -363,7 +364,7 @@ Given $T$ as the AABB Tree that represents the bin where the insertion is going 
     \item $CloseSameShape(i, T)$: which returns the number of packed items in the tree that are close to $i$ and with its same shape,
     \item $TotalSupportedArea(i, T)$: which returns the total base area of $i$ which is supported by other items.
 \end{itemize}
-We can then sort insertions $p$, given $T$ as the AABB tree of the bin where the insertion will happen, with a lexicographic ordering as follows:
+We then sort insertions $p$, given $T$ as the AABB tree of the bin where the insertion will happen, with a lexicographic ordering as follows:
 \begin{itemize}
     \item $f_1(p) = -\sum\limits_{i \in I_p}{CloseSameShape(i, T)} - |I_p|$: maximize number of items inserted (of the same shape) that are close to already packed items of the same shape,
     \item $f_2(p) = -\sum\limits_{i \in I_p}{(w^s_i d^s_i + w^s_i d^s_i h^s_i)}$: maximize the sum of the area and volume of each packed item,
@@ -372,6 +373,6 @@ We can then sort insertions $p$, given $T$ as the AABB tree of the bin where the
     \item $f_5(p) = -\sum\limits_{i \in I_p}{CloseSameHeight(i, T)} - |I_p|$: maximize the number of items inserted (of the same height) that are close to already packed items of the same height,
     \item $f_5(p) = -\sum\limits_{i \in I_p}{CloseItems(i, T)} - |I_p|$: maximize the number of items inserted that are close to already packed items.
 \end{itemize}
-It is noted that preferring feasible insertions that minimize the supported area of each item as in $f_4$ is inspired by other works on spacing from the literature.
+We note that preferring feasible insertions that minimize the supported area of each item as in $f_4$ is inspired by other works on spacing from the literature.
 As shown in \cite{elhedhli2019three}, overly satisfying the support constraint can lead to unbalanced bins.
 Minimizing the supported area of each item leads to minimizing the perimeter of overlap between items which in turn results in more balanced bins that have better spacing between items.

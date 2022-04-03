@@ -52,9 +52,9 @@ Given the definitions of our practical constraints, a conceptual formulation of 
 \end{eqnarray*}
 
 To the best of our knowledge no formulations for the 3D-BPPVS exists.
-In \cref{sec:milp} a mixed-integer linear programming model for the 3D-SBSBPP is presented and it's later extended to include orthogonal rotations in \cref{subsec:orthogonal_rotations}.
+In \cref{sec:milp} a mixed-integer linear programming model for the 3D-SBSBPP is presented and it is later extended to include orthogonal rotations in \cref{subsec:orthogonal_rotations}.
 Vertical support constraints limited to condition \ref{support:area_support} (area support) are developed in \cref{subsec:vertical_support_formulation}.
-Cage ratio isn't directly included in the proposed MILP formulation since it was able to handle only instances of the problem with a single bin.
+Cage ratio is not directly included in the proposed MILP formulation since it was able to handle only instances of the problem with a single bin.
 As previously mentioned, in a single bin setting minimizing the maximum height of the bin is equivalent to minimizing the cage ratio.
 
 \section{Three-Dimensional Single Bin-Size Bin Packing Problem}
@@ -103,7 +103,7 @@ Constraints \ref{cons:x_prec_1} to \ref{cons:z_prec_2} are used to define the pr
 Constraints \ref{cons:no_overlap} then ensure that if two items are in the same bin, there needs to be at least one axis with a clear order of precedence; otherwise, the two items would overlap.
 
 \section{Three-Dimensional Bin Packing Problem with Vertical Support}
-In this section we extend the 3D-SBSBPP formulation of \cref{sec:milp} with constraints to introduce rotations of items and vertical support. Since our model only handles small instances we'll use it in a single bin setting so, to account for the cage ratio, we change objective function \ref{eq:objective} with \ref{eq:objective_2}.
+In this section we extend the 3D-SBSBPP formulation of \cref{sec:milp} with constraints to introduce rotations of items and vertical support. Since our model only handles small instances we will use it in a single bin setting so, to account for the cage ratio, we change objective function \ref{eq:objective} with \ref{eq:objective_2}.
 This allows us to define a proxy of the 3D-BPPVS that is valid for the single bin case.
 We also introduce an additional continuous variable $z_b^\text{max}$ that takes the value of the maximum height used in bin $b \in B$.
 The proxy problem formulation than becomes:
@@ -174,7 +174,7 @@ The resulting constraints are defined in \cref{cons:discretized_support_limit_x_
     & y_j - y_i \le \gamma (h + 1) + 2D( 1 - s^{k h}_{i j b}) &  \label{cons:discretized_support_limit_y_2}
 \end{align}
 
-We can then introduce feasibility constraints thet ensure that every item that isn't on the ground is supported by other items placed beneath it by at least $\alpha_s$ times its area, which corresponds to condition \ref{support:area_support} of the practical constraint of vertical support.
+We can then introduce feasibility constraints thet ensure that every item that is not on the ground is supported by other items placed beneath it by at least $\alpha_s$ times its area, which corresponds to condition \ref{support:area_support} of the practical constraint of vertical support.
 \begin{eqnarray}
     & \sum\limits_{(k, h) \in \Delta, b \in B, j \in I : i \neq j \land O(i, j, k, h) \neq 0}{ O(i, j, k, h)s^{k h}_{j i b}} \ge \alpha_s w_i d_i - w_i d_i g_i & \forall i \in I \label{cons:every_item_is_supported}
 \end{eqnarray}
