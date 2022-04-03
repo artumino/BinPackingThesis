@@ -79,12 +79,12 @@ To determine the feasibility of a given state, one needs to check if no placed i
 Since every item is a cuboid and our problem formulation only allows for $90\deg$ rotations over the z-axis, each item is contained inside a bounding box, which is axis-aligned.
 An adequate structure to compute overlaps is then an Axis-Aligned Bounding Box Tree (AABB Tree) \citep{bergen1997efficient}.
 The concept of using AABB Trees in three-dimensional bin packing heuristics was already a studied in the literature (e.g., \cite{ALLEN2011219}).
-A conceptual image of a two-dimensional AABB Tree which contains three elements can be seen in \cref{fig:aabb_tree}.
+A conceptual representation of a two-dimensional AABB Tree that contains three elements can be seen in \cref{fig:aabb_tree}.
 
 \begin{figure}
     \label{fig:aabb_tree}%
     \input{Images/aabb_tree}
-    \caption{Conceptual rappresentation of a two-dimensional AABB Tree with three elements}
+    \caption{Conceptual representation of a two-dimensional AABB Tree with three elements}
 \end{figure}
 
 AABB Trees are bounding volume hierarchies typically used for fast collision detection, and they usually offer a few operations:
