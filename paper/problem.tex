@@ -23,7 +23,6 @@ We note that in a single bin configuration, maximizing cage ratio is equivalent 
     \label{fig:cage_ratio}
 \end{figure}
 
-%TODO: Reference maybe someone with beta_s
 Vertical stability is usually ensured between horizontal or vertical slices of items as a constraint on the minimum amount of area which rests on other items (e.g., \cite{GZARA20201062,kurpel2020exact,paquay2016mixed}).
 Specifically, given a support area threshold $\alpha_s$ and a maximum vertical gap below which an item can be considered as effectively supporting another one $\beta_s$. We can define an item as supported if one of the following holds
 \begin{enumerate}
@@ -31,6 +30,7 @@ Specifically, given a support area threshold $\alpha_s$ and a maximum vertical g
     \item the number of its corners resting on another item is greater or equal to 3, and condition \ref{support:area_support} holds with a lower threshold $\alpha^\prime_s$ where $\alpha^\prime_s < \alpha_s$. (vertex support) \label{support:vertex_support}
 \end{enumerate}
 A visual representation of the conditions \ref{support:area_support} and \ref{support:vertex_support} of support is illustrated in \cref{fig:support}.
+The maximum vertical gap allowed $\beta_s$ is used by the industry and other contributions from the literature (e.g., \cite{elhedhli2019three}) to account for errors in the measurement of the dimensions of each box, and the fact that in a real-world scenario boxes are not rigid bodies and will have a certain degree of deformation.
 
 \begin{figure}[H]
     \scalebox{0.55}{%

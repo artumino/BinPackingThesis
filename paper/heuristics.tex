@@ -2,7 +2,6 @@ In this chapter we present our heuristic algorithm to solve the 3D-BPPVS.
 Since the 3D-BPP is NP-Hard, an exhaustive search for a solution is not practical, therefore a heuristic search is conducted by combining the beam search algorithm described in \cref{sec:beamsearch} with the constructive heuristic described in \cref{sec:support_planes}.
 In section \ref{sec:problem_state} we define the preliminary concepts that will be used in the algorithm: states, insertions and solution's feasibility.
 
-%TODO: Explain a bit why support planes instead of layers
 \section{States}
 \label{sec:problem_state}%
 States are partial solutions of the 3D-BPPVS. Since our heuristic is based on a constructive method, starting from a state representing an empty solution we will iteratively build new states that gradually change to become a complete solution of the problem.
@@ -242,10 +241,10 @@ The state expansion procedure is detailed in Algo. \ref{algo:state_successor}. T
 \subsection{Ranking States}
 \label{ssec:scoring_states}%
 In order to sort states, an ordering needs to be defined over them.
+The ranking of states occurs in Algo. \ref{algo:state_successor} to decide which states to keep for the next iteration of the BS.
+The idea at this stage is to rank a partial solution of the problem after an insertion has happened. 
 Since the selection of a state over another is what will influence the final solution the most, parameters that are directly related to minimizing the objective function are used.
-
-%TODO: add generic fluff
-%TODO: talk about average volume which is constant
+We use other metrics like volume packed to indirectly increase the ammount of large volume items packed in the solution, which allows us to select solutions with bigger support surfaces for future insertions.
 
 In the proposed solution, we use lexicographic ordering to handle multiple objective functions.
 \begin{definition}
@@ -270,11 +269,21 @@ We use the following objective functions (considering a minimization direction):
     \item $f_3(s) = -\text{avgcageratio}(s)$: we prefer states that have better average cage ratio (\cref{eq:cage_ratio}) between bins.
 \end{itemize}
 
+We note that $f_2$ only has influence on the ranking of partial solutions. This is due to the fact that the average packed volume is defined as
+\begin{equation}
+    \label{eq:average_volume}
+    avgvol(s) = \frac{1}{|B^s|} \sum\limits_{b \in B^s}{\sum\limits_{i \in J^s_b}{w^s_i d^s_i h_i}}
+\end{equation}
+Since we are using lexicographic ordering, $f_2(s)$ will only have influence in solutions that have the same value of $f_1(s)$.
+When evaluating the average volume of final states, the volume packed across all bins will be the volume of all items $V_I$ and, due to our lexicographic ordering, the number of bins $|B^s|$ will be the same.
+This means that $f_2$ will not have an effect on the ranking of final states.
+
 \section{Support Planes}
 \label{sec:support_planes}%
 Support Planes (SP) is a constructive heuristic for the 3D-BPPVS which is based on an underlying 2D-BPP heuristic. The latter is used to generate feasible insertions inside a bin starting from a set of items to pack.
 Since insertions must be feasible, SP maintains an internal data structure to facilitate feasibility checks.
 The idea at the base of SP is to build a solution to the 3D-BPP by filling 2D planes called \textit{support planes}.
+These planes are not complete layers like in other solutions from the literature and can be composed of items of different heights and shapes.
 
 Each support plane is a tuple $(z, I_{support}, I_{upper})$ where
 \begin{itemize}
@@ -359,10 +368,11 @@ This new algorithm can be used as the last step of the $Commit$ algorithm for ea
 
 \subsection{Ranking Insertions}
 \label{ssec:scoring_insertions}%
-Similarly to the ranking of states (\cref{ssec:scoring_states}), an ordering function is also needed to evaluate different insertions for the same set of items.
+Similarly to the ranking of states (\cref{ssec:scoring_states}), an ordering function is also needed to evaluate different insertions for the same set of items as seen in Algo. \ref{algo:sp_bestinsertion}.
 We rank insertions to prefer the ones that will generate new states which have some properties.
-We facilitate the generation of large even surfaces by giving a higher ranking to insertions that have large areas covered by items of the same shape or height.
+We facilitate the generation of large even surfaces by giving a higher ranking to insertions that will build large areas covered by items of the same shape or height.
 Since the ranked insertions are always feasible, we try to avoid over satisfying the support constraint to allow for more balanced bins.
+
 Given the lexicographic ordering formulation in \cref{def:lexicographic_ordering}, a few new functions can be calculated and stored inside an insertion to help in the evaluation.
 Given $T$ as the AABB Tree that represents the bin where the insertion is going to happen, and given one of the inserted items $i \in I_p$, we define functions that use the tree to calculate useful metrics:
 \begin{itemize}
@@ -371,7 +381,7 @@ Given $T$ as the AABB Tree that represents the bin where the insertion is going 
     \item $CloseSameShape(i, T)$: which returns the number of packed items in the tree that are close to $i$ and with its same shape,
     \item $TotalSupportedArea(i, T)$: which returns the total base area of $i$ which is supported by other items.
 \end{itemize}
-We then sort insertions $p$, given $T$ as the AABB tree of the bin where the insertion will happen, with a lexicographic ordering as follows:
+We then sort insertion $p$, given $T$ as the AABB tree of the bin where the insertion will happen, with a lexicographic ordering function $f_j(p)$ as follows:
 \begin{itemize}
     \item $f_1(p) = -\sum\limits_{i \in I_p}{CloseSameShape(i, T)} - |I_p|$: maximize number of items inserted (of the same shape) that are close to already packed items of the same shape,
     \item $f_2(p) = -\sum\limits_{i \in I_p}{(w^s_i d^s_i + w^s_i d^s_i h^s_i)}$: maximize the sum of the area and volume of each packed item,
