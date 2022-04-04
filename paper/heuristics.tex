@@ -231,8 +231,11 @@ The evaluation of new insertions can then be done with two different approaches 
 Creating insertions of groups of similar items is a common strategy in Pallet Loading Problems (e.g., \cite{elhedhli2019three}) to create better bases of support for upper layers.
 With a similar intuition, the idea of placing groups of items of the same shape is to facilitate the creation of uniform planes to be used to support future insertions.
 
-Once items are grouped by shape, the best insertion for each class of items is computed for each open bin. If no insertion is possible in any bin, then the only viable insertion is the bin opening insertion (\cref{oss:state_bin_open}).
-The state expansion procedure is detailed in Algo. \ref{algo:state_successor}. The algorithm is described in PM mode, however switching to PS mode is possible by modifying Algo. \ref{algo:group_by_hash} to return only singletons for each different class of item shapes.
+Once items are grouped by shape, the best insertion for each class of items is computed for each open bin.
+If no insertion is possible in any bin, then the only viable insertion is the bin opening insertion (\cref{oss:state_bin_open}).
+Given a supporting set $Z^s_b$ defined as in \cref{sec:support_planes}, which is used by our constructive heuristic.
+The resulting state expansion procedure is detailed in Algo. \ref{algo:state_successor}.
+The algorithm is described in PM mode, however switching to PS mode is possible by modifying Algo. \ref{algo:group_by_hash} to return only singletons for each different class of item shapes.
 
 \input{algorithms/state_successor}
 \input{algorithms/group_by_height}
