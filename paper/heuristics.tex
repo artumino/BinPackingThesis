@@ -77,13 +77,13 @@ Given a state $s$, for each item $i \in I$ packed in $b \in B^s$ ($i \in J^s_b$)
 To determine the feasibility of a given state, one needs to check if no placed items overlap.
 Since every item is a cuboid and our problem formulation only allows for $90\deg$ rotations over the z-axis, each item is contained inside a bounding box, which is axis-aligned.
 An adequate structure to compute overlaps is then an Axis-Aligned Bounding Box Tree (AABB Tree) \citep{bergen1997efficient}.
-The concept of using AABB Trees in three-dimensional bin packing heuristics was already a studied in the literature (e.g., \cite{ALLEN2011219}).
+The concept of using AABB Trees in three-dimensional bin packing heuristics was already studied in the literature (e.g., \cite{ALLEN2011219}).
 A conceptual representation of a two-dimensional AABB Tree that contains three elements can be seen in \cref{fig:aabb_tree}.
 
 \begin{figure}
-    \label{fig:aabb_tree}%
+    
     \input{Images/aabb_tree}
-    \caption{Conceptual representation of a two-dimensional AABB Tree with three elements}
+    \caption{Conceptual representation of a two-dimensional AABB Tree with three elements \label{fig:aabb_tree}}
 \end{figure}
 
 AABB Trees are bounding volume hierarchies typically used for fast collision detection, and they usually offer a few operations:
@@ -247,7 +247,7 @@ In order to sort states, an ordering needs to be defined over them.
 The ranking of states occurs in Algo. \ref{algo:state_successor} to decide which states to keep for the next iteration of the BS.
 The idea at this stage is to rank a partial solution of the problem after an insertion has happened. 
 Since the selection of a state over another is what will influence the final solution the most, parameters that are directly related to minimizing the objective function are used.
-We use other metrics like volume packed to indirectly increase the ammount of large volume items packed in the solution, which allows us to select solutions with bigger support surfaces for future insertions.
+We also use other metrics like the volume packed to indirectly increase the amount of large volume items packed in the solution, which allows us to select solutions with bigger support surfaces for future insertions.
 
 In the proposed solution, we use lexicographic ordering to handle multiple objective functions.
 \begin{definition}
@@ -372,7 +372,6 @@ This new algorithm can be used as the last step of the $Commit$ algorithm for ea
 \subsection{Ranking Insertions}
 \label{ssec:scoring_insertions}%
 Similarly to the ranking of states (\cref{ssec:scoring_states}), an ordering function is also needed to evaluate different insertions for the same set of items as seen in Algo. \ref{algo:sp_bestinsertion}.
-We rank insertions to prefer the ones that will generate new states which have some properties.
 We facilitate the generation of large even surfaces by giving a higher ranking to insertions that will build large areas covered by items of the same shape or height.
 Since the ranked insertions are always feasible, we try to avoid over satisfying the support constraint to allow for more balanced bins.
 

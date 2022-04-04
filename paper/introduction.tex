@@ -4,7 +4,7 @@ The three-dimensional bin packing problem (3D-BPP) is part of the family of Cutt
 They also divided C\&Ps in several typologies based on the number of geometric dimensions (1D, 2D, 3D, nD), the kind of assignment to be made, the assortment of small items, the assortment of large items, and the shape of small items (regual or irregular).
 The 3D-BPP involves packing, in three dimensions, a strongly heterogeneous assortment of small cuboid-shaped fixed-size items (boxes) into the minimum number of cuboid-shaped large ones (bins) without any overlap.
 In the case of a 3D-BPP where the dimensions of the bins are also fixed, the problem is then defined as a Three-Dimensional Single Bin-Size Bin Packing Problem (3D-SBSBPP).
-Items can only be placed with their edges parallel to the sides of the bin and in some formulations they can be rotated by $90$ degrees along their vertical axis.
+Items can only be placed with their edges parallel to the sides of the bin and, in some formulations, they can be rotated by $90$ degrees along their vertical axis.
 
 In this thesis, we address a variation of the 3D-SBSBPP stemming from a real case study of mixed-case palletization: the Three-Dimensional Bin Packing Problem with Vertical Support (3D-BPPVS).
 Modeling real-world case studies with the 3D-SBSBPP requires additional constraints to be considered. We extend the standard formulation of the 3D-SBSBPP by ensuring that all items that are packed inside a bin will not fall, and we refer to this property as the vertical support.
@@ -14,7 +14,7 @@ The standard 3D-SBSBPP is strongly NP-hard since it is a generalization of the o
 Since our problem is a generalization of the 3D-SBSBPP, exact solution algorithms are only able to solve small instances of the problem; therefore, heuristic approaches need to be used to solve larger instances.
 Heuristics designed to solve the 3D-SBSBPP do not address the concept of vertical support and allow solutions with unsupported items.
 The concept of support has received most attention in Pallet Loading Problems and Container Loading Problems (\cite{Calzavara2021, kurpel2020exact}).
-These problems involve an assortment of weakly heterogeneous items and were classified as Cutting Stock problems.
+These problems involve an assortment of weakly heterogeneous items and were classified by \cite{WASCHER20071109} as Cutting Stock problems.
 Since items can be easily grouped together, the concept of support is addressed explicitly by building layers or walls of items with high density. This allows to reduce the problem to a one-dimensional packing problem (\cite{BORTFELDT20131}).
 In mixed-case palletization scenarios, layer-based solutions represent the majority of work in the literature. They usually work by stacking layers ordered by density until the density of the last generated layers falls below a certain threshold.
 Once no more layers can be generated, simpler techniques are employed to pack the remaining items (\cite{elhedhli2019three}), or the use of filler boxes is employed to increase the layer's density (\cite{Calzavara2021}).
@@ -22,7 +22,7 @@ Once no more layers can be generated, simpler techniques are employed to pack th
 In this thesis we
 \begin{itemize}
     \item formulate a mixed-integer linear programming model for the 3D-BPPVS with a discretized version of the support constraint,
-    \item develop a constructive heuristic that fills bins while guarenteeing vertical support, without explicitly building layered solutions or using filler boxes,
+    \item develop a constructive heuristic that fills bins while guaranteeing vertical support, without explicitly building layered solutions or using filler boxes,
     \item introduce a beam search heuristic that expands the constructive heuristic's solution space by exploring different orders of item palletization,
     \item validate the proposed heuristics against our model and, in a relaxed version, against the most relevant heuristics from the 3D-SBSBPP literature,
     \item generate and share a data set based on real-world instances that we use to benchmark our heuristic.
