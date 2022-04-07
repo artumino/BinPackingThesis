@@ -41,7 +41,6 @@ The introduced tolerance also accounts for the fact that in a real-world scenari
     \label{fig:support}
 \end{figure}
 
-\newpage
 Given the definitions of our practical constraints, a conceptual formulation of the 3D-BPPVS is
 \begin{eqnarray*}
     \textbf{minimize} & \text{number of used bins} \\
@@ -58,6 +57,7 @@ Vertical support constraints limited to condition \ref{support:area_support} (ar
 Cage ratio is not directly included in the proposed MILP formulation since it was able to handle only instances of the problem with a single bin.
 As previously mentioned, in a single bin setting minimizing the maximum height of the bin is equivalent to minimizing the cage ratio.
 
+\newpage
 \section{Three-Dimensional Single Bin-Size Bin Packing Problem}
 \label{sec:milp}%
 Let $I = \{1,\dots, n \}$ be the set of items that need to be packed in a set of $B = \{1,\dots, m \}$ bins, each with fixed dimensions $W \times D \times H$.
