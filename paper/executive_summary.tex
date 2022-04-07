@@ -121,6 +121,36 @@
 %%     THESIS MAIN TEXT     %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+
+%% \section{Guidelines}
+%% \label{sec:guidelines}
+%% 
+%% The Executive Summary is a critical overview of your thesis
+%% with a focus on the main achievements that have emerged from your research.
+%% 
+%% The Executive Summary should be organized in sections/paragraphs
+%% in order to better highlight the major points of your work.
+%% The length should range from four to six pages depending on the length of the thesis manuscript.
+%% Keep the Executive Summary concise enough to be effective but long enough to allow it to be complete.
+%% It should be written after completing the thesis manuscript as a stand-alone independent document
+%% of sufficient clarity and detail to ensure that the reader can figure out the overall objectives,
+%% the methodology employed and the results/impact of your research.
+%% 
+%% In writing the Executive Summary, keep in mind that it is not an abstract, it is not a preface,
+%% and it is not a random collection of highlights.
+%% With a few exceptions, do not simply cut and paste whole sections or paragraphs of the thesis manuscript
+%% into a disorganized and cluttered Executive Summary.
+%% You should reorganize information to be informative as well as concise.
+%% 
+%% The Executive Summary could contain a few important equations related to your work.
+%% It could also include the most relevant figures and tables taken or elaborated from the thesis manuscript.
+%% 
+%% You should also include in the Executive Summary the very essential bibliography of your study.
+%% The number of selected references should range from three to five depending on the type of work.
+%% 
+%% The Executive Summary should contain a final section reporting the main conclusions drawn from your research.
+
 %-----------------------------------------------------------------------------
 % INTRODUCTION
 %-----------------------------------------------------------------------------
@@ -139,12 +169,13 @@ The company manages large warehouses where automated lines bring boxes to differ
 Since the company is dealing directly with customers' orders, boxes have very different sizes and are usually packed in smaller quantities.
 Moreover, the assortment of items to pack is strongly heterogeneous which makes the use of layered approaches to have sub-optimal results.
 During the palletization, the lower levels of already packed items are wrapped to ensure better overall stability of the pallet.
-This wrapping procedure requires that the ammount of unused space between items is minimal and measures this property with a metric called cage ratio.
-Cage Ratio is the ratio between the volume of the packed items inside a bin and the volume of the cuboid which surrounds them called cage.
-The cage has the same base as the bin and the height equalt to the heighest packed item inside the bin.
+This wrapping procedure requires that the amount of unused space between items is minimal. The company measures this property with a metric called cage ratio.
+Cage ratio is the ratio between the volume of the packed items inside a bin and the volume of the cuboid which surrounds them, the cage.
+The cage has the same base as the bin and height equal to the highest packed item inside the bin.
 Current commercial solutions employed by the company have solutions with around $60\%$ cage ratio, and a target of $70\%$ was set as a benchmark for our work.
 
-Since the 3D-BPP is the generalization of the one-dimensional bin packing problem, it is NP-Hard (\cite{martello2000three}).
+\section{Gap Identification}
+The 3D-BPP is the generalization of the one-dimensional bin packing problem which is NP-Hard (\cite{martello2000three}).
 Exact methods can only solve small instances of the problem which means that most solutions proposed in the literature are heuristics.
 The concept of vertical support received most of its contribution from the literature of Container Loading Problems (CLP) and Pallet Loading Problems (PLP).
 As noted in \cite{BORTFELDT20131}, static stability is usually implicitly enforced as a consequence of load compactness, or explicitly guaranteed by using filler material in a postprocessing step.
@@ -157,179 +188,9 @@ Our solution to the problem fills the gap in the research by finding solutions t
 \section{Proposed Solution}
 
 
-\section{Computational Experiments and Results}
+\section{Results}
 
-\section{Conclusions and Future Developments}
-
-\section{Guidelines}
-\label{sec:guidelines}
-
-The Executive Summary is a critical overview of your thesis
-with a focus on the main achievements that have emerged from your research.
-
-The Executive Summary should be organized in sections/paragraphs
-in order to better highlight the major points of your work.
-The length should range from four to six pages depending on the length of the thesis manuscript.
-Keep the Executive Summary concise enough to be effective but long enough to allow it to be complete.
-It should be written after completing the thesis manuscript as a stand-alone independent document
-of sufficient clarity and detail to ensure that the reader can figure out the overall objectives,
-the methodology employed and the results/impact of your research.
-
-In writing the Executive Summary, keep in mind that it is not an abstract, it is not a preface,
-and it is not a random collection of highlights.
-With a few exceptions, do not simply cut and paste whole sections or paragraphs of the thesis manuscript
-into a disorganized and cluttered Executive Summary.
-You should reorganize information to be informative as well as concise.
-
-The Executive Summary could contain a few important equations related to your work.
-It could also include the most relevant figures and tables taken or elaborated from the thesis manuscript.
-
-You should also include in the Executive Summary the very essential bibliography of your study.
-The number of selected references should range from three to five depending on the type of work.
-
-The Executive Summary should contain a final section reporting the main conclusions drawn from your research.
-
-\cite{ALLEN2011219}
-\section{Sections and subsections}
-\label{sec:sec_and_subsec}
-It is convenient to organize the Executive Summary of your thesis into sections and subsections. 
-If necessary, subsubsections, paragraphs and subparagraphs can be also used. 
-A new section or subsection can be included  with the commands
-\begin{verbatim}
-\section{Title of the section}
-\end{verbatim}
-\begin{verbatim}
-\subsection{Title of the subsection}
-\end{verbatim}
-It is recommended to give a label to each section by using the command
-\begin{verbatim}
-\label{sec:section_name}%
-\end{verbatim}
-where the argument is just a text string that you'll use to reference that part
-as follows: \textit{Section~\ref{sec:sec_and_subsec} contains \sc{SECTIONS AND SUBSECTIONS}  \dots}.\\
-
-%-----------------------------------------------------------------------------
-% EQUATIONS AND FIGURES
-%-----------------------------------------------------------------------------
-\section{Equations, Figures, Tables and Algorithms}
-\label{sec:equations_and_figures}
-All Figures, Tables and Algorithms have to be properly referred in the text.
-Equations have to be numbered only if they are referred in the text.
-\subsection{Equations}
-\label{sec_equations}
-A few important equations related to your work might be reported in the Executive Summary. For example, the Maxwell's equations read:
-\begin{subequations}
-    \label{eq:maxwell}
-    \begin{align}[left=\empheqlbrace]
-    \nabla\cdot \bm{D} & = \rho, \label{eq:maxwell1} \\
-    \nabla \times \bm{E} +  \frac{\partial \bm{B}}{\partial t} & = \bm{0}, \label{eq:maxwell2} \\
-    \nabla\cdot \bm{B} & = 0, \label{eq:maxwell3} \\
-    \nabla \times \bm{H} - \frac{\partial \bm{D}}{\partial t} &= \bm{J}. \label{eq:maxwell4}
-    \end{align}
-\end{subequations}
-
-Equation~\eqref{eq:maxwell} is automatically labeled by \texttt{cleveref},
-as well as Equation~\eqref{eq:maxwell1} and Equation~\eqref{eq:maxwell3}.
-Thanks to the \verb|cleveref| package, there is no need to use \verb|\eqref|.
-
-\subsection{Figures}
-\label{sec:figures}
-To include Figures in your text you can use \texttt{TikZ} for high-quality hand-made figures,
-or just include them with the command
-\begin{verbatim}
-\includegraphics[options]{filename.xxx}
-\end{verbatim}
-where xxx is the format (\verb|.png|, \verb|.jpg|, \verb|.eps|, \dots).
-An example is shown in Figure~\ref{fig:quadtree}.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\textwidth]{logo_polimi_scritta.eps}
-    \caption{Caption of the Figure.}
-    \label{fig:quadtree}
-\end{figure}
-
-\subsection{Tables}
-\label{subsec:tables}
-
-Within the environments \texttt{table} and  \texttt{tabular} you can create very fancy tables like the one shown in Table~\ref{table:example}.
-\begin{table}[H]
-    \caption*{\textbf{Example of Table}}
-    \centering 
-    \begin{tabular}{|p{3em} c c c |}
-    \hline
-    \rowcolor{bluePoli!40}
-     & \textbf{column1} & \textbf{column2} & \textbf{column3} \T\B \\
-    \hline \hline
-    \textbf{row1} & 1 & 2 & 3 \T\B \\
-    \textbf{row2} & $\alpha$ & $\beta$ & $\gamma$ \T\B\\
-    \textbf{row3} & alpha & beta & gamma \B\\
-    \hline
-    \end{tabular}
-    \\[10pt]
-    \caption{Caption of the Table.}
-    \label{table:example}
-\end{table}
-
-\subsection{Algorithms}
-\label{subsec:algorithms}
-
-Pseudo-algorithms can be written in \LaTeX{} with the \texttt{algorithm} and \texttt{algorithmic} packages.
-One example follows.
-\begin{algorithm}[H]
-\label{alg:example}
-\caption{Name of the Algorithm}
-\label{alg:var}
-\label{protocol1}
-\begin{algorithmic}[1]
-\STATE Initial instructions
-\FOR{$for-condition$}
-\STATE{Some instructions}
-\IF{$if-condition$}
-\STATE{Some other instructions}
-\ENDIF
-\ENDFOR
-\WHILE{$while-condition$}
-\STATE{Some further instructions}
-\ENDWHILE
-\STATE Final instructions
-\end{algorithmic}
-\end{algorithm} 
-
-\section{Some further useful recommendations}
-
-Theorems and Propositions have to be formatted as follows:
-\begin{theorem}
-\label{a_theorem}
-Write here your theorem. 
-\end{theorem}
-\textit{Proof.} If useful you can report here the proof.
-\vspace{0.3cm} % Insert vertical space
-
-How to write propositions:
-\begin{proposition}
-Write here your proposition.
-\end{proposition}
-\vspace{0.3cm} % Insert vertical space
-
-How to insert itemized lists:
-\begin{itemize}
-    \item first item;
-    \item second item.
-\end{itemize}
-How to insert numbered lists:
-\begin{enumerate}
-    \item first item;
-    \item second item.
-\end{enumerate}
-
-%-----------------------------------------------------------------------------
-% HOW TO CITE BIBLIOGRAPHY
-%-----------------------------------------------------------------------------
-\section{Bibliography}
-\label{sec:bibliography}
-The Executive Summary should contain the very essential bibliography of your study.
-It is suggested to use the BibTeX package and save the bibliographic references
-in the file  \verb|literature.bib|.
+\input{tests/literature_time_gap}
 
 %-----------------------------------------------------------------------------
 % CONCLUSION
