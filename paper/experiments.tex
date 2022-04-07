@@ -29,7 +29,7 @@ Instances from 9 to 20 finished due to exceeding the time limit with gaps higher
 \section{Literature results}
 The heuristic was also evaluated against instances from the literature defined by \cite{martello2000three}.
 Since these instances were designed for heuristics without vertical support constraint and orthogonal rotations, we ran the experiments with a relaxed version of our heuristic.
-The heuristic was configured to ignore the support constraint with $\alpha_s = 0$ and $\beta_s = 1$. We also disabled orthogonal rotations and stopped scoring insertions based on the support area available (as described in \cref{ssec:scoring_insertions}).
+The heuristic was configured to ignore the support constraint with $\alpha_s = 0$ and $\beta_s = 0$. We also disabled orthogonal rotations and stopped scoring insertions based on the support area available (as described in \cref{ssec:scoring_insertions}).
 
 \label{def:class1_instances}
 The literature instances are divided into classes from 1 to 8, with each class having a different bin size and various distributions of types of items.
@@ -40,7 +40,7 @@ In \cref{exp:literature_bins} we compare the average number of opened bins acros
 The results are then compared to the most effective methods from the literature ordered by publishing date and listed as TS3 \citep{lodi2002heuristic}, GLS \citep{faroe2003guided}, GASP \citep{crainic2009ts2pack}, GVND \citep{parreno2010hybrid}, EHGH2 \citep{hifi2014hybrid}, BRKGA \citep{gonccalves2013biased}, BRKGA-VD \citep{zudio2018brkga}.
 The values of heuristics from the literature are reported as in the publications. Note that our generated instances weren't the same ones which, as indicated in \cite{hifi2014hybrid}, could have different optimal values.
 The best values of each instance class are marked in bold. Best values across configurations of our heuristic are marked in italic instead.
-Results show an average gap of $4.1\%$ compared to the average value across the other heuristics and an average gap of $5.32\%$ with respect to the best performing one.
+Results show an average gap of $4.13\%$ compared to the average value across the other heuristics and an average gap of $5.37\%$ with respect to the best performing one.
 
 In \cref{exp:literature_time_gap} we give an approximate comparison between the average execution time of our heuristic with respect to BRKGA-VD.
 Execution times for BRKGA-VD are the ones listed from their experiments, which were conducted on an Intel Core i5-240CM at 2.5Ghz with 8GB of RAM.
