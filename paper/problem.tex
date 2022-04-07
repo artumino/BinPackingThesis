@@ -2,7 +2,7 @@ In this thesis, we address the Three-Dimensional Single Bin-Size Bin Packing Pro
 Starting from a set of items of different sizes, the goal is to arrange them in the least amount of fixed-size bins without any overlap between each other.
 In addition to the standard formulation of the 3D-SBSBPP, three practical constraints are taken into account:
 \begin{itemize}
-    \item each item inside a bin should have vertical support, meaning that every item should be supported either by the ground or by other items in the same bin,
+    \item each item inside a bin should have vertical support, meaning that every item should be supported either by the ground or by other items in the same bin (see conditions \ref{support:area_support},\ref{support:vertex_support}),
     \item the cage ratio of each used bin should be maximized (see \cref{eq:cage_ratio}),
     \item each item can be rotated orthogonally along its vertical axis.
 \end{itemize}
@@ -24,10 +24,10 @@ We note that in a single bin configuration, maximizing cage ratio is equivalent 
 \end{figure}
 
 Vertical stability is usually ensured between horizontal or vertical slices of items as a constraint on the minimum amount of area which rests on other items (e.g., \cite{GZARA20201062,kurpel2020exact,paquay2016mixed}).
-Specifically, given a support area threshold $\alpha_s$ and a maximum vertical gap below which an item can be considered as effectively supporting another one $\beta_s$. We can define an item as supported if one of the following holds
-\begin{enumerate}
+Specifically, given a support area threshold $\alpha_s$ and a maximum vertical gap below which an item can be considered as effectively supporting another one $\beta_s$. We define an item as supported if one of the following conditions holds
+\begin{enumerate}[label={\textbf{Condition \arabic*}.},ref={\arabic*},leftmargin=*]
     \item the sum of the overlap area over the XY-plane with every other item on which it is resting is greater than $\alpha_s$ times its base area. (area support) \label{support:area_support}
-    \item the number of its corners resting on another item is greater or equal to 3, and condition \ref{support:area_support} holds with a lower threshold $\alpha^\prime_s$ where $\alpha^\prime_s < \alpha_s$. (vertex support) \label{support:vertex_support}
+    \item the number of its corners resting on another item is greater or equal to 3, and condition \ref{support:area_support} holds with a threshold $\alpha^\prime_s$ where $\alpha^\prime_s < \alpha_s$. (vertex support) \label{support:vertex_support}
 \end{enumerate}
 A visual representation of the conditions \ref{support:area_support} and \ref{support:vertex_support} of support is illustrated in \cref{fig:support}.
 The maximum vertical gap allowed $\beta_s$ is used by the industry and other contributions from the literature (e.g., \cite{elhedhli2019three}) to account for errors in the measurement of the dimensions of each box.
@@ -45,9 +45,9 @@ The introduced tolerance also accounts for the fact that in a real-world scenari
 Given the definitions of our practical constraints, a conceptual formulation of the 3D-BPPVS is
 \begin{eqnarray*}
     \textbf{minimize} & \text{number of used bins} \\
-    \textbf{then, maximize} & \text{average cage ratio of used bins} \\
-    \textbf{subject to} & \text{all items assigned to one and only one bin} \\
-                                      & \text{all items inside the bin's bounds} \\
+    \textbf{then, maximize} & \text{average cage ratio of the used bins} \\
+    \textbf{subject to} & \text{all items are assigned to one and only one bin} \\
+                                      & \text{all items are inside the bin's bounds} \\
                                       & \text{no overlaps between items in the same bin} \\
                                       & \text{all items have vertical support} \\
 \end{eqnarray*}
@@ -96,11 +96,10 @@ The 3D-SBSBPP can then be formulated as a mixed-integer linear programming probl
 \end{align}
 
 The objective function \ref{eq:objective} seeks to minimize the number of opened bins.
-
 Constraints \ref{cons:all_items_in_bin} ensure that each item is packed in one and only one bin, while constraints \ref{cons:items_in_used_bins} ensure that items are only packed in bins used in the solution.
-Since the solution has lots of symmetries with respect to the number of bins, symmetry-breaking constraints \ref{cons:bin_breaking} are added on the opening of bins to improve solve times.
+Since the solution has many symmetries with respect to the number of bins, symmetry-breaking constraints \ref{cons:bin_breaking} are added on the opening of bins to improve solution times.
 Each item is also ensured to be placed inside the bin thanks to constraints \ref{cons:inside_x} to \ref{cons:inside_z}.
-Constraints \ref{cons:x_prec_1} to \ref{cons:z_prec_2} are used to define the precedence binary variables $x^p_{ij}$, $y^p_{ij}$, $z^p_{ij}$ over each axis. Given that on axis $x$ and item $i \in I$ precedes an item $j \in I$ if $x_i + w_i \le x_j$.
+Constraints \ref{cons:x_prec_1} to \ref{cons:z_prec_2} are used to define the precedence binary variables $x^p_{ij}$, $y^p_{ij}$, $z^p_{ij}$ over each axis. Given that on axis $x$ item $i \in I$ precedes an item $j \in I$ if $x_i + w_i \le x_j$.
 Constraints \ref{cons:no_overlap} then ensure that if two items are in the same bin, there needs to be at least one axis with a clear order of precedence; otherwise, the two items would overlap.
 
 \section{Three-Dimensional Bin Packing Problem with Vertical Support}
@@ -110,7 +109,7 @@ We also introduce an additional continuous variable $z_b^\text{max}$ that takes 
 The proxy problem formulation than becomes:
 \begin{align}
     \min       \qquad& \sum\limits_{b \in B} (H v_b + z^{max}_b) & \label{eq:objective_2} \\
-    \text{s.t.} \qquad& \text{(\ref{cons:all_items_in_bin}) to (\ref{cons:no_overlap})} \\ 
+    \text{s.t.} \qquad& \text{(\ref{cons:all_items_in_bin}) to (\ref{cons:no_overlap})} \notag \\ 
                      & z^{max}_b \ge (z_i + h_i) - H(1-u_{ib}) & \forall i \in I, \forall b \in B \label{cons:maxz}
 \end{align}
 Where the objective function \ref{eq:objective_2} seeks to minimize the number of opened bins and the maximum height at which items were placed across bins and the value of $z^{max}_b$ is forced to converge to the maximum height of a given bin due to constraints \ref{cons:maxz}.
@@ -120,7 +119,7 @@ As previously noted, in a single bin configuration, since all the volume mass is
 
 Let us extend the definition of the problem without rotations with a new formulation that allows $90$ degrees rotations of each item.
 Let $I = I^O \cup I^R$ be the new set of items where $I^O$ is the set of original non-rotated items, and $I^R$ is the set of items rotated by $90$ degrees.
-Given the set of tuples $(i, j) \in I^{OR}$ where $i$ is the original item with dimensions $(w_i, d_i, h_i)$ and $j$ is the corresponding rotated clone with dimensions $(w_j, d_j, h_j) = (d_i, w_i, h_i)$, we can now rewrite constraints \ref{cons:all_items_in_bin} as \ref{cons:all_items_in_bin_with_rotation} to force only one of them to be part of the solution.
+Given the set of tuples $(i, j) \in I^{OR}$ where $i$ is the original item with dimensions $(w_i, d_i, h_i)$ and $j$ is the corresponding rotated clone with dimensions $(w_j, d_j, h_j) = (d_i, w_i, h_i)$, we rewrite constraints \ref{cons:all_items_in_bin} as \ref{cons:all_items_in_bin_with_rotation} to force only one of them to be part of the solution.
 
 \begin{align}
     & \sum\limits_{b \in B} u_{ib} + \sum\limits_{b \in B} u_{jb} = 1 & \forall (i, j) \in I^{OR} \label{cons:all_items_in_bin_with_rotation}
@@ -133,7 +132,7 @@ We now extend the model to address the constraint of vertical support.
 In the literature, some mathematical formulations tackle the concept of area support and, in some cases, vertex support. For example, in \cite{GZARA20201062} a second-order cone programming formulation of the support constraint was used but was limited to the problem of spacing between layers with one of them being fixed in position relative to the other. A similar formulation would lead to a non-linear support constraint in our case.
 By introducing a discretization over the XY-plane a linear version of the constraint can be formulated similar to the one proposed in \cite{kurpel2020exact} without the need to discretize the z-axis as well.
 
-Let us introduce some additional parameters to the model, let $0 \le \alpha_s \le 1$ be the amount of area that an item needs to have supported by other items. Let $\beta_s$ be the tolerance to consider one item as being close enough to support another item (as seen in \cref{fig:support}).
+Let us introduce some additional parameters to the model, let $0 \le \alpha_s \le 1$ be the amount of area that an item needs to have supported by other items (condition \ref{support:area_support}). Let $\beta_s$ be the tolerance to consider one item as being close enough to support another item (as seen in \cref{fig:support}).
 In addition to the support parameters, a parameter $\delta$, which represents the discretization unit used to partition the XY-plane, is given. Let $I^B$ be the set of all the tuples $(i, j, b)$ such that $(i,j) \in I \land i \neq j$ and $b \in B$.
 We can now compute a few additional parameters that we will use to reduce the number of constraints evaluated by the model. Let $\gamma$ be the maximum size over a dimension on the XY-plane between all the items as \cref{eq:gamma_max_dim}, and let $\Delta$ be the set of all possible distances between the origins of two items along one discretized axis as \cref{eq:Delta_possible_diffs}.
 \begin{align}
@@ -145,29 +144,31 @@ Let $O(i, j, h, k) \rightarrow \mathbb{R}^+$ be a function that computes the amo
 Additional new variables need to be added to the ones of the original model, let $s_{ij}$ be a set of binary variables which will assume value 1 if item $i \in I$ can offer support to item $j \in I$ and 0 otherwise. A new set of binary variables $z^c_{ij}$ will be 1 if item $i \in I$ is close w.r.t. the z-axis to item $j \in I$, which would mean that $z_j - (z_i + h_i) \le \beta_s$, and 0 otherwise.
 Let us then introduce a new set of binary variables $g_i$ which will assume value 1 if item $i \in I$ will be on the ground or 0 otherwise. A set of binary variables $s^{kh}_{i j b}$ will assume value 1 if item $i \in I$ will receive support from item $j \in I$ and both items will be placed in bin $b \in B$ with a discretized distance of $(k, h) \in \Delta$ between each other and 0 otherwise.
 
-Given all the additional parameters and variables introduced, we can give a new formulation of the model with the same objective function \ref{eq:objective} and the constraints in \cref{par:standard_const} with the addition of the following constraints:
+Given all the additional parameters and variables introduced, we can give a new formulation of the model with the addition of the following constraints:
 \label{par:support_const}
 \begin{align}
-    & z_j - (z_i + h_i) \le \beta_s + H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \label{cons:z_close_1} \\
-    & z_j - (z_i + h_i) \ge -\beta_s - H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \label{cons:z_close_2} \\
-    & s_{ij} \le z^p_{ij} & \forall (i, j) \in I  \label{cons:supporting_1} \\
-    & s_{ij} \le z^c_{ij} & \forall (i, j) \in I  \label{cons:supporting_2} \\
-    & s_{ij} \ge z^p_{ij} + z^c_{ij} - 2 & \forall (i, j) \in I : i \neq j \label{cons:supporting} \\
-    & \sum\limits_{j \in I}{s_{ij}} \le \sum\limits_{b \in B}{u_{ib}} & \forall i \in I  \label{cons:support_comes_from_placed} \\
-    & z_i \le H(1 - g_i) & \forall i \in I \label{cons:grounded} \\
-    & \sum\limits_{(k, h) \in \Delta, b \in B : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le s_{ij} & \forall (i, j) \in I \label{cons:discretized_support_same} \\
-    & \sum\limits_{(k, h) \in \Delta : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le u_{ib} & \forall (i, j, b) \in I^B \label{cons:discretized_support_right_bin_i} \\
-    & \sum\limits_{(k, h) \in \Delta : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le u_{jb} & \forall (i, j, b) \in I^B \label{cons:discretized_support_right_bin_j}
+    \min       \qquad   & \sum\limits_{b \in B} (H v_b + z^{max}_b) \notag \\
+    \text{s.t.} \qquad  & \text{(\ref{cons:items_in_used_bins}) to (\ref{cons:no_overlap}), (\ref{cons:maxz}), (\ref{cons:all_items_in_bin_with_rotation})} \notag \\ 
+                        & z_j - (z_i + h_i) \le \beta_s + H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \label{cons:z_close_1} \\
+                        & z_j - (z_i + h_i) \ge -\beta_s - H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \label{cons:z_close_2} \\
+                        & s_{ij} \le z^p_{ij} & \forall (i, j) \in I  \label{cons:supporting_1} \\
+                        & s_{ij} \le z^c_{ij} & \forall (i, j) \in I  \label{cons:supporting_2} \\
+                        & s_{ij} \ge z^p_{ij} + z^c_{ij} - 2 & \forall (i, j) \in I : i \neq j \label{cons:supporting} \\
+                        & \sum\limits_{j \in I}{s_{ij}} \le \sum\limits_{b \in B}{u_{ib}} & \forall i \in I  \label{cons:support_comes_from_placed} \\
+                        & z_i \le H(1 - g_i) & \forall i \in I \label{cons:grounded} \\
+                        & \sum\limits_{(k, h) \in \Delta, b \in B : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le s_{ij} & \forall (i, j) \in I \label{cons:discretized_support_same} \\
+                        & \sum\limits_{(k, h) \in \Delta : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le u_{ib} & \forall (i, j, b) \in I^B \label{cons:discretized_support_right_bin_i} \\
+                        & \sum\limits_{(k, h) \in \Delta : O(i, j, k, h) \neq 0} s^{k h}_{i j b} \le u_{jb} & \forall (i, j, b) \in I^B \label{cons:discretized_support_right_bin_j}
 \end{align}
 Constraints \ref{cons:z_close_1} and \ref{cons:z_close_2} ensure that $z^c_{ij}$ is forced to 1 only when the distance over the z-axis between item $i$ and item $j$ is within the range $[-\beta_s, \beta_s]$.
 The value of $s_{ij}$ is then assigned to the logical equation $z^p_{ij} \land z^c_{ij}$ thanks to constraints \ref{cons:supporting_1} to \ref{cons:supporting}.
 Since some items could be left out of the solution due to the formulation of orthogonal rotations, we also ensure that support can only come from placed items thanks to constraints \ref{cons:support_comes_from_placed}.
 Constraints \ref{cons:grounded} ensure that $g_i$ will assume value 1 if item $i$ is on the ground
-Constraints \ref{cons:discretized_support_same} to \ref{cons:discretized_support_right_bin_j} ensure that if a discretized support decision $s_{ijb}^{hk}$ is 1 then every subscript of that variable must be true in the non-discretized model, so item $i$ can give discretized support to item $j$ in in bin $b$ if both items are are assinged to bin $b$ and if $i$ can give support to item $j$. They also force the selection of only one possible combination of $(h,k) \in \Delta$ for which $i$ gives support to $j$ in bin $b$.
+Constraints \ref{cons:discretized_support_same} to \ref{cons:discretized_support_right_bin_j} ensure that if a discretized support decision $s_{ijb}^{hk}$ is 1 then every subscript of that variable must be true in the non-discretized model, so item $i$ can give discretized support to item $j$ in bin $b$ if both items are assinged to bin $b$ and if $i$ can give support to item $j$. They also force the selection of only one possible combination of $(h,k) \in \Delta$ for which $i$ gives support to $j$ in bin $b$.
 
-We can then define a set of constraints which given a discretized placement $s^{k h}_{i j b}$ limits the distance between $i$ and $j$ to a given continuous region in space delimited by a square of the dimension of our discretization unit $\delta$.
+We then define a set of constraints which given a discretized placement $s^{k h}_{i j b}$ limit the distance between $i$ and $j$ to a given continuous region in space delimited by a square of the dimension of our discretization unit $\delta$.
 Given every tuple of possible discretized distances between items $ (k, h) \in \Delta$ and every tuple of different pairs of items in the same bin $(i, j, b) \in I^B$ such they have a non-zero discretized overlap over the XY-plane ($O(i, j, k, h) \neq 0$).
-The resulting constraints are defined in \cref{cons:discretized_support_limit_x_1,cons:discretized_support_limit_x_2,cons:discretized_support_limit_y_1,cons:discretized_support_limit_y_2}.
+The resulting constraints are defined in (\ref{cons:discretized_support_limit_x_1}) to (\ref{cons:discretized_support_limit_y_2}).
 \begin{align}
     & x_j - x_i \ge \gamma k - 2W( 1 - s^{k h}_{i j b}) &  \label{cons:discretized_support_limit_x_1} \\
     & x_j - x_i \le \gamma (k + 1) + 2W( 1 - s^{k h}_{i j b}) &  \label{cons:discretized_support_limit_x_2} \\
@@ -175,9 +176,9 @@ The resulting constraints are defined in \cref{cons:discretized_support_limit_x_
     & y_j - y_i \le \gamma (h + 1) + 2D( 1 - s^{k h}_{i j b}) &  \label{cons:discretized_support_limit_y_2}
 \end{align}
 
-We can then introduce feasibility constraints thet ensure that every item that is not on the ground is supported by other items placed beneath it by at least $\alpha_s$ times its area, which corresponds to condition \ref{support:area_support} of the practical constraint of vertical support.
+We then introduce feasibility constraints ensuring that every item that is not on the ground is supported by other items placed beneath it by at least $\alpha_s$ times its area, which corresponds to condition \ref{support:area_support} of the practical constraint of vertical support.
 \begin{eqnarray}
     & \sum\limits_{(k, h) \in \Delta, b \in B, j \in I : i \neq j \land O(i, j, k, h) \neq 0}{ O(i, j, k, h)s^{k h}_{j i b}} \ge \alpha_s w_i d_i - w_i d_i g_i & \forall i \in I \label{cons:every_item_is_supported}
 \end{eqnarray}
 
-It is noted that every combination of $(i,j,b) \in I^B$ and $(h,k) \in \Delta$ where $O(i, j, k, h) = 0$ do not contribute to the support constraint. We can omit them from the formulation of the problem to reduce the number of constraints to evaluate.
+We note that every combination of $(i,j,b) \in I^B$ and $(h,k) \in \Delta$ where $O(i, j, k, h) = 0$ do not contribute to the support constraint. Thus, we can omit them from the formulation of the problem to reduce the number of constraints.

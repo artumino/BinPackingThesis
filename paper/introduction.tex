@@ -2,11 +2,11 @@
 The three-dimensional bin packing problem (3D-BPP) is part of the family of Cutting and Packing (C\&P) problems.
 \cite{WASCHER20071109} identified a common structure for C\&P problems where, given two sets of small and large items, some or all small items need to be assigned to some or all large ones such that some geometric constraints are verified.
 They also divided C\&Ps in several typologies based on the number of geometric dimensions (1D, 2D, 3D, nD), the kind of assignment to be made, the assortment of small items, the assortment of large items, and the shape of small items (regual or irregular).
-The 3D-BPP involves packing, in three dimensions, a strongly heterogeneous assortment of small cuboid-shaped fixed-size items (boxes) into the minimum number of cuboid-shaped large ones (bins) without any overlap.
+The 3D-BPP involves packing, in three dimensions, a strongly heterogeneous assortment of small cuboid-shaped items of different size (boxes) into the minimum number of cuboid-shaped large ones (bins) without any overlap.
 In the case of a 3D-BPP where the dimensions of the bins are also fixed, the problem is then defined as a Three-Dimensional Single Bin-Size Bin Packing Problem (3D-SBSBPP).
 Items can only be placed with their edges parallel to the sides of the bin and, in some formulations, they can be rotated by $90$ degrees along their vertical axis.
 
-In this thesis, we address a variation of the 3D-SBSBPP stemming from a real case study of mixed-case palletization: the Three-Dimensional Bin Packing Problem with Vertical Support (3D-BPPVS).
+In this thesis, we address a version of the 3D-SBSBPP stemming from a real case study of mixed-case palletization: the Three-Dimensional Bin Packing Problem with Vertical Support (3D-BPPVS).
 Modeling real-world case studies with the 3D-SBSBPP requires additional constraints to be considered. We extend the standard formulation of the 3D-SBSBPP by ensuring that all items that are packed inside a bin will not fall, and we refer to this property as the vertical support.
 Support constraints are usually defined based on the amount of area of an item that lies on top of other items, or by the number of corners of an item that rest on top of other items (\cite{GZARA20201062, paquay2016mixed, kurpel2020exact}).
 
@@ -24,7 +24,7 @@ In this thesis we
     \item formulate a mixed-integer linear programming model for the 3D-BPPVS with a discretized version of the support constraint,
     \item develop a constructive heuristic that fills bins while guaranteeing vertical support, without explicitly building layered solutions or using filler boxes,
     \item introduce a beam search heuristic that expands the constructive heuristic's solution space by exploring different orders of item palletization,
-    \item validate the proposed heuristics against our model and, in a relaxed version, against the most relevant heuristics from the 3D-SBSBPP literature,
+    \item validate the proposed heuristic against our model and against the most relevant heuristics from the 3D-SBSBPP literature,
     \item generate and share a data set based on real-world instances that we use to benchmark our heuristic.
 \end{itemize}
 
@@ -32,10 +32,12 @@ In this thesis we
 \label{sec:intro:case_study}%
 The work of this thesis stems from the case study of a logistics company in northern Italy.
 The company manages large warehouses where automated lines bring boxes to different packing stations, and then they are loaded onto pallets of standard size.
-Each box is then loaded manually by an operator, and soon as the height of the pallet reaches a certain threshold, the packing station lowers it and wraps it with an elastic material that guarantees its stability.
+Each box is then loaded manually by an operator, and as soon as the height of the pallet reaches a certain threshold, the packing station lowers it and wraps it with an elastic material that guarantees its stability.
 This wrapping improves the stability of the pallet while boxes are still being loaded on the top. To avoid uneven surfaces during the wrapping phase, pallets should not have empty spaces inside.
 Since the company is dealing directly with customers' orders, boxes have very different sizes and are usually packed in smaller quantities. This implies that layer-based pallet loading solutions are impractical in these cases, since it is usually not possible to build full layers of boxes of the same height.
 The company is interested in building pallets that do not have empty spaces inside, and they measure this property with a metric called cage ratio.
+The cage ratio measures the ratio between the volume of items packed inside a bin and the volume of the cuboid with the same base as the bin and height equal to the highest item inside the bin.
+This measurement is a good indicator of unused space under the highest item in the bin.
 To increase the efficiency of the wrapping and to allow for the stacking of pallets, solutions with a high cage ratio are required.
 The cage ratio of commercial solutions currently implemented by the company is around $60\%$, and a target cage ratio for our case study was set at $70\%$.
 
