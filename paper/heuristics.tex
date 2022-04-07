@@ -1,12 +1,12 @@
 In this chapter we present our heuristic algorithm to solve the 3D-BPPVS. 
-Since the 3D-BPP is NP-Hard, an exhaustive search for a solution is not practical, therefore a heuristic search is conducted by combining the beam search algorithm described in \cref{sec:beamsearch} with the constructive heuristic described in \cref{sec:support_planes}.
+Since the 3D-BPP is NP-Hard, an exhaustive search for a solution is not practical, therefore we developed a heuristic search algorithm combining the beam search (described in \cref{sec:beamsearch}) with a constructive heuristic (described in \cref{sec:support_planes}).
 In section \ref{sec:problem_state} we define the preliminary concepts that will be used in the algorithm: states, insertions and solution's feasibility.
 
 \section{States}
 \label{sec:problem_state}%
 States are partial solutions of the 3D-BPPVS. Since our heuristic is based on a constructive method, starting from a state representing an empty solution we will iteratively build new states that gradually change to become a complete solution of the problem.
-Being a partial solution, a state $s$ can be represented using the set of all variables present in the MILP model (\ref{sec:milp}), where some values have been fixed. 
-Without loss of generality some of the notation defined in \cref{chapter:problem} is modified to include an index $s$ of the state we are considering.
+Being a partial solution, a state $s$ can be represented using the set of all variables presented in the MILP model (\cref{sec:milp}), where some values have been fixed. 
+Without loss of generality some of the notation defined in \cref{chapter:problem} is modified to include an index $s$ of the state considered.
 We move closer to a complete solution of the problem by packing more items and opening new bins, i.e., by fixing more variables.
 
 In order to simplify the algorithm's description, we introduce a few new definitions.
@@ -100,7 +100,7 @@ We note that with this new set, both $J^s_b$ and $T^s_b$ contain the items packe
 The cost of maintaining $T^s_b$ is repaid by the gain in performing checks on overlapping items.
 
 \label{aabb:get_supporting}%
-We added an additional opertation $AABBGetSupporting(i, \beta_s)$ to compute the set of supporting boxes of item $i$ given a vertical tolerance $\beta_s$.
+We also added the opertation $AABBGetSupporting(i, \beta_s)$ to compute the set of supporting boxes of item $i$ given a vertical tolerance $\beta_s$.
 This was possible by checking intersections over the XY-plane, similarly to the $AABBOverlaps$ implementation, and keeping items that are below $i$ with a distance within tolerance $\beta_s$.
 
 \subsection{Insertions}
@@ -194,8 +194,8 @@ After the expansion, every new node is evaluated and the $k$ best nodes are reta
 To perform BS one must define:
 \begin{itemize}
     \item the node structure, which can be represented as a state (\cref{sec:problem_state}),
-    \item an expansion function, which generates new nodes from existing ones as \cref{def:state_next},
-    \item a ranking between nodes, that we will describe in \cref{ssec:scoring_states},
+    \item an expansion function, which generates new nodes from existing ones as described in \cref{def:state_next},
+    \item a ranking of the nodes, that we will describe in \cref{ssec:scoring_states},
     \item a function to determine if a node is final, which we previously defined as \cref{algo:state_final}.
 \end{itemize}
 
@@ -218,7 +218,7 @@ An expansion of a state $s$ is a new set of states $S_{new}$ obtained by applyin
 
 The main idea in this phase of the algorithm is to find feasible insertions in all the bins in $B^s$ at the lowest possible height, for each item in $U^s$. 
 To reduce the number of possible expansions to evaluate, we limit the search only to insertions of items with unique shapes.
-With a similar concept to the one used in \cref{sec:state_uniqueness}, we compute an hash for each item's dimensions and then use it to group items that have the same shape.
+With a similar concept to the one used in \cref{sec:state_uniqueness}, we compute a hash for each item's dimensions and then use it to group items that have the same shape.
 This grouping allows us to create subsets of items that have a unique shape. 
 Given a set of items $I$, we introduce an algorithm to group the items by their shape and produce a set $G$ of tuples $(h, I^\prime)$, where $h$ is the hash summarizing the shape of the group and $I^\prime$ is the set of items grouped. This procedure is described in Algo. \ref{algo:group_by_hash}.
 
@@ -233,8 +233,7 @@ With a similar intuition, the idea of placing groups of items of the same shape 
 
 Once items are grouped by shape, the best insertion for each class of items is computed for each open bin.
 If no insertion is possible in any bin, then the only viable insertion is the bin opening insertion (\cref{oss:state_bin_open}).
-Given a supporting set $Z^s_b$ defined as in \cref{sec:support_planes}, which is used by our constructive heuristic.
-The resulting state expansion procedure is detailed in Algo. \ref{algo:state_successor}.
+Given a supporting set $Z^s_b$ defined as in \cref{sec:support_planes}, which is used by our constructive heuristic, we detail the resulting state expansion procedure in Algo. \ref{algo:state_successor}.
 The algorithm is described in PM mode, however switching to PS mode is possible by modifying Algo. \ref{algo:group_by_hash} to return only singletons for each different class of item shapes.
 
 \input{algorithms/state_successor}
@@ -286,7 +285,7 @@ This means that $f_2$ will not have an effect on the ranking of final states.
 Support Planes (SP) is a constructive heuristic for the 3D-BPPVS which is based on an underlying 2D-BPP heuristic. The latter is used to generate feasible insertions inside a bin starting from a set of items to pack.
 Since insertions must be feasible, SP maintains an internal data structure to facilitate feasibility checks.
 The idea at the base of SP is to build a solution to the 3D-BPP by filling 2D planes called \textit{support planes}.
-These planes are not complete layers like in other solutions from the literature and can be composed of items of different heights and shapes.
+These planes are not complete layers as is typical in three-dimensional bin packing problems (e.g., \cite{Alonso2020,elhedhli2019three,GZARA20201062,Calzavara2021}) and can be composed of items of different heights and shapes.
 
 Each support plane is a tuple $(z, I_{support}, I_{upper})$ where
 \begin{itemize}
@@ -329,16 +328,19 @@ A graphical representation of a support plane is shown in \cref{fig:support_plan
 When a bin is opened, the only support plane available is the one on the ground.
 In the figure different coordinate changes are marked with different colors.
 
-\begin{figure}[hp]
+Given \cref{eq:ep_can_pack} to check if a considered placement would lead to a feasible insertion, a set of items to pack $I$, a set $s$ and a bin $b \in B^s$, the heuristic that will output the new best possible feasible insertion for the given set of items is outlined in Algo. \ref{algo:sp_bestinsertion}.
+
+\clearpage
+\begin{figure}[H]
     \centering
     \scalebox{0.9}{%
     \input{Images/support_planes}
     }
-    \caption{Representation of a generic support plane with a placed item}
+    \caption{Evaluation of a placement of item 5 on a generic support plane generated by item 1}
     \label{fig:support_planes}
 \end{figure}
 
-\begin{figure}[hp]
+\begin{figure}[H]
     \centering
     %\scalebox{0.75}{%
     \input{Images/ep_coordinate_changes}
@@ -346,9 +348,6 @@ In the figure different coordinate changes are marked with different colors.
     \caption{Extreme Point instances for some coordinate changes of \cref{fig:support_planes}}
     \label{fig:ep_coordinate_changes}
 \end{figure}
-
-Given \cref{eq:ep_can_pack} to check if a considered placement would lead to a feasible insertion, a set of items to pack $I$, a set $s$ and a bin $b \in B^s$, the heuristic that will output the new best possible feasible insertion for the given set of items is outlined in Algo. \ref{algo:sp_bestinsertion}.
-
 \input{algorithms/supportplane}
 \input{algorithms/ep_insert_rect}
 
@@ -371,8 +370,8 @@ This new algorithm can be used as the last step of the $Commit$ algorithm for ea
 
 \subsection{Ranking Insertions}
 \label{ssec:scoring_insertions}%
-Similarly to the ranking of states (\cref{ssec:scoring_states}), an ordering function is also needed to evaluate different insertions for the same set of items as seen in Algo. \ref{algo:sp_bestinsertion}.
-We facilitate the generation of large even surfaces by giving a higher ranking to insertions that will build large areas covered by items of the same shape or height.
+Similarl to the ranking of states (\cref{ssec:scoring_states}), an ordering function is also needed to evaluate different insertions for the same set of items as seen in Algo. \ref{algo:sp_bestinsertion}.
+We facilitate the generation of large even surfaces by giving a higher ranking to insertions that allow building large areas covered by items of the same shape or height.
 Since the ranked insertions are always feasible, we try to avoid over satisfying the support constraint to allow for more balanced bins.
 
 Given the lexicographic ordering formulation in \cref{def:lexicographic_ordering}, a few new functions can be calculated and stored inside an insertion to help in the evaluation.
