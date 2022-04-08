@@ -163,25 +163,35 @@ When considering real-world settings, the addition of new practical constraints 
 Previous studies in other fields related to container loading and pallet loading have shown that static stability of the bins is a crucial aspect to consider (\cite{BORTFELDT20131}).
 In this thesis, we address a version of the bin packing problem stemming from a real case study of mixed-case palletization: the Three-Dimensional Bin Packing Problem with Vertical Support (3D-BPPVS).
 We extend the standard formulation of the bin packing problem by ensuring that all items that are packed inside a bin will not fall, and we refer to this property as the vertical support.
+Each item can also be rotated along its vertical axis by 90 degrees.
 
 Our research stems from the case study of a logistics company in northern Italy.
 The company manages large warehouses where automated lines bring boxes to different packing stations, and then they are loaded onto pallets of standard size.
 Since the company is dealing directly with customers' orders, boxes have very different sizes and are usually packed in smaller quantities.
-Moreover, the assortment of items to pack is strongly heterogeneous which makes the use of layered approaches to have sub-optimal results.
-During the palletization, the lower levels of already packed items are wrapped to ensure better overall stability of the pallet.
-This wrapping procedure requires that the amount of unused space between items is minimal. The company measures this property with a metric called cage ratio.
+Moreover, the assortment of items to pack is strongly heterogeneous which makes the use of layered approaches have sub-optimal results.
+During the palletization, levels of already packed items are wrapped to ensure better overall stability of the pallet.
+This wrapping procedure requires that the amount of unused space between items is minimal.
+The company measures this property with a metric called cage ratio.
 Cage ratio is the ratio between the volume of the packed items inside a bin and the volume of the cuboid which surrounds them, the cage.
 The cage has the same base as the bin and height equal to the highest packed item inside the bin.
 Current commercial solutions employed by the company have solutions with around $60\%$ cage ratio, and a target of $70\%$ was set as a benchmark for our work.
 
-\section{Gap Identification}
+\section{Literature Review}
 The 3D-BPP is the generalization of the one-dimensional bin packing problem which is NP-Hard (\cite{martello2000three}).
 Exact methods can only solve small instances of the problem which means that most solutions proposed in the literature are heuristics.
+Heuristics for the 3D-BPP are designed to solve the standard problem and don't take into account practical constraints.
+\cite{martello2000three} provided a set of benchmark instances for 3D-BPP heuristics, and an exact method based on a two-level branch-and-bound algorithm.
+Their method used a staircase placement strategy, where a series of corner points were identified as possible placement points to evaluate.
+The method was later extended in \cite{crainic2008extreme} to find new niches previously ignored by the introduction of Extreme Points.
+\cite{gonccalves2013biased} introduced a biased random-key genetic algorithm (BRKGA) which is one of the best performing heuristics on the benchmark instances of \cite{martello2000three}.
+The algorithm was later modified with variable neighborhood descent variation presented in \cite{zudio2018brkga} which improved the number of generations needed to find high-quality results.
+
 The concept of vertical support received most of its contribution from the literature of Container Loading Problems (CLP) and Pallet Loading Problems (PLP).
-As noted in \cite{BORTFELDT20131}, static stability is usually implicitly enforced as a consequence of load compactness, or explicitly guaranteed by using filler material in a postprocessing step.
-Most heuristics for CLPS and PLPs try to build dense layers composed of similar items that they then stack, reducing the problem to a one-dimensional bin packing problem.
+As noted in \cite{BORTFELDT20131}, static stability is usually implicitly enforced as a consequence of load compactness, or explicitly guaranteed by using filler material in a post-processing step.
+Most heuristics for CLPS and PLPs try to build dense layers composed of similar items that they stack, reducing the problem to a one-dimensional bin packing problem.
 Layers are filtered based on the fill-rate and when they are below a certain threshold they are discarded (e.g., \cite{elhedhli2019three, Alonso2020}).
 This means that when no new layer can be built, new bins are opened, simpler placement methods are used to pack the remaining items or filler material is used to complete the layers.
+Other more recent methods in the PLPs literature ensure support explicitly as a post-processing step when spacing layers relative to eachother (e.g., \cite{GZARA20201062}).
 
 Our solution to the problem fills the gap in the research by finding solutions to the 3D-BPPVS without explicitly building layers, and without the use of filler material.
 
