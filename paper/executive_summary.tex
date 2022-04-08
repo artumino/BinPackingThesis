@@ -161,24 +161,22 @@
 \label{sec:introduction}
 
 Recent progress in the digitalization of industrial processes led to a rise in studies on the Three-Dimensional Bin Packing Problem (3D-BPP).
-The problem consists in packing a set of items in the minimum number of bins without any overlap.
-When considering real-world settings, the addition of new practical constraints is required.
-Previous studies in other fields related to container loading and pallet loading have shown that static stability of the bins is a crucial aspect to consider (\cite{BORTFELDT20131}).
-In this thesis, we address a version of the bin packing problem stemming from a real case study of mixed-case palletization: the Three-Dimensional Bin Packing Problem with Vertical Support (3D-BPPVS).
-We extend the standard formulation of the bin packing problem by ensuring that all items that are packed inside a bin will not fall, and we refer to this property as the vertical support.
-Vertical stability is usually ensured between horizontal or vertical slices of items as a constraint on the minimum amount of area which rests on other items (e.g., \cite{GZARA20201062,paquay2016mixed}).
-Each item can also be rotated along its vertical axis by 90 degrees.
+The problem consists in packing a set of three-dimensional items in the minimum number of bins without any overlap.
+The 3D-BPP finds many applications in real-world industrial settings, such as the loading of boxes onto pallets (Pallet Loading Problem) or in containers (Container Loading Problem). 
+Studies in the application areas mentioned above have shown that 3D-BPP can be successfully applied to industrial problems, as long as it is extended with new practical constraints. 
+Many works in the literature state that one of the most important practical constraints is vertical support (\cite{BORTFELDT20131}), i.e. the fact that each item has sufficient support to keep it from falling.
+In this thesis, we develop a new extension of the 3D-BPP that ensures vertical support for each item: the Three-Dimensional Bin Packing Problem with Vertical Support (3D-BPPVS).
+Similarly to other works in the literature (\cite{GZARA20201062,paquay2016mixed}), we model this property as a constraint on the minimum amount of area or vertices that rest on other items.
 
 Our research stems from the case study of a logistics company in northern Italy.
 The company manages large warehouses where automated lines bring boxes to different packing stations, and then they are loaded onto pallets of standard size.
 Since the company is dealing directly with customers' orders, boxes have very different sizes and are usually packed in smaller quantities.
-Moreover, the assortment of items to pack is strongly heterogeneous which makes the use of layered approaches have sub-optimal results.
+Moreover, the assortment of items to pack is strongly heterogeneous, therefore the use of standard approaches based on layers of homogeneous boxes is impractical.
 During the palletization, levels of already packed items are wrapped to ensure better overall stability of the pallet.
-This wrapping procedure requires that the amount of unused space between items is minimal.
-The company measures this property with a metric called cage ratio.
+This wrapping procedure requires that the amount of unused space between items is minimal, a property that is measured with a metric called cage ratio.
 Cage ratio is the ratio between the volume of the packed items inside a bin and the volume of the cuboid which surrounds them, the cage.
 The cage has the same base as the bin and height equal to the highest packed item inside the bin.
-Current commercial solutions employed by the company have solutions with around $60\%$ cage ratio, and a target of $70\%$ was set as a benchmark for our work.
+Current commercial solutions employed by the company pack items with an average cage ratio of $60\%$, and a target of $70\%$ was set as a baseline for our work.
 A visual representation of the cage ratio is shown in \cref{fig:cage_ratio}.
 
 \begin{figure}[h]
@@ -189,34 +187,43 @@ A visual representation of the cage ratio is shown in \cref{fig:cage_ratio}.
     \label{fig:cage_ratio}
 \end{figure}
 
+In this thesis we
+\begin{itemize}
+    \item formulate a mixed-integer linear programming model for the 3D-BPPVS with a discretized version of the support constraint,
+    \item develop a constructive heuristic that fills bins while guaranteeing vertical support, without explicitly building layered solutions,
+    \item introduce a beam search heuristic that expands the constructive heuristic's solution space by exploring different orders of item palletization,
+    \item validate the proposed heuristic against our model and against the most relevant heuristics from the 3D-BPP literature,
+    \item generate and share a data set based on real-world instances that we use to benchmark our heuristic.
+\end{itemize}
+
 \section{Literature Review}
 The 3D-BPP is the generalization of the one-dimensional bin packing problem which is NP-Hard (\cite{martello2000three}).
-Exact methods can only solve small instances of the problem which means that most solutions proposed in the literature are heuristics.
+Exact methods can only solve small instances of the problem, which means that most solutions proposed in the literature are heuristics.
 Heuristics for the 3D-BPP are designed to solve the standard problem and don't take into account practical constraints.
 \cite{martello2000three} provided a set of benchmark instances for 3D-BPP heuristics, and an exact method based on a two-level branch-and-bound algorithm.
 Their method used a staircase placement strategy, where a series of corner points were identified as possible placement points to evaluate.
-The method was later extended in \cite{crainic2008extreme} to find new niches previously ignored by the introduction of Extreme Points.
-\cite{gonccalves2013biased} introduced a biased random-key genetic algorithm (BRKGA) which is one of the best performing heuristics on the benchmark instances of \cite{martello2000three}.
-The algorithm was later modified with variable neighborhood descent variation presented in \cite{zudio2018brkga} which improved the number of generations needed to find high-quality results.
+The method was later extended in \cite{crainic2008extreme} to find new placement niches that were previously ignored, introducing the concept of Extreme Points.
+\cite{gonccalves2013biased} introduced a biased random-key genetic algorithm (BRKGA) for the 3D-BPP, which is one of the best performing heuristics on the benchmark instances of \cite{martello2000three}.
+Their algorithm was later extended in \cite{zudio2018brkga} by incorporating a variable neighborhood descent procuedure, which improved the number of generations needed to find high-quality results.
 
 The concept of vertical support received most of its contribution from the literature of Container Loading Problems (CLP) and Pallet Loading Problems (PLP).
 As noted in \cite{BORTFELDT20131}, static stability is usually implicitly enforced as a consequence of load compactness, or explicitly guaranteed by using filler material in a post-processing step.
 Most heuristics for CLPS and PLPs try to build dense layers composed of similar items that they stack, reducing the problem to a one-dimensional bin packing problem.
 Layers are filtered based on the fill-rate and when they are below a certain threshold they are discarded (e.g., \cite{elhedhli2019three, Alonso2020}).
 This means that when no new layer can be built, new bins are opened, simpler placement methods are used to pack the remaining items or filler material is used to complete the layers.
-Other more recent methods in the PLPs literature ensure support explicitly as a post-processing step when spacing layers relative to eachother (e.g., \cite{GZARA20201062}).
 
 Our solution to the problem fills the gap in the research by finding solutions to the 3D-BPPVS without explicitly building layers, and without the use of filler material.
 
 \section{Proposed Solution}
 
-Based on other publications from the literature and our case study partner's insights we define the property of vertical support.
-Given a support area threshold $\alpha_s$ and a maximum vertical gap below which an item can be considered as effectively supporting another one $\beta_s$. We define an item as supported if one of the following conditions holds
+Based on other publications from the literature and on our case study partner's insights, we state that an item is vertically supported if one of the following conditions hold.
+
 \begin{enumerate}[label={\textbf{Condition \arabic*}.},ref={\arabic*},leftmargin=*]
-    \item the sum of the overlap area over the XY-plane with every other item on which it is resting is greater than $\alpha_s$ times its base area. (area support) \label{support:area_support}
-    \item the number of its corners resting on another item is greater or equal to 3, and condition \ref{support:area_support} holds with a threshold $\alpha^\prime_s$ where $\alpha^\prime_s < \alpha_s$. (vertex support) \label{support:vertex_support}
+    \item the percentage of base area that leans on other items is larger than a predetermined threshold $\alpha_s$. \label{support:area_support}
+    \item the number of vertices resting on other items is greater than or equal to 3, and Condition \ref{support:area_support} is met with a smaller threshold $\alpha^\prime_s$. \label{support:vertex_support}
 \end{enumerate}
-A visual representation of the conditions \ref{support:area_support} and \ref{support:vertex_support} of support is illustrated in \cref{fig:support}.
+We consider two items to be of equal height if their heights do not differ more than a tolerance threshold $\beta_s$
+A visual representation of both support conditions is presented in \cref{fig:support}.
 
 \begin{figure}[h]
     \resizebox{\columnwidth}{!}{%
@@ -226,10 +233,10 @@ A visual representation of the conditions \ref{support:area_support} and \ref{su
     \label{fig:support}
 \end{figure}
 
-We propose an heuristic that combines a constructive heuristic with a beam-search algorithm.
-The main idea of the heuristic is to build solutions to the 3D-BPPVS without explicitly building layes, and without the use of filling material.
-The constructive heuristic is designed to solve a single-bin bin packing problem with vertical support, while the beam-search expands the heuristic's solutions by exploring different sequences of item placements.
-A conceptual representation of the heuristic steps can be seen in \cref{fig:heur_scheme}.
+To solve the 3D-BPPVS, we propose an heuristic that combines a constructive heuristic with a beam-search algorithm.
+The main idea of the heuristic is to build solutions to the 3D-BPPVS without explicitly building layers, and without the use of filling material.
+The constructive heuristic is designed to solve a single-bin packing problem with vertical support, while the beam-search expands the heuristic's solutions by exploring different sequences of item placements.
+A conceptual representation of the heuristic can be seen in \cref{fig:heur_scheme}.
 \begin{figure}[h]
     \resizebox{\columnwidth}{!}{%
     \input{Images/heur_scheme}
@@ -239,30 +246,30 @@ A conceptual representation of the heuristic steps can be seen in \cref{fig:heur
 \end{figure}
 
 
-Since our heuristic is constructive in nature, we start from an empty solution and iteratively find new partial solutions by packing new items or opening new bins.
-To represent a partial solution, we define a structure containing all the placed items and opened of bins.
-The beam-search algorithm starts from the empty solution and iteratively explores a limited number of $k$ new partial solutions. 
-These partial solutions are generated by using an underlying single-bin packing constructive heuristic to determine a set of possible insertion to make in opened bins.
-If no insertions are possible, a new bin is opened.
-Since we only evaluate insertions that increase the number of packed items, this leads to a complete solution of the problem where no item is left unpacked.
-To limit the number of partial solutions to consider at each iteration, we define a ranking between them which uses metrics directly related to the objective function of our problem.
-We rank these solutions to minimize the number of bins opened, and then to maximize the amount of volume packed and the average cage ratio obtained.
-At the end of each iteration only the $k$ best partial solutions are kept. 
-Since different sequences of placements can lead to the same partial solution, we proposed a duplicate removal procedure based on an hashing function to filter duplicate solutions between iterations.
+We develop a new constructive heuristic for the single-bin 3D-BPP called Support Planes (SP).
+This heuristic sequentially inserts items within the bin, placing them on top of other items already placed.
+In this way it is always possible to guarantee vertical support for the inserted items.
+Given a set of already positioned items, we define the two-dimensional plane that rests on the top face of those items as a support plane. Since each item is placed at different elevations and has different heights, each bin will have multiple support planes. Each support plane is identified by its coordinate on the vertical axis ($z$), has regions where there is no support from items below, and has regions where it is not possible to place items without having overlap with other placed items.
 
-In order to generate solutions that have vertical support we ensure that each insertion considered will mantain the property of vertical support.
-To generate new possible insertion, we use a constructive heuristic that operates at the bin level called Support Planes (SP).
-Support Planes is designed to solve the single-bin bin packing problem.
-It operates by dividing the space inside the bin into planes, generated by the top of items previously inserted. 
-These planes, called support planes, contain references to items that will be able to offer support to others placed on the plane.
-Each support plane also contains a list of the items that are intersecting the plane, which would be obstacles to items placed on it.
-In order to generate a series of feasible insertions, we evaluate each plane inside a bin starting from the lowest one.
-To reduce the number of possible insertions to consider, we group unpacked items based on their shape thanks to a hashing of each item's dimensions.
-We propose two configurations of SP which evaluate insertions of one item at a time (PS), or of the maximum number of items per type that fit a plane (PM).
-For each grouping we then calculate which is the first plane, starting from the lowest one, where we can insert items with that shape without overlaps and without violating vertical support (considering possible rotations).
-We use a modified version of the two-dimensional Extreme Points algorithm proposed in \cite{crainic2008extreme} designed to account for the conditions of vertical support (by using the sets of support and obstacle items in each plane).
-In order to do fast overlap checks we also use axis-align bounding box trees which have already been used in other fields for fast collision checks (\cite{bergen1997efficient}).
-Similarly to the ranking of partial solutions of the problem, each possible insertion per group of items is then ranked to facilitate the generation of even surfaces in the solution and to avoid over satisying the support constraint, which could lead to unbalanced bins as reported in \cite{elhedhli2019three}.
+The insertion of items into a bin is performed by solving a two-dimensional bin packing problem (2D-BPP) for each support plane. 
+Such 2D-BPP takes into account regions without vertical support and regions with obstacles.
+For each support plane we test the insertion of each item. The plane is selected with a first-fit strategy starting from the lowest $z$, while the items to be inserted are selected with a best-fit strategy until the selected plane is filled.
+The best-fit strategy is based on selecting items that can generate well-supported planes along with the already placed items. In addition, placements are also intended to avoid over-satisfying the support constraint, which could lead to unbalanced bins as reported in \cite{elhedhli2019three}.
+
+To reduce the number of placements to consider, we propose two SP configurations: in the first, 2D-BPP is solved for single item placement (PS), while in the second, 2D-BPP is solved for placement of groups of items with the same dimensions (PM).
+We solve the aforementioned 2D-BPP with a new modified version of the Extreme Points algorithm proposed in \cite{crainic2008extreme}.
+In our implementation we use several tricks to improve performance, such as the use of axis-align bounding box trees for fast collision checks (\cite{bergen1997efficient}).
+
+Our studies have shown that choosing placements with a best-fit strategy does not achieve satisfactory solutions. For this reason, we extend our constructive heuristics with a beam-search algorithm. 
+We define a solution as a set of open bins with their packed items. We say that a solution is partial if there are items that still need to be packed.
+Our beam-search algorithm starts from the empty solution and iteratively explores $k$ new partial solutions.
+These partial solutions are generated from the solutions of the previous iteration by applying SP. 
+Whenever SP is not able to place items in the opened bins of a partial solution, a new bin is opened.
+Since each new partial solution is obtained by inserting a positive amount of items in another partial solution, the algorithm will always converge to a set of solutions where no item is unpacked.
+To limit the number of partial solutions that are considered at each iteration, we define a ranking between them, using metrics that are related to the objective function of our MILP model.
+We rank these solutions considering the number of opened bins, the amount of packed volume and the average cage ratio among opened bins.
+Since different sequences of placements can lead to the same partial solution, we also develop a removal procedure that filters duplicate solutions based on an hashing function.
+
 
 %-----------------------------------------------------------------------------
 % CONCLUSION
@@ -271,20 +278,21 @@ Similarly to the ranking of partial solutions of the problem, each possible inse
 In this thesis, we presented an heuristic for the Three-Dimensional Bin Packing Problem with Vertical Support.
 We modified the two-dimensional Extreme Points algorithm of \citet{crainic2008extreme} to consider vertical support.
 We then used this modified algorithm in a constructive heuristic which builds solutions to the single bin three-dimensional bin packing problem by filling planes, generated based on the previously inserted items.
-Finally, we introduced a beam-search algorithm which evaluates different sequences of item placements by using our proposed constructive heuristic, and removes duplicate solutions at each iteration.
+Finally, we introduced a beam-search algorithm that evaluates different sequences of item placements by using our proposed constructive heuristic, and removes duplicate solutions at each iteration.
 
-Our heuristic achieved an average gap of $5.37\%$ against the best solutions provided by other heuristics, however we were able to solve the same problem in a fraction of their computational time.
+We tested a relaxed version of our heuristic without the support constraint and the rotation of items on the benchmark instances for the 3D-BPP proposed by \cite{martello2000three}.
+Our heuristic achieved an average gap of $5.37\%$ against the best solutions in the literature, however we were able to solve the same instances in a fraction of their computational time.
 We consider this as a great result since it states that our algorithm is competitive also in the realm of 3D-BPP without support.
 We generated a data set of problem instances based on real-world products from our case study, and we used them to evaluate our heuristic.
 In most configurations, our solutions exceeded the target metric of $70\%$ cage ratio, with some configurations having a negligible execution time.
-In \cref{results:usecase_summary} we report the average execution time (\textit{TT}), bin used (B), and cage ratio (\textit{CR}) across all our 100 case study instances for each configuration of our heuristic. 
-Different placement modes are marked as PS (single placement) and PM (multiple items per placements), and each row represent a different value of $k$ states considered in the beam-search.
-In \cref{exp:usecase_tradeoff} we analyze the tradeoff between running times and cage ratio obtained by each configuration of the heuristic.
-We list the difference between the average running time of each configuration (\textit{TT}) and the best average running time (\textit{TT*}) together with the difference between best average cage ratio (\textit{CR*}) and the average cage ratio obtained by each configuration (\textit{CR}).
-We identified that for our partner needs a good configuration consists in using the PM placement mode with $k \in {20, 50}$.
+In \cref{results:usecase_summary} we report the average execution time (\textit{TT}) in milliseconds, number of opened bins (B), and cage ratio (\textit{CR}) across all our case study instances. Each row of the table reports the aggregated results on all instances with different value of $k$.
+Different placement modes are marked as PS (single placement) and PM (multiple items per placements).
+In \cref{exp:usecase_tradeoff} we analyze the trade off between running times and cage ratio obtained by each configuration of the heuristic.
+We list the difference between the average running time of each configuration (\textit{TT}) and the best average running time (\textit{TT*}), together with the difference between best average cage ratio (\textit{CR*}) and the average cage ratio obtained by each configuration (\textit{CR}).
+We discover that the most promising configuration for our industrial partner consists in using the PM placement mode with $k \in {20, 50}$.
 
-Further research could introduce new practical constraints considered in the literature like family groupings, load-bearing, and compatibilities between items.
-Improvement heuristics could also be adapted to account for the support constraint like, for example, space defragmentation techniques introduced by \cite{ZHU2012452}.
+Further research could introduce new practical constraints such as family groupings, load-bearing, and compatibility between items.
+Improvement heuristics could also be adapted to account for vertical support, such as the space defragmentation techniques introduced by \cite{ZHU2012452}.
 
 \input{tests/use_case_avg_global}
 \input{tests/use_case_tradeoff_summary}
@@ -307,7 +315,7 @@ Improvement heuristics could also be adapted to account for the support constrai
 \section{Acknowledgements}
 My deepest gratitude goes to my supervisors, Prof. Ola Jabali and Dr. Davide Croci for their insights and support.
 This work wouldn't have been possible without them.\\
-\\%TODO: non solo thanks
+\\
 Thanks to the team at ERMES-X s.r.l who provided me with the case study and the data used for our experiments.\\
 \\
 Many thanks to my family, my mom Patrizia, my father Severino, and my sister Giulia for always supporting me during this journey.
