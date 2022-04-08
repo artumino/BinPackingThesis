@@ -167,24 +167,7 @@ Previous studies in other fields related to container loading and pallet loading
 In this thesis, we address a version of the bin packing problem stemming from a real case study of mixed-case palletization: the Three-Dimensional Bin Packing Problem with Vertical Support (3D-BPPVS).
 We extend the standard formulation of the bin packing problem by ensuring that all items that are packed inside a bin will not fall, and we refer to this property as the vertical support.
 Vertical stability is usually ensured between horizontal or vertical slices of items as a constraint on the minimum amount of area which rests on other items (e.g., \cite{GZARA20201062,paquay2016mixed}).
-%MaybeRemove?
-Specifically, given a support area threshold $\alpha_s$ and a maximum vertical gap below which an item can be considered as effectively supporting another one $\beta_s$. We define an item as supported if one of the following conditions holds
-\begin{enumerate}[label={\textbf{Condition \arabic*}.},ref={\arabic*},leftmargin=*]
-    \item the sum of the overlap area over the XY-plane with every other item on which it is resting is greater than $\alpha_s$ times its base area. (area support) \label{support:area_support}
-    \item the number of its corners resting on another item is greater or equal to 3, and condition \ref{support:area_support} holds with a threshold $\alpha^\prime_s$ where $\alpha^\prime_s < \alpha_s$. (vertex support) \label{support:vertex_support}
-\end{enumerate}
-A visual representation of the conditions \ref{support:area_support} and \ref{support:vertex_support} of support is illustrated in \cref{fig:support}.
-%DONT REMOVE
 Each item can also be rotated along its vertical axis by 90 degrees.
-
-\begin{figure}[H]
-    \resizebox{\columnwidth}{!}{%
-    \input{Images/support}
-    }
-    \caption{Representation of an item with conditions \ref{support:area_support} and \ref{support:vertex_support} of vertical support given $\alpha_s = 0.5, \beta_s$}
-    \label{fig:support}
-\end{figure}
-%MaybeRemove?
 
 Our research stems from the case study of a logistics company in northern Italy.
 The company manages large warehouses where automated lines bring boxes to different packing stations, and then they are loaded onto pallets of standard size.
@@ -196,6 +179,15 @@ The company measures this property with a metric called cage ratio.
 Cage ratio is the ratio between the volume of the packed items inside a bin and the volume of the cuboid which surrounds them, the cage.
 The cage has the same base as the bin and height equal to the highest packed item inside the bin.
 Current commercial solutions employed by the company have solutions with around $60\%$ cage ratio, and a target of $70\%$ was set as a benchmark for our work.
+A visual representation of the cage ratio is shown in \cref{fig:cage_ratio}.
+
+\begin{figure}[h]
+    \resizebox{\columnwidth}{!}{%
+    \input{Images/cage_ratio_big}
+    }
+    \caption{Cage ratio of two different bin configurations}
+    \label{fig:cage_ratio}
+\end{figure}
 
 \section{Literature Review}
 The 3D-BPP is the generalization of the one-dimensional bin packing problem which is NP-Hard (\cite{martello2000three}).
@@ -218,6 +210,25 @@ Our solution to the problem fills the gap in the research by finding solutions t
 
 \section{Proposed Solution}
 
+Based on other publications from the literature and our case study partner's insights we define the property of vertical support.
+Given a support area threshold $\alpha_s$ and a maximum vertical gap below which an item can be considered as effectively supporting another one $\beta_s$. We define an item as supported if one of the following conditions holds
+\begin{enumerate}[label={\textbf{Condition \arabic*}.},ref={\arabic*},leftmargin=*]
+    \item the sum of the overlap area over the XY-plane with every other item on which it is resting is greater than $\alpha_s$ times its base area. (area support) \label{support:area_support}
+    \item the number of its corners resting on another item is greater or equal to 3, and condition \ref{support:area_support} holds with a threshold $\alpha^\prime_s$ where $\alpha^\prime_s < \alpha_s$. (vertex support) \label{support:vertex_support}
+\end{enumerate}
+A visual representation of the conditions \ref{support:area_support} and \ref{support:vertex_support} of support is illustrated in \cref{fig:support}.
+
+\begin{figure}[h]
+    \resizebox{\columnwidth}{!}{%
+    \input{Images/support_big}
+    }
+    \caption{Representation of an item with conditions \ref{support:area_support} and \ref{support:vertex_support} of vertical support given $\alpha_s = 0.5, \beta_s$}
+    \label{fig:support}
+\end{figure}
+
+We propose an heuristic that combines a constructive heuristic with a beam-search algorithm.
+The constructive heuristic is designed to solve a single-bin bin packing problem with vertical support, while the beam-search expands the heuristic's solutions by exploring different sequences of item placements.
+
 %-----------------------------------------------------------------------------
 % CONCLUSION
 %-----------------------------------------------------------------------------
@@ -237,10 +248,16 @@ Improvement heuristics could also be adapted to account for the support constrai
 
 \begin{figure}
     \centering
-    \subfloat[Instance 82]{\includegraphics[width = \columnwidth]{tests/usecase/instance-82_k200.PNG}}\\
-    \subfloat[Instance 66, Bin 1]{\includegraphics[width = \columnwidth]{tests/usecase/instance-66_bin1_k200.PNG}}
-    \caption{Some solutions of case study tests}
+    \includegraphics[width = \columnwidth]{tests/usecase/instance-82_k200.PNG}
+    \caption{Solution to Instance 82 from case study tests}
 \end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width = \columnwidth]{tests/usecase/instance-66_bin1_k200.PNG}
+    \caption{Solution to Instance 66, Bin 1 from case study tests}
+\end{figure}
+
 %---------------------------------------------------------------------------
 %  ACKNOWLEDGEMENTS 
 %---------------------------------------------------------------------------
