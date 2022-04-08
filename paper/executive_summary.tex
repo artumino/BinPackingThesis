@@ -242,9 +242,15 @@ Our heuristic achieved an average gap of $5.37\%$ against the best solutions pro
 We consider this as a great result since it states that our algorithm is competitive also in the realm of 3D-BPP without support.
 We generated a data set of problem instances based on real-world products from our case study, and we used them to evaluate our heuristic.
 In most configurations, our solutions exceeded the target metric of $70\%$ cage ratio, with some configurations having a negligible execution time.
+In \cref{results:usecase_summary} we report the average execution time (TT), bin used (B), and cage ratio (CR) across all our 100 case study instances for each configuration of our heuristic. 
+Different placement modes are marked as PS (single placement) and PM (multiple items per placements), and each row represent a different value of $k$ states considered in the beam-search.
+%TODO: Explain tradeoff
 
 Further research could introduce new practical constraints considered in the literature like family groupings, load-bearing, and compatibilities between items.
 Improvement heuristics could also be adapted to account for the support constraint like, for example, space defragmentation techniques introduced by \cite{ZHU2012452}.
+
+\input{tests/use_case_avg_global}
+\input{tests/use_case_tradeoff_summary}
 
 \begin{figure}
     \centering
