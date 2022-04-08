@@ -218,21 +218,40 @@ Our solution to the problem fills the gap in the research by finding solutions t
 
 \section{Proposed Solution}
 
-\section{Results}
-
-\input{tests/literature_time_gap}
-
 %-----------------------------------------------------------------------------
 % CONCLUSION
 %-----------------------------------------------------------------------------
 \section{Conclusions}
-A final section containing the main conclusions of your research/study have to be inserted here.
+In this thesis, we presented an heuristic for the Three-Dimensional Bin Packing Problem with Vertical Support.
+We modified the two-dimensional Extreme Points algorithm of \citet{crainic2008extreme} to consider vertical support.
+We then used this modified algorithm in a constructive heuristic which builds solutions to the single bin three-dimensional bin packing problem by filling planes, generated based on the previously inserted items.
+Finally, we introduced a beam-search algorithm which evaluates different sequences of item placements by using our proposed constructive heuristic, and removes duplicate solutions at each iteration.
 
+Our heuristic achieved an average gap of $5.37\%$ against the best solutions provided by other heuristics, however we were able to solve the same problem in a fraction of their computational time.
+We consider this as a great result since it states that our algorithm is competitive also in the realm of 3D-BPP without support.
+We generated a data set of problem instances based on real-world products from our case study, and we used them to evaluate our heuristic.
+In most configurations, our solutions exceeded the target metric of $70\%$ cage ratio, with some configurations having a negligible execution time.
+
+Further research could introduce new practical constraints considered in the literature like family groupings, load-bearing, and compatibilities between items.
+Improvement heuristics could also be adapted to account for the support constraint like, for example, space defragmentation techniques introduced by \cite{ZHU2012452}.
+
+\begin{figure}
+    \centering
+    \subfloat[Instance 82]{\includegraphics[width = \columnwidth]{tests/usecase/instance-82_k200.PNG}}\\
+    \subfloat[Instance 66, Bin 1]{\includegraphics[width = \columnwidth]{tests/usecase/instance-66_bin1_k200.PNG}}
+    \caption{Some solutions of case study tests}
+\end{figure}
 %---------------------------------------------------------------------------
 %  ACKNOWLEDGEMENTS 
 %---------------------------------------------------------------------------
 \section{Acknowledgements}
-Here you might want to acknowledge someone.
+My deepest gratitude goes to my supervisors, Prof. Ola Jabali and Dr. Davide Croci for their insights and support.
+This work wouldn't have been possible without them.\\
+\\
+Many thanks to the team at ERMES-X s.r.l who provided me with the case study and the data used for our experiments.\\
+\\
+Many thanks to my family, my mom Patrizia, my father Severino, and my sister Giulia for always supporting me during this journey.
+Last but not least, thanks to my colleagues Alberto, Edoardo, Mirko, and Kevin, that brightened every day at the university.
 
 %---------------------------------------------------------------------------
 %  BIBLIOGRAPHY
