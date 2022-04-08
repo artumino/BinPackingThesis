@@ -24,7 +24,9 @@
 
 % PACKAGES FOR IMAGES
 \usepackage{graphicx}
-\graphicspath{{Images/}} % Path for images' folder
+\usepackage{tikz} % A package for high-quality hand-made figures.
+\usetikzlibrary{}
+\graphicspath{{./Images/}} % Directory of the images
 \usepackage{eso-pic} % For the background picture on the title page
 \usepackage{subfig} % Numbered and caption subfigures using \subfloat
 \usepackage{caption} % Coloured captions
@@ -79,7 +81,8 @@
 %----------------------------------------------------------------------------
 %	ADD YOUR PACKAGES (be careful of package interaction)
 %----------------------------------------------------------------------------
-
+\usepackage{adjustbox}
+\usepackage{enumitem}
 
 %----------------------------------------------------------------------------
 %	ADD YOUR DEFINITIONS AND COMMANDS (be careful of existing commands)
@@ -163,7 +166,25 @@ When considering real-world settings, the addition of new practical constraints 
 Previous studies in other fields related to container loading and pallet loading have shown that static stability of the bins is a crucial aspect to consider (\cite{BORTFELDT20131}).
 In this thesis, we address a version of the bin packing problem stemming from a real case study of mixed-case palletization: the Three-Dimensional Bin Packing Problem with Vertical Support (3D-BPPVS).
 We extend the standard formulation of the bin packing problem by ensuring that all items that are packed inside a bin will not fall, and we refer to this property as the vertical support.
+Vertical stability is usually ensured between horizontal or vertical slices of items as a constraint on the minimum amount of area which rests on other items (e.g., \cite{GZARA20201062,paquay2016mixed}).
+%MaybeRemove?
+Specifically, given a support area threshold $\alpha_s$ and a maximum vertical gap below which an item can be considered as effectively supporting another one $\beta_s$. We define an item as supported if one of the following conditions holds
+\begin{enumerate}[label={\textbf{Condition \arabic*}.},ref={\arabic*},leftmargin=*]
+    \item the sum of the overlap area over the XY-plane with every other item on which it is resting is greater than $\alpha_s$ times its base area. (area support) \label{support:area_support}
+    \item the number of its corners resting on another item is greater or equal to 3, and condition \ref{support:area_support} holds with a threshold $\alpha^\prime_s$ where $\alpha^\prime_s < \alpha_s$. (vertex support) \label{support:vertex_support}
+\end{enumerate}
+A visual representation of the conditions \ref{support:area_support} and \ref{support:vertex_support} of support is illustrated in \cref{fig:support}.
+%DONT REMOVE
 Each item can also be rotated along its vertical axis by 90 degrees.
+
+\begin{figure}[H]
+    \resizebox{\columnwidth}{!}{%
+    \input{Images/support}
+    }
+    \caption{Representation of an item with conditions \ref{support:area_support} and \ref{support:vertex_support} of vertical support given $\alpha_s = 0.5, \beta_s$}
+    \label{fig:support}
+\end{figure}
+%MaybeRemove?
 
 Our research stems from the case study of a logistics company in northern Italy.
 The company manages large warehouses where automated lines bring boxes to different packing stations, and then they are loaded onto pallets of standard size.
@@ -196,7 +217,6 @@ Other more recent methods in the PLPs literature ensure support explicitly as a 
 Our solution to the problem fills the gap in the research by finding solutions to the 3D-BPPVS without explicitly building layers, and without the use of filler material.
 
 \section{Proposed Solution}
-
 
 \section{Results}
 
