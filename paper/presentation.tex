@@ -1,0 +1,312 @@
+\documentclass{beamer}
+
+\usetheme[bgphoto]{polimi}
+% Full instructions available at:
+% https://github.com/elauksap/beamerthemepolimi
+
+% Set custom font (requires to compile with XeLaTeX).
+\usepackage{ifxetex}
+\ifxetex
+    \usepackage{fontspec}
+    \setsansfont[Scale=0.95]{Arial}
+\fi
+
+\usepackage{subfig} % Numbered and caption subfigures using \subfloat.
+\usepackage[font={scriptsize}]{caption}
+
+\usepackage{lipsum}
+
+\title{Three-Dimensional Bin Packing \\ with Vertical Support}
+\subtitle{}
+\author{Jacopo Libè}
+\date{952914}
+
+\begin{document}
+    \begin{frame}
+        \maketitle
+    \end{frame}
+    
+    \begin{frame}{Table of contents}
+      \tableofcontents
+    \end{frame}
+    
+    \section{Introduction}
+    \begin{frame}{Case study}
+        \begin{columns}[onlytextwidth,T]
+            \column{\dimexpr\linewidth-55mm-5mm}
+                \begin{itemize}
+                    \item Large warehouses
+                    \item Mixed-case palletization
+                    \item No control over items' shape (strongly heterogeneous)
+                    \item Pallets wrapped during loading procedure
+                \end{itemize}
+                \vspace{-5mm}
+                \begin{figure}[H]
+                    \resizebox{\columnwidth}{!}{%
+                        \includegraphics{Images/presentation/example_pit_pallettization.png}
+                    }
+                    \caption{Example of pit pallettization (\hyperlink{https://www.youtube.com/watch?v=_sSdk1baNLA}{Schäfer Case Picking | SSI SCHÄFER})}
+                \end{figure}
+            \column{55mm}
+                \begin{figure}
+                    \resizebox{\columnwidth}{!}{%
+                        \includegraphics{Images/logo_ermesx_highcontrast}
+                    }
+                \end{figure}
+                \begin{figure}
+                    \resizebox{\columnwidth}{!}{%
+                        \input{Images/cage_ratio}
+                    }
+                    \caption{Cage ratio of two different bin configurations}
+                    \label{fig:cage_ratio}
+                \end{figure}
+        \end{columns}
+    \end{frame}
+
+    \begin{frame}{Vertical Support}
+        \begin{block}{Definition}
+            An item has vertical support if one of the following conditions hold:
+            \begin{itemize}
+                \item \textbf{Condition 1}: at least a percentage $\alpha_s$ of its base area is resting on other items
+                \item \textbf{Condition 2}: at least 3 of its vertices are resting over other items and \textbf{Condition 1} holds with a lower percentage
+            \end{itemize}
+        \end{block}
+    \end{frame}
+
+
+
+    \begin{frame}{Vertical Support}
+        \begin{figure}[H]
+            \resizebox{\columnwidth}{!}{%
+                \input{Images/support}
+            }
+            \caption{Representation of an item with conditions 1 and 2 of vertical support given $\alpha_s = 0.5, \beta_s$}
+            \label{fig:support}
+        \end{figure}
+    \end{frame}
+
+    \section{Problem Definition}
+    \begin{frame}{Literature Review}
+        %TODO: Images for placement strategies
+        \begin{itemize}
+            \item The problem is NP-Hard
+            \item Exact methods only for small instances %Cite?
+            \item Existing 3D-BPP heuristics don't consider practical constraints
+            \item Solutions for container loading and pallet loading problems are layer based
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Conceptual Formulation}
+        \begin{eqnarray*}
+            \textbf{minimize} & \text{number of used bins} \\
+            \textbf{then, maximize} & \text{average cage ratio of the used bins} \\
+            \textbf{subject to} & \text{all items are assigned to one and only one bin} \\
+                                              & \text{all items are inside the bin's bounds} \\
+                                              & \text{no overlaps between items in the same bin} \\
+                                              & \text{all items have vertical support} \\
+        \end{eqnarray*}
+    \end{frame}
+
+    \begin{frame}{MILP Proxy Model - Objective Function}
+
+        \begin{columns}[onlytextwidth,T]
+            \column{\dimexpr\linewidth-75mm-5mm}
+                \vspace{.25\textheight}
+                \resizebox{13mm}{!}{
+                    \begin{minipage}{\linewidth}
+                    \begin{eqnarray*}
+                        \textbf{minimize} & \text{number of used bins} \\
+                        \textbf{then, maximize} & \text{average cage ratio of the used bins} \\
+                        \color{gray}
+                        \textbf{subject to} & \color{gray} \text{all items are assigned to one and only one bin} \\
+                                                            & \color{gray} \text{all items are inside the bin's bounds} \\
+                                                            & \color{gray} \text{no overlaps between items in the same bin} \\
+                                                            & \color{gray} \text{all items have vertical support} \\
+                    \end{eqnarray*}
+                    \end{minipage}
+                }
+
+            \column{75mm}
+            \resizebox{!}{30mm}{
+                \begin{minipage}{\linewidth}
+                    \begin{align}
+                       \min       \qquad& \sum\limits_{b \in B} (H v_b + z^{max}_b) & \notag \\
+                      \text{s.t.} \qquad & \color{gray} \sum\limits_{b \in B} u_{ib} + \sum\limits_{b \in B} u_{jb} = 1                          & \color{gray} \forall (i, j) \in I^{OR} \notag \\
+                                         & \color{gray} u_{ib} \le v_b                                                                           & \color{gray} \forall i \in I, \forall b \in B \notag \\
+                                         & \color{gray} v_b \ge v_c                                                                              & \color{gray} \forall (b,c) \in B : b < c  \notag \\
+                                         & \color{gray} x_i + w_i \le W                                                                          & \color{gray} \forall i \in I \notag \\ 
+                                         & \color{gray} y_i + d_i \le D                                                                          & \color{gray} \forall i \in I \notag \\ 
+                                         & \color{gray} z_i + h_i \le H                                                                          & \color{gray} \forall i \in I \notag \\ 
+                                         & \color{gray} (x_i + w_i) - x_j\le W(1 - x^p_{ij})                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} x_j - (x_i + w_i) + 1 \le W x^p_{ij}                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} (y_i + d_i) - y_j \le D(1 - y^p_{ij})                                                    & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} y_j - (y_i + d_i) + 1 \le D y^p_{ij}                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} (z_i + h_i) - z_j\le H(1 - z^p_{ij})                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} z_j - (z_i + h_i) + 1 \le H z^p_{ij}                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} x^p_{ij} + x^p_{ji} + y^p_{ij} + y^p_{ji} + z^p_{ij} + z^p_{ji} \ge u_{ib} + u_{jb} - 1  & \color{gray} \forall i,j \in I, \forall b \in B \notag \\
+                                         & z^{max}_b \ge (z_i + h_i) - H(1-u_{ib})                                                               & \forall i \in I, \forall b \in B \notag
+                    \end{align}
+                \end{minipage}
+            }
+            \end{columns}
+    \end{frame}
+
+    \begin{frame}{MILP Proxy Model - Geometric Constraints 1}
+
+        \begin{columns}[onlytextwidth,T]
+            \column{\dimexpr\linewidth-75mm-5mm}
+                \vspace{.25\textheight}
+                \resizebox{13mm}{!}{
+                    \begin{minipage}{\linewidth}
+                    \begin{eqnarray*}
+                        \color{gray} \textbf{minimize} & \color{gray} \text{number of used bins} \\
+                        \color{gray} \textbf{then, maximize} & \color{gray} \text{average cage ratio of the used bins} \\
+                        \textbf{subject to} & \text{all items are assigned to one and only one bin} \\
+                                                            & \color{gray} \text{all items are inside the bin's bounds} \\
+                                                            & \color{gray} \text{no overlaps between items in the same bin} \\
+                                                            & \color{gray} \text{all items have vertical support} \\
+                    \end{eqnarray*}
+                    \end{minipage}
+                }
+
+            \column{75mm}
+            \resizebox{!}{30mm}{
+                \begin{minipage}{\linewidth}
+                    \begin{align}
+                \color{gray} \min \qquad & \color{gray} \sum\limits_{b \in B} (H v_b + z^{max}_b)                                                & \notag \\
+                      \text{s.t.} \qquad & \sum\limits_{b \in B} u_{ib} + \sum\limits_{b \in B} u_{jb} = 1                          & \forall (i, j) \in I^{OR} \notag \\
+                                         & u_{ib} \le v_b                                                                           & \forall i \in I, \forall b \in B \notag \\
+                                         & v_b \ge v_c                                                                              & \forall (b,c) \in B : b < c  \notag \\
+                                         & \color{gray} x_i + w_i \le W                                                                          & \color{gray} \forall i \in I \notag \\ 
+                                         & \color{gray} y_i + d_i \le D                                                                          & \color{gray} \forall i \in I \notag \\ 
+                                         & \color{gray} z_i + h_i \le H                                                                          & \color{gray} \forall i \in I \notag \\ 
+                                         & \color{gray} (x_i + w_i) - x_j\le W(1 - x^p_{ij})                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} x_j - (x_i + w_i) + 1 \le W x^p_{ij}                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} (y_i + d_i) - y_j \le D(1 - y^p_{ij})                                                    & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} y_j - (y_i + d_i) + 1 \le D y^p_{ij}                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} (z_i + h_i) - z_j\le H(1 - z^p_{ij})                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} z_j - (z_i + h_i) + 1 \le H z^p_{ij}                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} x^p_{ij} + x^p_{ji} + y^p_{ij} + y^p_{ji} + z^p_{ij} + z^p_{ji} \ge u_{ib} + u_{jb} - 1  & \color{gray} \forall i,j \in I, \forall b \in B \notag \\
+                                         & \color{gray} z^{max}_b \ge (z_i + h_i) - H(1-u_{ib})                                                  & \color{gray} \forall i \in I, \forall b \in B \notag
+                    \end{align}
+                \end{minipage}
+            }
+            \end{columns}
+    \end{frame}
+
+
+    \begin{frame}{MILP Proxy Model - Geometric Constraints 2}
+
+        \begin{columns}[onlytextwidth,T]
+            \column{\dimexpr\linewidth-75mm-5mm}
+                \vspace{.25\textheight}
+                \resizebox{13mm}{!}{
+                    \begin{minipage}{\linewidth}
+                    \begin{eqnarray*}
+                        \color{gray} \textbf{minimize} & \color{gray} \text{number of used bins} \\
+                        \color{gray} \textbf{then, maximize} & \color{gray} \text{average cage ratio of the used bins} \\
+                        \textbf{subject to} & \color{gray} \text{all items are assigned to one and only one bin} \\
+                                                            & \text{all items are inside the bin's bounds} \\
+                                                            & \color{gray} \text{no overlaps between items in the same bin} \\
+                                                            & \color{gray} \text{all items have vertical support} \\
+                    \end{eqnarray*}
+                    \end{minipage}
+                }
+
+            \column{75mm}
+            \resizebox{!}{30mm}{
+                \begin{minipage}{\linewidth}
+                    \begin{align}
+                \color{gray} \min \qquad & \color{gray} \sum\limits_{b \in B} (H v_b + z^{max}_b)                                                & \notag \\
+                      \text{s.t.} \qquad & \color{gray} \sum\limits_{b \in B} u_{ib} + \sum\limits_{b \in B} u_{jb} = 1                          & \color{gray} \forall (i, j) \in I^{OR} \notag \\
+                                         & \color{gray} u_{ib} \le v_b                                                                           & \color{gray} \forall i \in I, \forall b \in B \notag \\
+                                         & \color{gray} v_b \ge v_c                                                                              & \color{gray} \forall (b,c) \in B : b < c  \notag \\
+                                         & x_i + w_i \le W                                                                          & \forall i \in I \notag \\ 
+                                         & y_i + d_i \le D                                                                          & \forall i \in I \notag \\ 
+                                         & z_i + h_i \le H                                                                          & \forall i \in I \notag \\ 
+                                         & \color{gray} (x_i + w_i) - x_j\le W(1 - x^p_{ij})                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} x_j - (x_i + w_i) + 1 \le W x^p_{ij}                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} (y_i + d_i) - y_j \le D(1 - y^p_{ij})                                                    & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} y_j - (y_i + d_i) + 1 \le D y^p_{ij}                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} (z_i + h_i) - z_j\le H(1 - z^p_{ij})                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} z_j - (z_i + h_i) + 1 \le H z^p_{ij}                                                     & \color{gray} \forall i,j \in I \notag \\
+                                         & \color{gray} x^p_{ij} + x^p_{ji} + y^p_{ij} + y^p_{ji} + z^p_{ij} + z^p_{ji} \ge u_{ib} + u_{jb} - 1  & \color{gray} \forall i,j \in I, \forall b \in B \notag \\
+                                         & \color{gray} z^{max}_b \ge (z_i + h_i) - H(1-u_{ib})                                                  & \color{gray} \forall i \in I, \forall b \in B \notag
+                    \end{align}
+                \end{minipage}
+            }
+            \end{columns}
+    \end{frame}
+
+
+    \begin{frame}{MILP Proxy Model - Geometric Constraints 3}
+
+        \begin{columns}[onlytextwidth,T]
+            \column{\dimexpr\linewidth-75mm-5mm}
+                \vspace{.25\textheight}
+                \resizebox{13mm}{!}{
+                    \begin{minipage}{\linewidth}
+                    \begin{eqnarray*}
+                        \color{gray} \textbf{minimize} & \color{gray} \text{number of used bins} \\
+                        \color{gray} \textbf{then, maximize} & \color{gray} \text{average cage ratio of the used bins} \\
+                        \textbf{subject to} & \color{gray} \text{all items are assigned to one and only one bin} \\
+                                                            & \color{gray} \text{all items are inside the bin's bounds} \\
+                                                            & \text{no overlaps between items in the same bin} \\
+                                                            & \color{gray} \text{all items have vertical support} \\
+                    \end{eqnarray*}
+                    \end{minipage}
+                }
+
+            \column{75mm}
+            \resizebox{!}{30mm}{
+                \begin{minipage}{\linewidth}
+                    \begin{align}
+                \color{gray} \min \qquad & \color{gray} \sum\limits_{b \in B} (H v_b + z^{max}_b)                                                & \notag \\
+                      \text{s.t.} \qquad & \color{gray} \sum\limits_{b \in B} u_{ib} + \sum\limits_{b \in B} u_{jb} = 1                          & \color{gray} \forall (i, j) \in I^{OR} \notag \\
+                                         & \color{gray} u_{ib} \le v_b                                                                           & \color{gray} \forall i \in I, \forall b \in B \notag \\
+                                         & \color{gray} v_b \ge v_c                                                                              & \color{gray} \forall (b,c) \in B : b < c  \notag \\
+                                         & \color{gray} x_i + w_i \le W                                                                          & \color{gray} \forall i \in I \notag \\ 
+                                         & \color{gray} y_i + d_i \le D                                                                          & \color{gray} \forall i \in I \notag \\ 
+                                         & \color{gray} z_i + h_i \le H                                                                          & \color{gray} \forall i \in I \notag \\ 
+                                         & (x_i + w_i) - x_j\le W(1 - x^p_{ij})                                                     & \forall i,j \in I \notag \\
+                                         & x_j - (x_i + w_i) + 1 \le W x^p_{ij}                                                     & \forall i,j \in I \notag \\
+                                         & (y_i + d_i) - y_j \le D(1 - y^p_{ij})                                                    & \forall i,j \in I \notag \\
+                                         & y_j - (y_i + d_i) + 1 \le D y^p_{ij}                                                     & \forall i,j \in I \notag \\
+                                         & (z_i + h_i) - z_j\le H(1 - z^p_{ij})                                                     & \forall i,j \in I \notag \\
+                                         & z_j - (z_i + h_i) + 1 \le H z^p_{ij}                                                     & \forall i,j \in I \notag \\
+                                         & x^p_{ij} + x^p_{ji} + y^p_{ij} + y^p_{ji} + z^p_{ij} + z^p_{ji} \ge u_{ib} + u_{jb} - 1  & \forall i,j \in I, \forall b \in B \notag \\
+                                         & \color{gray} z^{max}_b \ge (z_i + h_i) - H(1-u_{ib})                                                  & \color{gray} \forall i \in I, \forall b \in B \notag
+                    \end{align}
+                \end{minipage}
+            }
+            \end{columns}
+    \end{frame}
+
+    \begin{frame}{MILP Proxy Model - Discretized Vertical Support}
+    \end{frame}
+
+    \section{Proposed Heuristic}
+    \begin{frame}{Overview}
+        \begin{figure}[h]
+            \resizebox*{!}{.6\textheight}{%
+            \input{Images/heur_scheme}
+            }
+            \caption{Conceptual representation of the proposed heuristic}
+            \label{fig:heur_scheme}
+        \end{figure}
+    \end{frame}
+    \begin{frame}{Support Plane}
+    \end{frame}
+    \begin{frame}{Beam Search}
+    \end{frame}
+    \begin{frame}{Optimizations}
+    \end{frame}
+
+    \section{Conclusions}
+
+    \begin{frame}{Computational Experiments}
+    \end{frame}
+
+    \begin{frame}{Results \& Future Developments}
+    \end{frame}
+\end{document}
