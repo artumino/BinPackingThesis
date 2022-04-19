@@ -13,6 +13,7 @@
 
 \usepackage{subfig} % Numbered and caption subfigures using \subfloat.
 \usepackage[font={scriptsize}]{caption}
+\usepackage{mathtools}
 
 \usepackage{lipsum}
 
@@ -258,8 +259,7 @@
                 }
                 
                 \begin{figure}
-                    \centering
-                    \resizebox{\columnwidth}{!}{
+                    \resizebox{1.35\columnwidth}{!}{
                         \input{Images/presentation/precedences_model}
                     }
                     \caption{Precedences variables (2D case)}
@@ -290,6 +290,55 @@
     \end{frame}
 
     \begin{frame}{MILP Proxy Model - Discretized Vertical Support}
+
+
+        \begin{columns}[onlytextwidth,T]
+            \column{\dimexpr\linewidth-75mm-5mm}
+                \vspace{.12\textheight}
+                \resizebox{13mm}{!}{
+                    \begin{minipage}{\linewidth}
+                    \begin{eqnarray*}
+                        \color{gray} \textbf{minimize} & \color{gray} \text{number of used bins} \\
+                        \color{gray} \textbf{then, maximize} & \color{gray} \text{average cage ratio of the used bins} \\
+                        \textbf{subject to} & \color{gray} \text{all items are assigned to one and only one bin} \\
+                                                            & \color{gray} \text{all items are inside the bin's bounds} \\
+                                                            & \color{gray} \text{no overlaps between items in the same bin} \\
+                                                            & \text{all items have vertical support} \\
+                    \end{eqnarray*}
+                    \end{minipage}
+                }
+                \vspace{-5mm}
+                \begin{figure}
+                    \hspace*{-5mm}
+                    \resizebox{1.35\columnwidth}{!}{
+                        \input{Images/presentation/discretization}
+                    }
+                    \caption{Space discretization}
+                \end{figure}
+
+            \column{75mm}
+            \resizebox{!}{30mm}{
+                \begin{minipage}{\linewidth}
+                    \begin{align}
+                        \text{s.t.} \qquad  & z_j - (z_i + h_i) \le \beta_s + H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \notag \\
+                                            & z_j - (z_i + h_i) \ge -\beta_s - H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \notag \\
+                                            & s_{ij} \le z^p_{ij} & \forall (i, j) \in I  \notag \\
+                                            & s_{ij} \le z^c_{ij} & \forall (i, j) \in I  \notag \\
+                                            & s_{ij} \ge z^p_{ij} + z^c_{ij} - 2 & \forall (i, j) \in I : i \neq j \notag \\
+                                            & \sum_{\mathclap{j \in I}}{s_{ij}} \le \sum_{\mathclap{b \in B}}{u_{ib}} & \forall i \in I  \notag \\
+                                            & z_i \le H(1 - g_i) & \forall i \in I \notag \\
+                                            & \sum_{\mathclap{(k, h) \in \Delta, b \in B : O(i, j, k, h) \neq 0}} s^{k h}_{i j b} \le s_{ij} & \forall (i, j) \in I \notag \\
+                                            & \sum_{\mathclap{(k, h) \in \Delta : O(i, j, k, h) \neq 0}} s^{k h}_{i j b} \le u_{ib} & \forall (i, j, b) \in I^B \notag \\
+                                            & \sum_{\mathclap{(k, h) \in \Delta : O(i, j, k, h) \neq 0}} s^{k h}_{i j b} \le u_{jb} & \forall (i, j, b) \in I^B \notag \\
+                                            & x_j - x_i \ge \gamma k - 2W( 1 - s^{k h}_{i j b}) & \forall (k, h) \in \Delta, \forall (i, j, b) \in I^B : O(i, j, k, h) \neq 0 \notag \\
+                                            & x_j - x_i \le \gamma (k + 1) + 2W( 1 - s^{k h}_{i j b}) & \forall (k, h) \in \Delta, \forall (i, j, b) \in I^B : O(i, j, k, h) \neq 0 \notag \\
+                                            & y_j - y_i \ge \gamma h - 2D( 1 - s^{k h}_{i j b}) & \forall (k, h) \in \Delta, \forall (i, j, b) \in I^B : O(i, j, k, h) \neq 0 \notag \\
+                                            & y_j - y_i \le \gamma (h + 1) + 2D( 1 - s^{k h}_{i j b}) & \forall (k, h) \in \Delta, \forall (i, j, b) \in I^B : O(i, j, k, h) \neq 0 \notag \\
+                                            & \sum_{\mathclap{(k, h) \in \Delta, b \in B, j \in I : i \neq j \land O(i, j, k, h) \neq 0}}{ O(i, j, k, h)s^{k h}_{j i b}} \ge \alpha_s w_i d_i - w_i d_i g_i & \forall i \in I \notag
+                    \end{align}
+                \end{minipage}
+            }
+            \end{columns}
     \end{frame}
 
     \section{Proposed Heuristic}
