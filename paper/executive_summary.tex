@@ -163,9 +163,9 @@
 Recent progress in the digitalization of industrial processes led to a rise in studies on the Three-Dimensional Bin Packing Problem (3D-BPP).
 The problem consists in packing a set of three-dimensional items in the minimum number of bins without any overlap.
 The 3D-BPP finds many applications in real-world industrial settings, such as loading boxes onto pallets (Pallet Loading Problem) or in containers (Container Loading Problem). 
-Studies in the application areas mentioned above have shown that 3D-BPP can be successfully applied to industrial problems as long as it is extended with new practical constraints. 
+Studies in such application areas mentioned above have shown that 3D-BPP can be successfully applied to industrial problems as long as it is extended with new practical constraints. 
 Many works in the literature state that one of the most important practical constraints is vertical support (\cite{BORTFELDT20131}), i.e., the fact that each item has sufficient support to keep it from falling.
-In this thesis, we develop a new extension of the 3D-BPP that ensures vertical support for each item: the Three-Dimensional Bin Packing Problem with Vertical Support (3D-BPPVS).
+In this thesis, we develop a new extension of the 3D-BPP that ensures vertical support for each item, we call this problem the Three-Dimensional Bin Packing Problem with Vertical Support (3D-BPPVS).
 Similarly to other works in the literature (\cite{GZARA20201062,paquay2016mixed}), we model this property as a constraint on the minimum amount of area or vertices that rest on other items.
 
 Our research stems from the case study of a logistics company in northern Italy.
@@ -189,7 +189,7 @@ A visual representation of the cage ratio is shown in \cref{fig:cage_ratio}.
 
 In this thesis we
 \begin{itemize}
-    \item formulate a mixed-integer linear programming model for the 3D-BPPVS with a discretized version of the support constraint,
+    \item formulate a mixed-integer linear programming model for the 3D-BPPVS with a discretized version of the support constraints,
     \item develop a constructive heuristic that fills bins while guaranteeing vertical support, without explicitly building layered solutions,
     \item introduce a beam search heuristic that expands the constructive heuristic's solution space by exploring different orders of item palletization,
     \item validate the proposed heuristic against our model and against the most relevant heuristics from the 3D-BPP literature,
@@ -290,6 +290,7 @@ Different placement modes are marked as PS (single placement) and PM (multiple i
 In \cref{exp:usecase_tradeoff} we analyze the trade-off between running times and cage ratio obtained by each configuration of the heuristic.
 We list the difference between the average running time of each configuration (\textit{TT}) and the best average running time (\textit{TT*}), together with the difference between the best average cage ratio (\textit{CR*}) and the average cage ratio obtained by each configuration (\textit{CR}).
 We discover that the most promising configuration for our industrial partner consists in using the PM placement mode with $k \in {20, 50}$.
+We show some of the results of the case study experiments in \cref{fig:usecase_82,fig:usecase_86} where the heuristic was configured in PM mode with $k=200$.
 
 Further research could introduce new practical constraints such as family groupings, load-bearing, and compatibility between items.
 Improvement heuristics could also be adapted to account for vertical support, such as the space defragmentation techniques introduced by \cite{ZHU2012452}.
@@ -301,12 +302,14 @@ Improvement heuristics could also be adapted to account for vertical support, su
     \centering
     \includegraphics[width = \columnwidth]{tests/usecase/instance-82_k200.PNG}
     \caption{Solution to Instance 82 from case study tests}
+    \label{fig:usecase_82}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width = \columnwidth]{tests/usecase/instance-66_bin1_k200.PNG}
     \caption{Solution to Instance 66, Bin 1 from case study tests}
+    \label{fig:usecase_86}
 \end{figure}
 
 %---------------------------------------------------------------------------

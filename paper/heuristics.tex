@@ -203,7 +203,8 @@ We also know that a new state $s^\prime$ derived from $s$ by applying a feasible
 This state expansion procedure, with the exception of empty insertions, will generate new states in our tree which will add a positive number of bins or packed items to the solution. This procedure, eventually, will converge and generate a final state.
 
 If the starting state for the search is feasible, every new generated state will be feasible, and thus if a final state is found it will be feasible (\cref{prop:feasible_expansion}).
-States are expanded by generating insertions and applying such insertions to them, following the two phase procedure outlined in \cref{sec:problem_state:insertions}. In our BS, the first phase is performed before the evaluation of each new state while the second phase is performed only after the selection of the $k$ best states.
+States are expanded by generating insertions and applying such insertions to them, following the two phase procedure outlined in \cref{sec:problem_state:insertions}.
+In our BS, the first phase is performed before the evaluation of each new state while the second phase is performed only after the selection of the $k$ best states.
 As noted in \cref{sec:state_uniqueness}, since by evaluating different insertions on different states it is possible to end up having two equal states, a filtering mechanism based on hashing is introduced.
 During each iteration, it is possible to keep the hashes of the best selected states in a hash set and discard new states with the same hash.
 
@@ -214,7 +215,16 @@ As observed in \cref{def:empty_state}, it is possible to start the search from $
 
 \paragraph*{State Expansion}
 
-An expansion of a state $s$ is a new set of states $S_{new}$ obtained by applying a set of feasible insertions to $s$. In order to determine these insertions, an underlying heuristic is used (described in \cref{sec:support_planes}).
+An expansion of a state $s$ is a new set of states $S_{new}$ obtained by applying a set of feasible insertions to $s$.
+In order to determine these insertions, an underlying heuristic is used (described in \cref{sec:support_planes}).
+A conceptual representation of the described process can be seen in \cref{fig:heur_scheme}.
+\begin{figure}[h]
+    \resizebox{\columnwidth}{!}{%
+    \input{Images/heur_scheme}
+    }
+    \caption{Conceptual representation of the proposed heuristic}
+    \label{fig:heur_scheme}
+\end{figure}
 
 The main idea in this phase of the algorithm is to find feasible insertions in all the bins in $B^s$ at the lowest possible height, for each item in $U^s$. 
 To reduce the number of possible expansions to evaluate, we limit the search only to insertions of items with unique shapes.
