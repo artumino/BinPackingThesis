@@ -289,25 +289,21 @@
             \end{columns}
     \end{frame}
 
+
     \begin{frame}{MILP Proxy Model - Discretized Vertical Support}
+        \begin{eqnarray*}
+            \color{gray} \textbf{minimize} & \color{gray} \text{number of used bins} \\
+            \color{gray} \textbf{then, maximize} & \color{gray} \text{average cage ratio of the used bins} \\
+            \textbf{subject to} & \color{gray} \text{all items are assigned to one and only one bin} \\
+                                                & \color{gray} \text{all items are inside the bin's bounds} \\
+                                                & \color{gray} \text{no overlaps between items in the same bin} \\
+                                                & \text{all items have vertical support} \\
+        \end{eqnarray*}
+    \end{frame}
 
-
+    \begin{frame}{MILP Proxy Model - Discretized Vertical Support}
         \begin{columns}[onlytextwidth,T]
             \column{\dimexpr\linewidth-75mm-5mm}
-                \vspace{.12\textheight}
-                \resizebox{13mm}{!}{
-                    \begin{minipage}{\linewidth}
-                    \begin{eqnarray*}
-                        \color{gray} \textbf{minimize} & \color{gray} \text{number of used bins} \\
-                        \color{gray} \textbf{then, maximize} & \color{gray} \text{average cage ratio of the used bins} \\
-                        \textbf{subject to} & \color{gray} \text{all items are assigned to one and only one bin} \\
-                                                            & \color{gray} \text{all items are inside the bin's bounds} \\
-                                                            & \color{gray} \text{no overlaps between items in the same bin} \\
-                                                            & \text{all items have vertical support} \\
-                    \end{eqnarray*}
-                    \end{minipage}
-                }
-                \vspace{-5mm}
                 \begin{figure}
                     \hspace*{-5mm}
                     \resizebox{1.35\columnwidth}{!}{
