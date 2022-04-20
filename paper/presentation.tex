@@ -113,7 +113,8 @@
         \begin{columns}[onlytextwidth,T]
             \column{\dimexpr\linewidth-75mm-5mm}
                 \vspace{.25\textheight}
-                \resizebox{13mm}{!}{
+                \hspace{-5mm}
+                \resizebox{17mm}{!}{
                     \begin{minipage}{\linewidth}
                     \begin{eqnarray*}
                         \textbf{minimize} & \text{number of used bins} \\
@@ -157,7 +158,8 @@
         \begin{columns}[onlytextwidth,T]
             \column{\dimexpr\linewidth-75mm-5mm}
                 \vspace{.25\textheight}
-                \resizebox{13mm}{!}{
+                \hspace{-5mm}
+                \resizebox{17mm}{!}{
                     \begin{minipage}{\linewidth}
                     \begin{eqnarray*}
                         \color{gray} \textbf{minimize} & \color{gray} \text{number of used bins} \\
@@ -201,7 +203,8 @@
         \begin{columns}[onlytextwidth,T]
             \column{\dimexpr\linewidth-75mm-5mm}
                 \vspace{.25\textheight}
-                \resizebox{13mm}{!}{
+                \hspace{-5mm}
+                \resizebox{17mm}{!}{
                     \begin{minipage}{\linewidth}
                     \begin{eqnarray*}
                         \color{gray} \textbf{minimize} & \color{gray} \text{number of used bins} \\
@@ -245,7 +248,8 @@
         \begin{columns}[onlytextwidth,T]
             \column{\dimexpr\linewidth-75mm-5mm}
                 \vspace{.12\textheight}
-                \resizebox{13mm}{!}{
+                \hspace{-5mm}
+                \resizebox{17mm}{!}{
                     \begin{minipage}{\linewidth}
                     \begin{eqnarray*}
                         \color{gray} \textbf{minimize} & \color{gray} \text{number of used bins} \\
@@ -290,7 +294,7 @@
     \end{frame}
 
 
-    \begin{frame}{MILP Proxy Model - Discretized Vertical Support}
+    \begin{frame}{MILP Proxy Model - Vertical Support}
         \begin{eqnarray*}
             \color{gray} \textbf{minimize} & \color{gray} \text{number of used bins} \\
             \color{gray} \textbf{then, maximize} & \color{gray} \text{average cage ratio of the used bins} \\
@@ -299,6 +303,33 @@
                                                 & \color{gray} \text{no overlaps between items in the same bin} \\
                                                 & \text{all items have vertical support} \\
         \end{eqnarray*}
+    \end{frame}
+
+    \begin{frame}{MILP Proxy Model - Closeness}
+        \begin{columns}[onlytextwidth,T]
+        \column{\dimexpr\linewidth-75mm-5mm}
+            \begin{figure}
+                \hspace*{-5mm}
+                \resizebox{1.35\columnwidth}{!}{
+                    \input{Images/presentation/closeness_model}
+                }
+                \caption{Closeness variables example}
+            \end{figure}
+
+        \column{75mm}
+            \resizebox{\columnwidth}{!}{
+                \begin{minipage}{\linewidth}
+                    \begin{align}
+                        \text{s.t.} \qquad  & z_j - (z_i + h_i) \le \beta_s + H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \notag \\
+                        & z_j - (z_i + h_i) \ge -\beta_s - H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \notag \\
+                        & s_{ij} \le z^p_{ij} & \forall (i, j) \in I  \notag \\
+                        & s_{ij} \le z^c_{ij} & \forall (i, j) \in I  \notag \\
+                        & s_{ij} \ge z^p_{ij} + z^c_{ij} - 2 & \forall (i, j) \in I : i \neq j \notag \\
+                        & \sum_{\mathclap{j \in I}}{s_{ij}} \le \sum_{\mathclap{b \in B}}{u_{ib}} & \forall i \in I  \notag
+                    \end{align}
+                \end{minipage}
+            }
+        \end{columns}
     \end{frame}
 
     \begin{frame}{MILP Proxy Model - Discretized Vertical Support}
@@ -313,16 +344,11 @@
                 \end{figure}
 
             \column{75mm}
-            \resizebox{!}{30mm}{
+            \vspace*{15mm}
+            \resizebox{!}{22mm}{
                 \begin{minipage}{\linewidth}
                     \begin{align}
-                        \text{s.t.} \qquad  & z_j - (z_i + h_i) \le \beta_s + H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \notag \\
-                                            & z_j - (z_i + h_i) \ge -\beta_s - H (1 - z^c_{ij}) & \forall (i, j) \in I : i \neq j \notag \\
-                                            & s_{ij} \le z^p_{ij} & \forall (i, j) \in I  \notag \\
-                                            & s_{ij} \le z^c_{ij} & \forall (i, j) \in I  \notag \\
-                                            & s_{ij} \ge z^p_{ij} + z^c_{ij} - 2 & \forall (i, j) \in I : i \neq j \notag \\
-                                            & \sum_{\mathclap{j \in I}}{s_{ij}} \le \sum_{\mathclap{b \in B}}{u_{ib}} & \forall i \in I  \notag \\
-                                            & z_i \le H(1 - g_i) & \forall i \in I \notag \\
+                        \text{s.t.} \qquad  & z_i \le H(1 - g_i) & \forall i \in I \notag \\
                                             & \sum_{\mathclap{(k, h) \in \Delta, b \in B : O(i, j, k, h) \neq 0}} s^{k h}_{i j b} \le s_{ij} & \forall (i, j) \in I \notag \\
                                             & \sum_{\mathclap{(k, h) \in \Delta : O(i, j, k, h) \neq 0}} s^{k h}_{i j b} \le u_{ib} & \forall (i, j, b) \in I^B \notag \\
                                             & \sum_{\mathclap{(k, h) \in \Delta : O(i, j, k, h) \neq 0}} s^{k h}_{i j b} \le u_{jb} & \forall (i, j, b) \in I^B \notag \\
