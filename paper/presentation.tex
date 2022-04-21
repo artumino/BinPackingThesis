@@ -510,7 +510,63 @@
     \section{Conclusions}
 
     \begin{frame}{Computational Experiments}
-        \input{tests/literature_time_gap.tex}
+        \begin{table}[htbp]
+            \centering
+            \caption{Comparison with MILP model on limited set of boxes}
+            \resizebox{!}{25mm}{\begin{tabular}{|c|c|c|c|c|c|c|c|}
+            \hline
+            & \multicolumn{ 3}{c|}{\textbf{MILP Model}} & \multicolumn{ 2}{c|}{\textbf{PM}} & \multicolumn{ 2}{c|}{\textbf{PS}} \\ \hline
+            \textbf{$n$} & \textbf{Max Z} & \textbf{TT(s)} & \textbf{Gap($\%$)} & \textbf{Max Z} & \textbf{TT(s)} & \textbf{Max Z} & \textbf{TT(s)} \\ \hline
+            1  & 85   & 0.01     & 0.00 & 85  & 0.00 & 85  & 0.00 \\ 
+            2  & 85   & 0.07     & 0.00 & 85  & 0.00 & 85  & 0.00 \\ 
+            3  & 85   & 0.13     & 0.00 & 85  & 0.00 & 85  & 0.00 \\ 
+            4  & 85   & 0.20     & 0.00 & 85  & 0.01 & 85  & 0.01 \\ 
+            5  & 85   & 2.02     & 0.00 & 85  & 0.02 & 85  & 0.02 \\ 
+            6  & 158  & 90.58    & 0.00 & 158 & 0.06 & 158 & 0.05 \\ 
+            7  & 158  & 1,369.24 & 0.00 & 158 & 0.07 & 158 & 0.08 \\ 
+            8  & 161* & 3,600.00 & 1.86 & 160 & 0.10 & 160 & 0.08 \\ \hline
+            9  & -    & -        & -    & 169 & 0.09 & 161 & 0.10 \\ 
+            10 & -    & -        & -    & 218 & 0.12 & 218 & 0.13 \\ 
+            11 & -    & -        & -    & 240 & 0.12 & 240 & 0.12 \\ 
+            12 & -    & -        & -    & 310 & 0.13 & 316 & 0.16 \\ 
+            13 & -    & -        & -    & 310 & 0.15 & 333 & 0.18 \\ 
+            14 & -    & -        & -    & 310 & 0.20 & 333 & 0.22 \\ 
+            15 & -    & -        & -    & 406 & 0.21 & 397 & 0.27 \\ 
+            16 & -    & -        & -    & 435 & 0.23 & 452 & 0.36 \\ 
+            17 & -    & -        & -    & 429 & 0.27 & 515 & 0.41 \\ 
+            18 & -    & -        & -    & 432 & 0.32 & 522 & 0.47 \\ 
+            19 & -    & -        & -    & 458 & 0.35 & 522 & 0.55 \\ 
+            20 & -    & -        & -    & 539 & 0.37 & 564 & 0.62 \\ \hline
+            \end{tabular}}
+            \label{exp:model}
+            \caption*{* Some boxes had lower support than expected due to discretization errors.}
+            \end{table}
+        
+    \end{frame}
+
+    \begin{frame}{Computational Experiments}
+        \begin{table}[htbp]
+            \caption{Average execution time of literature results with bin gap}
+            \centering
+            \resizebox{!}{25mm}{\begin{tabular}{|l|l|c|c|c|c|c|}
+            \hline
+            \multicolumn{2}{|c|}{\textbf{Heuristic}} & \multicolumn{4}{|c|}{\textbf{Execution Time (s)}} & \textbf{Bin Gap (\%)} \\ \hline
+            \multicolumn{2}{|c|}{} & $n=50$ & $n=100$  & $n=150$ & $n=200$ &      \\ \hline
+            \textbf{PM} & $k=1$    & 0.05   & 0.11     & 0.28    & 0.55    & 4.57 \\ 
+                        & $k=5$    & 0.08   & 0.39     & 1.02    & 2.16    & 4.32 \\ 
+                        & $k=10$   & 0.15   & 0.74     & 1.98    & 4.12    & 4.29 \\ 
+                        & $k=20$   & 0.29   & 1.45     & 3.89    & 8.07    & 4.05 \\ 
+                        & $k=50$   & 0.72   & 3.63     & 9.72    & 20.47   & 3.95 \\ \hline
+            \textbf{PS} & $k=1$    & 0.04   & 0.18     & 0.51    & 1.08    & 4.35 \\ 
+                        & $k=5$    & 0.12   & 0.74     & 2.19    & 4.79    & 4.01 \\ 
+                        & $k=10$   & 0.23   & 1.43     & 4.19    & 9.39    & 3.94 \\ 
+                        & $k=20$   & 0.47   & 2.81     & 8.48    & 18.93   & 3.74 \\ 
+                        & $k=50$   & 1.15   & 6.74     & 21.03   & 45.78   & 3.52 \\ \hline
+             \hline
+             \multicolumn{2}{|l|}{\textbf{BRKGA-VD}} & 17.13 & 80.63 & 190.50 & 369.75 & 0.00 \\ \hline
+            \end{tabular}}
+            \label{exp:literature_time_gap}
+        \end{table}
     \end{frame}
 
     \begin{frame}{Computational Experiments}
@@ -521,6 +577,23 @@
         \input{tests/use_case_tradeoff_summary}
     \end{frame}
 
-    \begin{frame}{Results \& Future Developments}
+    \begin{frame}{Results}
+        \begin{figure}
+            \centering
+            \subfloat[Instance 95]{\includegraphics[width = 30mm]{Images/tests/usecase/instance-95_k200.PNG}} 
+            \subfloat[Instance 82]{\includegraphics[width = 30mm]{Images/tests/usecase/instance-82_k200.PNG}}
+            \subfloat[Instance 56]{\includegraphics[width = 30mm]{Images/tests/usecase/instance-56_k200.PNG}} 
+            \subfloat[Instance 66, Bin 1]{\includegraphics[width = 30mm]{Images/tests/usecase/instance-66_bin1_k200.PNG}}
+            \caption{Solutions of case study tests with the "PM" placement and $k=200$}
+            \label{fig:usecase_tests}
+        \end{figure}
+    \end{frame}
+
+    \begin{frame}{Future Developments}
+        \begin{itemize}
+            \item More practical constraints
+            \item Solution optimization heuristics
+            \item Improvements to the underlying 2D-BPP heuristic
+        \end{itemize}
     \end{frame}
 \end{document}
