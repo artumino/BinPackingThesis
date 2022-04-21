@@ -365,19 +365,73 @@
 
     \section{Proposed Heuristic}
     \begin{frame}{Overview}
-        \begin{figure}[h]
-            \resizebox*{!}{.6\textheight}{%
-            \input{Images/heur_scheme}
-            }
-            \caption{Conceptual representation of the proposed heuristic}
-            \label{fig:heur_scheme}
-        \end{figure}
+        \begin{columns}[onlytextwidth,T]
+        \column{\dimexpr\linewidth-75mm-5mm}
+        Composed of:
+        \begin{itemize}
+            \item Constructive heuristic (Support Planes)
+            \item Beam-Search
+        \end{itemize}
+        Each node is a partial solution, starts from the empty solution
+        \column{75mm}
+            \begin{figure}[h]
+                \resizebox*{!}{.6\textheight}{%
+                \input{Images/heur_scheme}
+                }
+                \caption{Conceptual representation of the proposed heuristic}
+                \label{fig:heur_scheme}
+            \end{figure}
+        \end{columns}
     \end{frame}
     \begin{frame}{Support Plane}
+        \begin{columns}[onlytextwidth,T]
+            \column{\dimexpr\linewidth-65mm-5mm}
+            \begin{itemize}
+                \item Operates on a single bin
+                \item Each item inserted generates planes
+                \item Insertions on the lowest possible level
+                \item Items grouped by their shape
+                \item No explicit layers
+            \end{itemize}
+            \column{65mm}
+                \begin{figure}[h]
+                    \resizebox*{\columnwidth}{!}{%
+                    \input{Images/support_planes}
+                    }
+                    \caption{Conceptual representation of the proposed heuristic}
+                    \label{fig:heur_scheme}
+                \end{figure}
+            \end{columns}
     \end{frame}
     \begin{frame}{Beam Search}
     \end{frame}
     \begin{frame}{Optimizations}
+        \begin{columns}[onlytextwidth,T]
+        \column{\dimexpr\linewidth-65mm-5mm}
+            \begin{itemize}
+                \item Duplicates removal
+                \item Fast overlap checks
+                \item Memory management
+            \end{itemize}
+        \column{65mm}
+            \begin{figure}[h]
+                \resizebox*{\columnwidth}{!}{%
+                \input{Images/aabb_tree}
+                }
+                \caption{AABB Tree}
+            \end{figure}
+            %\vspace*{-15mm}
+            %\begin{figure}
+            %    \resizebox*{\columnwidth}{!}{%
+            %    \begin{minipage}{\linewidth}
+            %        \begin{align}
+            %        hash_{ib} &= hash\_nc(b, x^s_i, y^s_i, z^s_i, w^s_i, d^s_i, h_i) \notag \\
+            %        hash^s &= \sum\limits_{b \in B^s}{\sum\limits_{i \in J^s_b}{hash_{ib}}} \notag
+            %        \end{align}
+            %    \end{minipage}}
+            %    \caption{Hash of a solution $s$}
+            %\end{figure}
+        \end{columns}
     \end{frame}
 
     \section{Conclusions}
