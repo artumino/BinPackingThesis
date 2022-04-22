@@ -365,34 +365,21 @@
 
     \section{Proposed Heuristic}
     \begin{frame}{Overview}
-        \begin{columns}[onlytextwidth,T]
-        \column{\dimexpr\linewidth-75mm-5mm}
         Composed of:
         \begin{itemize}
             \item Constructive heuristic (Support Planes)
             \item Beam-Search
         \end{itemize}
         Each node is a partial solution, starts from the empty solution
-        \column{75mm}
-            \begin{figure}[h]
-                \resizebox*{!}{.6\textheight}{%
-                \input{Images/heur_scheme}
-                }
-                \caption{Conceptual representation of the proposed heuristic}
-                \label{fig:heur_scheme}
-            \end{figure}
-        \end{columns}
     \end{frame}
     \begin{frame}{Support Planes}
         \begin{columns}[onlytextwidth,T]
             \column{\dimexpr\linewidth-65mm-5mm}
             \begin{itemize}
                 \item Operates on a single bin
-                \item Items generate planes
-                \item Planes have obstacles or support items
-                \item Insertions on the lowest possible planes
                 \item Exploits a modified 2D-BPP heuristic
                 \item No explicit layers
+                \item Guarantees vertical support
             \end{itemize}
             \column{65mm}
                 \begin{figure}[h]
@@ -470,13 +457,36 @@
     \end{frame}
 
     \begin{frame}{Beam Search}
+        \begin{columns}[onlytextwidth,T]
+        \column{\dimexpr\linewidth-75mm-5mm}
         \begin{itemize}
-            \item Iteratively builds a solution
-            \item Each node is a feasible packing
             \item Exploits support planes
-            \item Different placement modes
-            \item Explores $k$ best placements
+            \item Explores different sequences of placements
+            \item Limited to $k$ best placements
         \end{itemize}
+        \column{75mm}
+            \begin{figure}[h]
+                \resizebox*{\columnwidth}{!}{%
+                \input{Images/presentation/beam_search}
+                }
+            \end{figure}
+        \end{columns}
+    \end{frame}
+    \begin{frame}{Beam Search}
+        \begin{figure}[h]
+            \resizebox*{!}{.7\textheight}{%
+            \input{Images/heur_scheme}
+            }
+            \caption{Conceptual representation of the proposed heuristic}
+        \end{figure}
+    \end{frame}
+    \begin{frame}{Beam Search}
+        \begin{figure}[h]
+            \resizebox*{!}{.65\textheight}{%
+            \input{Images/presentation/placement_modes}
+            }
+            \caption{Proposed placement modes}
+        \end{figure}
     \end{frame}
     \begin{frame}{Optimizations}
         \begin{columns}[onlytextwidth,T]
@@ -595,5 +605,11 @@
             \item Solution optimization heuristics
             \item Improvements to the underlying 2D-BPP heuristic
         \end{itemize}
+    \end{frame}
+
+    \begin{frame}{}
+        Thank you for your attention!
+
+        Questions?
     \end{frame}
 \end{document}
