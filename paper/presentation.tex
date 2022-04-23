@@ -46,7 +46,7 @@
                     \resizebox{\columnwidth}{!}{%
                         \includegraphics{Images/presentation/example_pit_pallettization.png}
                     }
-                    \caption{Example of pit pallettization (\hyperlink{https://www.youtube.com/watch?v=_sSdk1baNLA}{Schäfer Case Picking | SSI SCHÄFER})}
+                    \caption{Example of pit pallettization} %(\hyperlink{https://www.youtube.com/watch?v=_sSdk1baNLA}{Schäfer Case Picking | SSI SCHÄFER})
                 \end{figure}
             \column{55mm}
                 \begin{figure}
@@ -56,7 +56,7 @@
                 \end{figure}
                 \begin{figure}
                     \resizebox{\columnwidth}{!}{%
-                        \input{Images/cage_ratio}
+                        \input{Images/presentation/cage_ratio}
                     }
                     \caption{Cage ratio of two different bin configurations}
                     \label{fig:cage_ratio}
@@ -108,11 +108,21 @@
         \end{eqnarray*}
     \end{frame}
 
-    \begin{frame}{MILP Proxy Model - Objective Function}
+    \begin{frame}{MILP Model - Coordinate System}
+        \begin{figure}
+            \scalebox{0.45}{%
+            \input{Images/coordinate_system}
+            }
+            \caption{Coordinate system representation for a generic item $i$ and its rotated clone $i \in I^R$}
+            \label{fig:coordinate_system}
+        \end{figure}
+    \end{frame}
+
+    \begin{frame}{MILP Model - Objective Function}
 
         \begin{columns}[onlytextwidth,T]
             \column{\dimexpr\linewidth-75mm-5mm}
-                \vspace{.25\textheight}
+                \vspace{.12\textheight}
                 \hspace{-5mm}
                 \resizebox{17mm}{!}{
                     \begin{minipage}{\linewidth}
@@ -127,6 +137,11 @@
                     \end{eqnarray*}
                     \end{minipage}
                 }
+                
+                \begin{figure}[H]
+                    \centering
+                    \input{Images/presentation/use_variables}
+                \end{figure}
 
             \column{75mm}
             \resizebox{!}{30mm}{
@@ -153,11 +168,11 @@
             \end{columns}
     \end{frame}
 
-    \begin{frame}{MILP Proxy Model - Geometric Constraints 1}
+    \begin{frame}{MILP Model - Geometric Constraints 1}
 
         \begin{columns}[onlytextwidth,T]
             \column{\dimexpr\linewidth-75mm-5mm}
-                \vspace{.25\textheight}
+                \vspace{.12\textheight}
                 \hspace{-5mm}
                 \resizebox{17mm}{!}{
                     \begin{minipage}{\linewidth}
@@ -171,6 +186,11 @@
                     \end{eqnarray*}
                     \end{minipage}
                 }
+                
+                \begin{figure}[H]
+                    \centering
+                    \input{Images/presentation/use_variables}
+                \end{figure}
 
             \column{75mm}
             \resizebox{!}{30mm}{
@@ -198,7 +218,7 @@
     \end{frame}
 
 
-    \begin{frame}{MILP Proxy Model - Geometric Constraints 2}
+    \begin{frame}{MILP Model - Geometric Constraints 2}
 
         \begin{columns}[onlytextwidth,T]
             \column{\dimexpr\linewidth-75mm-5mm}
@@ -243,7 +263,7 @@
     \end{frame}
 
 
-    \begin{frame}{MILP Proxy Model - Geometric Constraints 3}
+    \begin{frame}{MILP Model - Geometric Constraints 3}
 
         \begin{columns}[onlytextwidth,T]
             \column{\dimexpr\linewidth-75mm-5mm}
@@ -294,7 +314,7 @@
     \end{frame}
 
 
-    \begin{frame}{MILP Proxy Model - Vertical Support}
+    \begin{frame}{MILP Model - Vertical Support}
         \begin{eqnarray*}
             \color{gray} \textbf{minimize} & \color{gray} \text{number of used bins} \\
             \color{gray} \textbf{then, maximize} & \color{gray} \text{average cage ratio of the used bins} \\
@@ -305,7 +325,7 @@
         \end{eqnarray*}
     \end{frame}
 
-    \begin{frame}{MILP Proxy Model - Closeness}
+    \begin{frame}{MILP Model - Closeness}
         \begin{columns}[onlytextwidth,T]
         \column{\dimexpr\linewidth-75mm-5mm}
             \begin{figure}
@@ -332,7 +352,7 @@
         \end{columns}
     \end{frame}
 
-    \begin{frame}{MILP Proxy Model - Discretized Vertical Support}
+    \begin{frame}{MILP Model - Discretized Vertical Support}
         \begin{columns}[onlytextwidth,T]
             \column{\dimexpr\linewidth-75mm-5mm}
                 \begin{figure}
@@ -363,14 +383,18 @@
             \end{columns}
     \end{frame}
 
-    \section{Proposed Heuristic}
+    \begin{frame}{MILP Model - Results}
+        \input{tests/only_model}
+    \end{frame}
+
+    \section{Proposed Algorithm}
     \begin{frame}{Overview}
         Composed of:
         \begin{itemize}
             \item Constructive heuristic (Support Planes)
             \item Beam-Search
         \end{itemize}
-        Each node is a partial solution, starts from the empty solution
+        %Each node is a partial solution, starts from the empty solution
     \end{frame}
     \begin{frame}{Support Planes}
         \begin{columns}[onlytextwidth,T]
