@@ -485,7 +485,7 @@
         \column{\dimexpr\linewidth-75mm-5mm}
         \begin{itemize}
             \item Exploits support planes
-            \item Explores different sequences of placements
+            \item Branches on the sequence of placements
             \item Limited to $k$ best placements
         \end{itemize}
         \column{75mm}
@@ -516,16 +516,16 @@
         \begin{columns}[onlytextwidth,T]
         \column{\dimexpr\linewidth-65mm-5mm}
             \begin{itemize}
-                \item Duplicates removal
+                \item Prune duplicate nodes
                 \item Fast overlap checks
-                \item Memory management
+                \item Lazy node updates
             \end{itemize}
         \column{65mm}
             \begin{figure}[h]
                 \resizebox*{\columnwidth}{!}{%
                 \input{Images/aabb_tree}
                 }
-                \caption{AABB Tree}
+                \caption{AABB Tree, self-balancing tree of axis-aligned bounding boxes}
             \end{figure}
             %\vspace*{-15mm}
             %\begin{figure}
