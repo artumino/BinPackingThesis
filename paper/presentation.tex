@@ -88,7 +88,7 @@
 
     \section{Problem Definition}
     \begin{frame}{Literature Review}
-        %TODO: Images for placement strategies
+        \textbf{Problem}: pack a set of cuboids into the minimum amount of bins, maximizing the cage ratio of used bins, without overlaps, and with every item having vertical support
         \begin{itemize}
             \item The problem is NP-Hard
             \item Exact methods only for small instances %Cite?
@@ -347,6 +347,13 @@
                         & s_{ij} \ge z^p_{ij} + z^c_{ij} - 2 & \forall (i, j) \in I : i \neq j \notag \\
                         & \sum_{\mathclap{j \in I}}{s_{ij}} \le \sum_{\mathclap{b \in B}}{u_{ib}} & \forall i \in I  \notag
                     \end{align}
+                
+                    \vspace{2mm}
+                    \begin{figure}[H]
+                        \centering
+                        \hspace{2mm}
+                        \input{Images/presentation/variable_support}
+                    \end{figure}
                 \end{minipage}
             }
         \end{columns}
@@ -483,13 +490,14 @@
     \begin{frame}{Beam Search}
         \begin{columns}[onlytextwidth,T]
         \column{\dimexpr\linewidth-75mm-5mm}
+        \vspace{5mm}
         \begin{itemize}
             \item Exploits support planes
-            \item Branches on the sequence of placements
-            \item Limited to $k$ best placements
+            \item Branches on the type of item to place next
         \end{itemize}
         \column{75mm}
             \begin{figure}[h]
+                \caption*{\textbf{Beam-Search}: truncated breadth-first tree search, limited to $k$ best nodes}
                 \resizebox*{\columnwidth}{!}{%
                 \input{Images/presentation/beam_search}
                 }
