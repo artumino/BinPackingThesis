@@ -582,31 +582,6 @@
         
     \end{frame}
 
-    \begin{frame}{Computational Experiments}
-        \begin{table}[htbp]
-            \caption*{Average execution time of literature results with bin gap}
-            \centering
-            \resizebox{!}{25mm}{\begin{tabular}{|l|l|c|c|c|c|c|}
-            \hline
-            \multicolumn{2}{|c|}{\textbf{Heuristic}} & \multicolumn{4}{|c|}{\textbf{Execution Time (s)}} & \textbf{Bin Gap (\%)} \\ \hline
-            \multicolumn{2}{|c|}{} & $n=50$ & $n=100$  & $n=150$ & $n=200$ &      \\ \hline
-            \textbf{PM} & $k=1$    & 0.05   & 0.11     & 0.28    & 0.55    & 4.57 \\ 
-                        & $k=5$    & 0.08   & 0.39     & 1.02    & 2.16    & 4.32 \\ 
-                        & $k=10$   & 0.15   & 0.74     & 1.98    & 4.12    & 4.29 \\ 
-                        & $k=20$   & 0.29   & 1.45     & 3.89    & 8.07    & 4.05 \\ 
-                        & $k=50$   & 0.72   & 3.63     & 9.72    & 20.47   & 3.95 \\ \hline
-            \textbf{PS} & $k=1$    & 0.04   & 0.18     & 0.51    & 1.08    & 4.35 \\ 
-                        & $k=5$    & 0.12   & 0.74     & 2.19    & 4.79    & 4.01 \\ 
-                        & $k=10$   & 0.23   & 1.43     & 4.19    & 9.39    & 3.94 \\ 
-                        & $k=20$   & 0.47   & 2.81     & 8.48    & 18.93   & 3.74 \\ 
-                        & $k=50$   & 1.15   & 6.74     & 21.03   & 45.78   & 3.52 \\ \hline
-             \hline
-             \multicolumn{2}{|l|}{\textbf{BRKGA-VD}} & 17.13 & 80.63 & 190.50 & 369.75 & 0.00 \\ \hline
-            \end{tabular}}
-            \label{exp:literature_time_gap}
-        \end{table}
-    \end{frame}
-
     \begin{frame}{Computational Experiments}\begin{table}[htbp]
         \centering
         \resizebox{!}{33mm}{
@@ -650,6 +625,31 @@
         \label{exp:literature_bins}
         \end{table}
         
+    \end{frame}
+
+    \begin{frame}{Computational Experiments}
+        \begin{table}[htbp]
+            \caption*{Average execution time of literature results with bin gap}
+            \centering
+            \resizebox{!}{25mm}{\begin{tabular}{|l|l|c|c|c|c|c|}
+            \hline
+            \multicolumn{2}{|c|}{\textbf{Heuristic}} & \multicolumn{4}{|c|}{\textbf{Execution Time (s)}} & \textbf{Bin Gap (\%)} \\ \hline
+            \multicolumn{2}{|c|}{} & $n=50$ & $n=100$  & $n=150$ & $n=200$ &      \\ \hline
+            \textbf{PM} & $k=1$    & 0.05   & 0.11     & 0.28    & 0.55    & 4.57 \\ 
+                        & $k=5$    & 0.08   & 0.39     & 1.02    & 2.16    & 4.32 \\ 
+                        & $k=10$   & 0.15   & 0.74     & 1.98    & 4.12    & 4.29 \\ 
+                        & $k=20$   & 0.29   & 1.45     & 3.89    & 8.07    & 4.05 \\ 
+                        & $k=50$   & 0.72   & 3.63     & 9.72    & 20.47   & 3.95 \\ \hline
+            \textbf{PS} & $k=1$    & 0.04   & 0.18     & 0.51    & 1.08    & 4.35 \\ 
+                        & $k=5$    & 0.12   & 0.74     & 2.19    & 4.79    & 4.01 \\ 
+                        & $k=10$   & 0.23   & 1.43     & 4.19    & 9.39    & 3.94 \\ 
+                        & $k=20$   & 0.47   & 2.81     & 8.48    & 18.93   & 3.74 \\ 
+                        & $k=50$   & 1.15   & 6.74     & 21.03   & 45.78   & 3.52 \\ \hline
+             \hline
+             \multicolumn{2}{|l|}{\textbf{BRKGA-VD}} & 17.13 & 80.63 & 190.50 & 369.75 & 0.00 \\ \hline
+            \end{tabular}}
+            \label{exp:literature_time_gap}
+        \end{table}
     \end{frame}
 
     \begin{frame}{Computational Experiments}\begin{table}[htbp]
