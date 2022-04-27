@@ -405,6 +405,10 @@
             \begin{itemize}
                 \item Operates on a single bin
                 \item Exploits a modified 2D-BPP heuristic
+                \begin{itemize}
+                  \item Lowest plane
+                  \item First fit
+                \end{itemize}
                 \item No explicit layers
                 \item Guarantees vertical support
             \end{itemize}
@@ -516,7 +520,8 @@
             \caption*{Proposed placement modes}
         \end{figure}
     \end{frame}
-    \begin{frame}{Optimizations}
+    \begin{frame}{Implementation}
+        Implemented as a Java program
         \begin{columns}[onlytextwidth,T]
         \column{\dimexpr\linewidth-65mm-5mm}
             \begin{itemize}
